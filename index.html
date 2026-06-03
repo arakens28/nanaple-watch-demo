@@ -1,0 +1,1421 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>時計修理かんたん診断 デモ | nanaple</title>
+  <style>
+    :root {
+      --ink: #1f2328;
+      --muted: #667085;
+      --line: #e5e7eb;
+      --soft: #f7f7f5;
+      --paper: #ffffff;
+      --accent: #b3261e;
+      --accent-dark: #8e1c17;
+      --gold: #b98b38;
+      --mint: #e9f5ef;
+      --shadow: 0 18px 48px rgba(31, 35, 40, 0.1);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      color: var(--ink);
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Hiragino Sans",
+        "Yu Gothic",
+        "Yu Gothic UI",
+        Meiryo,
+        sans-serif;
+      background: var(--soft);
+      letter-spacing: 0;
+    }
+
+    body {
+      min-width: 320px;
+      margin: 0;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(247, 247, 245, 0.96)),
+        radial-gradient(circle at 16% 12%, rgba(185, 139, 56, 0.18), transparent 28rem);
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid rgba(229, 231, 235, 0.86);
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 14px 20px;
+    }
+
+    .brand-mark {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-symbol {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      border: 1px solid var(--ink);
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .brand-name {
+      display: grid;
+      gap: 1px;
+    }
+
+    .brand-name strong {
+      font-size: 18px;
+      line-height: 1.1;
+    }
+
+    .brand-name span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap;
+    }
+
+    .header-note {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .demo-badge {
+      display: inline-flex;
+      align-items: center;
+      height: 28px;
+      padding: 0 10px;
+      border: 1px solid #f1c9c5;
+      border-radius: 999px;
+      color: var(--accent-dark);
+      background: #fff7f6;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 30px 20px 54px;
+    }
+
+    .intro {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 380px);
+      gap: 28px;
+      align-items: stretch;
+      padding: 18px 0 28px;
+    }
+
+    .intro-copy {
+      display: grid;
+      align-content: center;
+      gap: 14px;
+    }
+
+    .eyebrow {
+      width: fit-content;
+      margin: 0;
+      padding: 4px 10px;
+      border-left: 4px solid var(--accent);
+      color: var(--accent-dark);
+      background: #fff;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    h1 {
+      max-width: 720px;
+      margin: 0;
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      max-width: 740px;
+      margin: 0;
+      color: #424852;
+      font-size: 16px;
+      line-height: 1.9;
+    }
+
+    .trust-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .trust-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 5px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: #3f4650;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .watch-visual {
+      position: relative;
+      min-height: 292px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(236, 238, 237, 0.9)),
+        repeating-linear-gradient(90deg, rgba(31, 35, 40, 0.04), rgba(31, 35, 40, 0.04) 1px, transparent 1px, transparent 18px);
+      box-shadow: var(--shadow);
+    }
+
+    .watch-visual::before,
+    .watch-visual::after {
+      position: absolute;
+      content: "";
+      background: linear-gradient(180deg, #1f2328, #4c5158);
+      border-radius: 18px;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+    }
+
+    .watch-visual::before {
+      top: 22px;
+      left: 50%;
+      width: 76px;
+      height: 98px;
+      transform: translateX(-50%);
+    }
+
+    .watch-visual::after {
+      bottom: 18px;
+      left: 50%;
+      width: 76px;
+      height: 98px;
+      transform: translateX(-50%);
+    }
+
+    .watch-face {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      display: grid;
+      width: 186px;
+      height: 186px;
+      place-items: center;
+      transform: translate(-50%, -50%);
+      border: 12px solid #2b3036;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, #fff 0 42%, #eef0ef 43% 62%, #fff 63% 100%);
+      box-shadow:
+        0 20px 42px rgba(31, 35, 40, 0.22),
+        inset 0 0 0 2px rgba(185, 139, 56, 0.45);
+    }
+
+    .watch-face span {
+      position: absolute;
+      display: block;
+      width: 5px;
+      height: 16px;
+      border-radius: 999px;
+      background: #2b3036;
+      transform-origin: 50% 82px;
+    }
+
+    .watch-face span:nth-child(1) { transform: rotate(0deg) translateY(-72px); }
+    .watch-face span:nth-child(2) { transform: rotate(90deg) translateY(-72px); }
+    .watch-face span:nth-child(3) { transform: rotate(180deg) translateY(-72px); }
+    .watch-face span:nth-child(4) { transform: rotate(270deg) translateY(-72px); }
+
+    .hand-hour,
+    .hand-minute,
+    .pin {
+      position: absolute;
+      display: block;
+      border-radius: 999px;
+      background: var(--accent);
+      transform-origin: 50% 100%;
+    }
+
+    .hand-hour {
+      width: 7px;
+      height: 48px;
+      transform: rotate(310deg) translateY(-24px);
+    }
+
+    .hand-minute {
+      width: 5px;
+      height: 68px;
+      background: #2b3036;
+      transform: rotate(42deg) translateY(-34px);
+    }
+
+    .pin {
+      width: 14px;
+      height: 14px;
+      background: var(--gold);
+    }
+
+    .tool-line {
+      position: absolute;
+      right: 28px;
+      bottom: 38px;
+      width: 118px;
+      height: 8px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), #2b3036);
+      transform: rotate(-28deg);
+    }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(330px, 0.95fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .panel,
+    .result-panel,
+    .notice-band {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 12px 28px rgba(31, 35, 40, 0.06);
+    }
+
+    .panel {
+      padding: 22px;
+    }
+
+    .panel + .panel {
+      margin-top: 18px;
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-title h2,
+    .panel-title h3 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.25;
+    }
+
+    .step-num {
+      display: inline-grid;
+      width: 30px;
+      height: 30px;
+      place-items: center;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--ink);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .field-group {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .field-group:first-of-type {
+      margin-top: 0;
+    }
+
+    .field-label {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      color: #343a42;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .field-label small {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .brand-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .brand-card {
+      display: grid;
+      min-height: 74px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      color: var(--ink);
+      text-align: left;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+    }
+
+    .brand-card:hover,
+    .brand-card:focus-visible {
+      border-color: rgba(179, 38, 30, 0.5);
+      box-shadow: 0 8px 22px rgba(179, 38, 30, 0.1);
+      outline: none;
+      transform: translateY(-1px);
+    }
+
+    .brand-card.is-active {
+      border-color: var(--accent);
+      background: #fff7f6;
+      box-shadow: inset 0 0 0 1px rgba(179, 38, 30, 0.16);
+    }
+
+    .brand-card strong {
+      font-size: 15px;
+    }
+
+    .brand-card span {
+      align-self: end;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .segmented,
+    .symptom-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .segmented {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .segment-button,
+    .symptom-button,
+    .reset-button {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      color: var(--ink);
+      transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+    }
+
+    .segment-button {
+      min-height: 46px;
+      padding: 9px 10px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .segment-button.is-active,
+    .symptom-button.is-active {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .symptom-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .symptom-button {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 54px;
+      gap: 10px;
+      padding: 12px;
+      text-align: left;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .symptom-button::after {
+      content: "";
+      flex: 0 0 auto;
+      width: 18px;
+      height: 18px;
+      border: 2px solid currentColor;
+      border-radius: 50%;
+      opacity: 0.68;
+    }
+
+    .symptom-button.is-active::after {
+      background:
+        radial-gradient(circle, #fff 0 32%, transparent 36%),
+        currentColor;
+    }
+
+    .form-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    .selection-count {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .reset-button {
+      min-height: 40px;
+      padding: 9px 14px;
+      color: #3f4650;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .reset-button:hover,
+    .reset-button:focus-visible {
+      border-color: var(--accent);
+      color: var(--accent-dark);
+      outline: none;
+    }
+
+    .result-panel {
+      position: sticky;
+      top: 86px;
+      overflow: hidden;
+    }
+
+    .result-head {
+      padding: 22px;
+      color: #fff;
+      background:
+        linear-gradient(135deg, rgba(31, 35, 40, 0.98), rgba(59, 63, 70, 0.96)),
+        linear-gradient(90deg, var(--accent), transparent);
+    }
+
+    .result-head p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.74);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .result-head h2 {
+      margin: 8px 0 0;
+      font-size: 24px;
+      line-height: 1.32;
+    }
+
+    .result-body {
+      display: grid;
+      gap: 16px;
+      padding: 20px 22px 22px;
+    }
+
+    .empty-state {
+      display: grid;
+      min-height: 360px;
+      align-content: center;
+      gap: 16px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .empty-state strong {
+      color: var(--ink);
+      font-size: 20px;
+    }
+
+    .empty-state .mini-face {
+      display: grid;
+      width: 74px;
+      height: 74px;
+      place-items: center;
+      margin: 0 auto;
+      border: 6px solid var(--ink);
+      border-radius: 50%;
+      background: #fff;
+    }
+
+    .mini-face::before {
+      width: 5px;
+      height: 24px;
+      content: "";
+      border-radius: 999px;
+      background: var(--accent);
+      transform: rotate(35deg);
+      transform-origin: bottom;
+    }
+
+    .summary-card {
+      display: grid;
+      gap: 8px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+    }
+
+    .summary-card.is-price {
+      border-color: rgba(185, 139, 56, 0.42);
+      background: linear-gradient(180deg, #fffdf8, #fff);
+    }
+
+    .summary-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .price {
+      color: var(--accent-dark);
+      font-size: clamp(26px, 4vw, 34px);
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .tax-note {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .result-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .result-list li {
+      position: relative;
+      padding-left: 18px;
+      color: #3f4650;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .result-list li::before {
+      position: absolute;
+      top: 0.72em;
+      left: 0;
+      width: 7px;
+      height: 7px;
+      content: "";
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .match-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .match-card {
+      display: grid;
+      gap: 8px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+    }
+
+    .match-top {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .match-top strong {
+      font-size: 15px;
+      line-height: 1.42;
+    }
+
+    .match-score {
+      flex: 0 0 auto;
+      min-width: 54px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      color: #1f4d35;
+      background: var(--mint);
+      font-size: 12px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .match-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .cta-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 2px;
+    }
+
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 12px 14px;
+      border-radius: var(--radius);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .cta-primary {
+      color: #fff;
+      background: var(--accent);
+    }
+
+    .cta-primary:hover,
+    .cta-primary:focus-visible {
+      background: var(--accent-dark);
+      outline: none;
+    }
+
+    .cta-secondary {
+      border: 1px solid var(--ink);
+      color: var(--ink);
+      background: #fff;
+    }
+
+    .cta-secondary:hover,
+    .cta-secondary:focus-visible {
+      background: var(--ink);
+      color: #fff;
+      outline: none;
+    }
+
+    .notice-band {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      margin-top: 24px;
+      padding: 18px 20px;
+    }
+
+    .notice-band strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 15px;
+    }
+
+    .notice-band p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .notice-tag {
+      padding: 7px 10px;
+      border: 1px solid #f1c9c5;
+      border-radius: 999px;
+      color: var(--accent-dark);
+      background: #fff7f6;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 20;
+      max-width: min(360px, calc(100vw - 36px));
+      padding: 14px 16px;
+      border: 1px solid rgba(31, 35, 40, 0.12);
+      border-radius: var(--radius);
+      background: #fff;
+      box-shadow: var(--shadow);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 800;
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .toast.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 920px) {
+      .intro,
+      .app-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .result-panel {
+        position: static;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .header-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      main {
+        padding: 22px 14px 42px;
+      }
+
+      .intro {
+        gap: 18px;
+        padding-top: 10px;
+      }
+
+      .watch-visual {
+        min-height: 230px;
+      }
+
+      .watch-face {
+        width: 150px;
+        height: 150px;
+      }
+
+      .brand-grid,
+      .segmented,
+      .symptom-grid,
+      .result-grid,
+      .cta-row,
+      .notice-band {
+        grid-template-columns: 1fr;
+      }
+
+      .panel,
+      .result-head,
+      .result-body {
+        padding: 18px;
+      }
+
+      .form-footer {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .reset-button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand-mark" href="#" aria-label="nanaple maintenance">
+        <span class="brand-symbol">7</span>
+        <span class="brand-name">
+          <strong>nanaple</strong>
+          <span>Watch Maintenance</span>
+        </span>
+      </a>
+      <div class="header-actions">
+        <span class="header-note">時計修理かんたん診断</span>
+        <span class="demo-badge">架空データ版</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <div class="intro-copy">
+        <p class="eyebrow">REPAIR CHECK</p>
+        <h1 id="page-title">時計修理の目安費用を、その場でかんたん診断。</h1>
+        <p class="lead">
+          ブランドと症状から、想定される故障箇所・交換パーツ・概算費用を表示するデモアプリです。
+          実際の受付ページへつなげる前の試作品として、架空データで動作します。
+        </p>
+        <div class="trust-row" aria-label="対応内容">
+          <span class="trust-chip">オーバーホール</span>
+          <span class="trust-chip">電池交換</span>
+          <span class="trust-chip">リューズ修理</span>
+          <span class="trust-chip">外装仕上げ</span>
+        </div>
+      </div>
+      <div class="watch-visual" aria-hidden="true">
+        <div class="watch-face">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <i class="hand-hour"></i>
+          <i class="hand-minute"></i>
+          <i class="pin"></i>
+        </div>
+        <div class="tool-line"></div>
+      </div>
+    </section>
+
+    <section class="app-shell" aria-label="時計修理診断フォーム">
+      <div>
+        <section class="panel">
+          <div class="panel-title">
+            <h2>診断内容</h2>
+            <span class="step-num">1</span>
+          </div>
+
+          <div class="field-group">
+            <div class="field-label">
+              <span>ブランド</span>
+              <small>架空の価格レンジ</small>
+            </div>
+            <div class="brand-grid" id="brandGrid" role="radiogroup" aria-label="ブランド"></div>
+          </div>
+
+          <div class="field-group">
+            <div class="field-label">
+              <span>時計タイプ</span>
+              <small>不明でも診断できます</small>
+            </div>
+            <div class="segmented" id="movementGroup" role="radiogroup" aria-label="時計タイプ"></div>
+          </div>
+
+          <div class="field-group">
+            <div class="field-label">
+              <span>症状</span>
+              <small>複数選択可</small>
+            </div>
+            <div class="symptom-grid" id="symptomGrid" aria-label="症状"></div>
+          </div>
+
+          <div class="form-footer">
+            <span class="selection-count" id="selectionCount">ブランド未選択・症状未選択</span>
+            <button class="reset-button" id="resetButton" type="button">選択をリセット</button>
+          </div>
+        </section>
+      </div>
+
+      <aside class="result-panel" aria-live="polite">
+        <div class="result-head">
+          <p>DIAGNOSIS RESULT</p>
+          <h2 id="resultTitle">診断結果</h2>
+        </div>
+        <div class="result-body" id="resultBody"></div>
+      </aside>
+    </section>
+
+    <section class="notice-band" aria-label="注意事項">
+      <div>
+        <strong>正式な修理可否・費用は現物確認後に確定します。</strong>
+        <p>
+          このデモは業務イメージ確認用です。実運用では、部品供給状況、年式、改造履歴、水入り状態、
+          外装コンディションなどにより金額が変動する旨を明記してください。
+        </p>
+      </div>
+      <span class="notice-tag">DEMO</span>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const brands = [
+      { id: "omega", name: "オメガ", type: "機械式中心" },
+      { id: "rolex", name: "ロレックス", type: "高級機械式" },
+      { id: "cartier", name: "カルティエ", type: "外装部品多め" },
+      { id: "seiko", name: "セイコー", type: "国産全般" },
+      { id: "citizen", name: "シチズン", type: "電波・ソーラー" },
+      { id: "casio", name: "カシオ", type: "デジタル・G-SHOCK" }
+    ];
+
+    const movements = [
+      { id: "unknown", label: "わからない" },
+      { id: "mechanical", label: "自動巻き・手巻き" },
+      { id: "quartz", label: "クォーツ・電池式" }
+    ];
+
+    const symptoms = [
+      { id: "stopped", label: "止まる" },
+      { id: "slow", label: "時間が遅れる" },
+      { id: "fast", label: "時間が進む" },
+      { id: "noWind", label: "ゼンマイが巻けない" },
+      { id: "calendar", label: "カレンダー不良" },
+      { id: "battery", label: "電池交換後も動かない" },
+      { id: "fog", label: "ガラスが曇る" },
+      { id: "crown", label: "リューズ不良" },
+      { id: "bracelet", label: "ベルト・ブレス不良" },
+      { id: "polish", label: "キズをきれいにしたい" }
+    ];
+
+    // 実運用では、この配列をスプレッドシートや管理画面のデータに置き換えます。
+    const diagnosisRules = [
+      {
+        id: "omega-mechanical-stop",
+        brands: ["omega"],
+        movements: ["mechanical", "unknown"],
+        symptoms: ["stopped", "slow", "fast", "noWind"],
+        title: "機械式ムーブメントの分解掃除・駆動系修理",
+        causes: ["油切れや汚れによる輪列抵抗", "ゼンマイ劣化", "自動巻き機構の摩耗"],
+        parts: ["オーバーホール", "ゼンマイ交換", "切替車点検"],
+        min: 35000,
+        max: 60000,
+        leadTime: "3〜6週間",
+        note: "古いモデルは部品確認後に追加見積りになる場合があります。"
+      },
+      {
+        id: "omega-calendar",
+        brands: ["omega"],
+        movements: ["mechanical", "unknown"],
+        symptoms: ["calendar"],
+        title: "カレンダー送り機構の点検・部品交換",
+        causes: ["日送り車の摩耗", "カレンダーバネの変形", "操作時間帯による負荷"],
+        parts: ["カレンダー関連部品", "オーバーホール同時実施"],
+        min: 42000,
+        max: 68000,
+        leadTime: "4〜7週間",
+        note: "カレンダー不良は内部点検で原因を特定します。"
+      },
+      {
+        id: "rolex-mechanical-basic",
+        brands: ["rolex"],
+        movements: ["mechanical", "unknown"],
+        symptoms: ["stopped", "slow", "fast", "noWind"],
+        title: "高級機械式のオーバーホール・消耗部品交換",
+        causes: ["潤滑油の劣化", "歯車軸の摩耗", "ゼンマイ切れ"],
+        parts: ["オーバーホール", "ゼンマイ", "パッキン", "精度調整"],
+        min: 48000,
+        max: 85000,
+        leadTime: "4〜8週間",
+        note: "外装仕上げや純正部品交換は別途見積りです。"
+      },
+      {
+        id: "cartier-crown-case",
+        brands: ["cartier"],
+        movements: ["mechanical", "quartz", "unknown"],
+        symptoms: ["crown", "fog", "calendar"],
+        title: "リューズ・防水関連部品の点検",
+        causes: ["リューズ芯の曲がり", "パッキン劣化", "ケース内への湿気混入"],
+        parts: ["リューズ", "巻真", "パッキン", "防水検査"],
+        min: 18000,
+        max: 52000,
+        leadTime: "2〜6週間",
+        note: "特殊形状ケースは部品手配の可否確認が必要です。"
+      },
+      {
+        id: "seiko-mechanical",
+        brands: ["seiko"],
+        movements: ["mechanical", "unknown"],
+        symptoms: ["stopped", "slow", "fast", "noWind", "calendar"],
+        title: "国産機械式の分解掃除・精度調整",
+        causes: ["油切れ", "磁気帯び", "カレンダー送り不良"],
+        parts: ["オーバーホール", "磁気抜き", "パッキン交換"],
+        min: 22000,
+        max: 42000,
+        leadTime: "2〜5週間",
+        note: "一部限定品や古いモデルはメーカー確認となります。"
+      },
+      {
+        id: "quartz-battery-circuit",
+        brands: ["omega", "cartier", "seiko", "citizen"],
+        movements: ["quartz", "unknown"],
+        symptoms: ["stopped", "battery", "slow"],
+        title: "電池式ムーブメントの電池・回路点検",
+        causes: ["電池消耗", "回路不良", "コイル断線", "油汚れによる針止まり"],
+        parts: ["電池交換", "パッキン交換", "回路点検", "ムーブメント交換"],
+        min: 2500,
+        max: 28000,
+        leadTime: "即日〜4週間",
+        note: "電池交換のみで改善しない場合は分解点検に進みます。"
+      },
+      {
+        id: "citizen-solar",
+        brands: ["citizen"],
+        movements: ["quartz", "unknown"],
+        symptoms: ["stopped", "slow", "battery"],
+        title: "ソーラー・二次電池まわりの点検",
+        causes: ["二次電池の劣化", "充電不足", "基板不良"],
+        parts: ["二次電池交換", "充電点検", "基板確認"],
+        min: 8000,
+        max: 26000,
+        leadTime: "1〜4週間",
+        note: "電波時計は受信環境の確認もおすすめします。"
+      },
+      {
+        id: "casio-digital",
+        brands: ["casio"],
+        movements: ["quartz", "unknown"],
+        symptoms: ["stopped", "battery", "fog", "bracelet"],
+        title: "デジタル時計の電池・外装・防水点検",
+        causes: ["電池消耗", "パッキン劣化", "ボタン部の汚れ", "ベゼル劣化"],
+        parts: ["電池交換", "パッキン", "防水検査", "ベルト交換"],
+        min: 1500,
+        max: 18000,
+        leadTime: "即日〜3週間",
+        note: "G-SHOCKの外装部品はモデルにより在庫確認が必要です。"
+      },
+      {
+        id: "exterior-polish",
+        brands: ["omega", "rolex", "cartier", "seiko", "citizen"],
+        movements: ["mechanical", "quartz", "unknown"],
+        symptoms: ["polish", "bracelet"],
+        title: "外装仕上げ・ブレスレット調整",
+        causes: ["日常使用による小傷", "ブレスピン摩耗", "バックルゆるみ"],
+        parts: ["新品仕上げ", "ブレスピン", "バネ棒", "バックル点検"],
+        min: 6000,
+        max: 35000,
+        leadTime: "1〜4週間",
+        note: "深い打痕やメッキ剥がれは仕上げで消えない場合があります。"
+      },
+      {
+        id: "water-ingress",
+        brands: ["omega", "rolex", "cartier", "seiko", "citizen", "casio"],
+        movements: ["mechanical", "quartz", "unknown"],
+        symptoms: ["fog", "stopped"],
+        title: "水入り・湿気混入の緊急点検",
+        causes: ["パッキン劣化", "リューズ締め忘れ", "ガラス・裏蓋まわりの密閉不良"],
+        parts: ["水入り点検", "乾燥処置", "パッキン交換", "防水検査"],
+        min: 12000,
+        max: 58000,
+        leadTime: "状態により変動",
+        note: "水入りは早めの点検で内部腐食リスクを下げられます。"
+      }
+    ];
+
+    const state = {
+      brand: "omega",
+      movement: "unknown",
+      symptoms: new Set(["stopped"])
+    };
+
+    const formatter = new Intl.NumberFormat("ja-JP");
+
+    const brandGrid = document.getElementById("brandGrid");
+    const movementGroup = document.getElementById("movementGroup");
+    const symptomGrid = document.getElementById("symptomGrid");
+    const resultTitle = document.getElementById("resultTitle");
+    const resultBody = document.getElementById("resultBody");
+    const selectionCount = document.getElementById("selectionCount");
+    const resetButton = document.getElementById("resetButton");
+    const toast = document.getElementById("toast");
+
+    function formatYen(value) {
+      return `${formatter.format(value)}円`;
+    }
+
+    function scoreRule(rule) {
+      if (!state.brand || state.symptoms.size === 0) {
+        return 0;
+      }
+
+      if (!rule.brands.includes(state.brand)) {
+        return 0;
+      }
+
+      if (!rule.movements.includes(state.movement)) {
+        return 0;
+      }
+
+      const selectedSymptoms = Array.from(state.symptoms);
+      const matches = selectedSymptoms.filter((symptom) => rule.symptoms.includes(symptom)).length;
+
+      if (matches === 0) {
+        return 0;
+      }
+
+      const brandWeight = rule.brands.length === 1 ? 18 : 8;
+      const symptomWeight = Math.round((matches / selectedSymptoms.length) * 70);
+      const depthBonus = Math.min(matches * 8, 22);
+
+      return Math.min(99, brandWeight + symptomWeight + depthBonus);
+    }
+
+    function getMatches() {
+      return diagnosisRules
+        .map((rule) => ({ ...rule, score: scoreRule(rule) }))
+        .filter((rule) => rule.score > 0)
+        .sort((a, b) => b.score - a.score || a.min - b.min)
+        .slice(0, 3);
+    }
+
+    function createButton(className, text, attributes = {}) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = className;
+      button.textContent = text;
+
+      Object.entries(attributes).forEach(([key, value]) => {
+        button.setAttribute(key, value);
+      });
+
+      return button;
+    }
+
+    function renderControls() {
+      brandGrid.innerHTML = "";
+      brands.forEach((brand) => {
+        const button = createButton("brand-card", "", {
+          role: "radio",
+          "aria-checked": String(state.brand === brand.id)
+        });
+        button.dataset.brand = brand.id;
+        button.innerHTML = `<strong>${brand.name}</strong><span>${brand.type}</span>`;
+        if (state.brand === brand.id) {
+          button.classList.add("is-active");
+        }
+        button.addEventListener("click", () => {
+          state.brand = brand.id;
+          render();
+        });
+        brandGrid.appendChild(button);
+      });
+
+      movementGroup.innerHTML = "";
+      movements.forEach((movement) => {
+        const button = createButton("segment-button", movement.label, {
+          role: "radio",
+          "aria-checked": String(state.movement === movement.id)
+        });
+        button.dataset.movement = movement.id;
+        if (state.movement === movement.id) {
+          button.classList.add("is-active");
+        }
+        button.addEventListener("click", () => {
+          state.movement = movement.id;
+          render();
+        });
+        movementGroup.appendChild(button);
+      });
+
+      symptomGrid.innerHTML = "";
+      symptoms.forEach((symptom) => {
+        const button = createButton("symptom-button", symptom.label, {
+          "aria-pressed": String(state.symptoms.has(symptom.id))
+        });
+        button.dataset.symptom = symptom.id;
+        if (state.symptoms.has(symptom.id)) {
+          button.classList.add("is-active");
+        }
+        button.addEventListener("click", () => {
+          if (state.symptoms.has(symptom.id)) {
+            state.symptoms.delete(symptom.id);
+          } else {
+            state.symptoms.add(symptom.id);
+          }
+          render();
+        });
+        symptomGrid.appendChild(button);
+      });
+    }
+
+    function renderEmptyState() {
+      resultTitle.textContent = "診断結果";
+      resultBody.innerHTML = `
+        <div class="empty-state">
+          <span class="mini-face"></span>
+          <strong>ブランドと症状を選択してください</strong>
+          <span>選択内容に応じて、概算費用と想定原因が表示されます。</span>
+        </div>
+      `;
+    }
+
+    function renderResults() {
+      const matches = getMatches();
+      const brand = brands.find((item) => item.id === state.brand);
+      const selectedLabels = symptoms
+        .filter((symptom) => state.symptoms.has(symptom.id))
+        .map((symptom) => symptom.label);
+
+      if (!brand || selectedLabels.length === 0) {
+        renderEmptyState();
+        return;
+      }
+
+      if (matches.length === 0) {
+        resultTitle.textContent = `${brand.name}の診断結果`;
+        resultBody.innerHTML = `
+          <div class="summary-card">
+            <span class="summary-label">該当候補</span>
+            <strong>この組み合わせは個別確認が必要です</strong>
+            <span class="tax-note">症状: ${selectedLabels.join("・")}</span>
+          </div>
+          <div class="summary-card">
+            <span class="summary-label">次の対応</span>
+            <ul class="result-list">
+              <li>写真と症状メモを添えて受付ページからご相談ください。</li>
+              <li>概算費用は現物確認後にご案内します。</li>
+            </ul>
+          </div>
+          ${renderCta()}
+        `;
+        bindCta();
+        return;
+      }
+
+      const primary = matches[0];
+      const min = Math.min(...matches.map((item) => item.min));
+      const max = Math.max(...matches.map((item) => item.max));
+      const causes = Array.from(new Set(matches.flatMap((item) => item.causes))).slice(0, 5);
+      const parts = Array.from(new Set(matches.flatMap((item) => item.parts))).slice(0, 5);
+
+      resultTitle.textContent = `${brand.name}の診断結果`;
+      resultBody.innerHTML = `
+        <div class="summary-card is-price">
+          <span class="summary-label">概算修理費用</span>
+          <div class="price">${formatYen(min)}〜${formatYen(max)}</div>
+          <span class="tax-note">税込目安・正式見積り前の参考価格です</span>
+        </div>
+
+        <div class="result-grid">
+          <div class="summary-card">
+            <span class="summary-label">想定される原因</span>
+            <ul class="result-list">
+              ${causes.map((cause) => `<li>${cause}</li>`).join("")}
+            </ul>
+          </div>
+          <div class="summary-card">
+            <span class="summary-label">交換・作業候補</span>
+            <ul class="result-list">
+              ${parts.map((part) => `<li>${part}</li>`).join("")}
+            </ul>
+          </div>
+        </div>
+
+        <div class="summary-card">
+          <span class="summary-label">おすすめ受付内容</span>
+          <strong>${primary.title}</strong>
+          <span class="tax-note">目安納期: ${primary.leadTime}</span>
+          <span class="tax-note">${primary.note}</span>
+        </div>
+
+        <div class="match-list" aria-label="診断候補">
+          ${matches.map((match) => `
+            <article class="match-card">
+              <div class="match-top">
+                <strong>${match.title}</strong>
+                <span class="match-score">${match.score}%</span>
+              </div>
+              <p>${formatYen(match.min)}〜${formatYen(match.max)} / ${match.leadTime}</p>
+            </article>
+          `).join("")}
+        </div>
+
+        ${renderCta()}
+      `;
+      bindCta();
+    }
+
+    function renderCta() {
+      return `
+        <div class="cta-row">
+          <a class="cta cta-primary" data-demo-link="楽天市場の修理受付" href="#rakuten-repair-demo">楽天で修理受付</a>
+          <a class="cta cta-secondary" data-demo-link="自社サイトの相談受付" href="#site-repair-demo">自社サイトで相談</a>
+        </div>
+      `;
+    }
+
+    function bindCta() {
+      document.querySelectorAll("[data-demo-link]").forEach((link) => {
+        link.addEventListener("click", (event) => {
+          event.preventDefault();
+          showToast(`${link.dataset.demoLink}へ遷移する想定です。公開時に実URLへ差し替えます。`);
+        });
+      });
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("is-visible");
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => {
+        toast.classList.remove("is-visible");
+      }, 3200);
+    }
+
+    function renderSelectionCount() {
+      const brand = brands.find((item) => item.id === state.brand);
+      const symptomCount = state.symptoms.size;
+      const symptomText = symptomCount === 0 ? "症状未選択" : `症状${symptomCount}件`;
+      selectionCount.textContent = `${brand ? brand.name : "ブランド未選択"}・${symptomText}`;
+    }
+
+    function render() {
+      renderControls();
+      renderSelectionCount();
+      renderResults();
+    }
+
+    resetButton.addEventListener("click", () => {
+      state.brand = "omega";
+      state.movement = "unknown";
+      state.symptoms = new Set(["stopped"]);
+      render();
+      showToast("初期状態に戻しました。");
+    });
+
+    render();
+  </script>
+</body>
+</html>

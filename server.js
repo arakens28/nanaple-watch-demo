@@ -39,32 +39,39 @@ const anthropic = new Anthropic({
 // エージェント定義
 const AGENTS = {
   coordinator: {
-    name: "田中",
-    role: "コーディネーター",
+    name: "堀江",
+    role: "CEO戦略AI",
     model: "claude-haiku-4-5",
     system:
-      "あなたはnanapleの時計修理事業のAIコーディネーター田中です。チームを率いて業務タスクを管理します。受け取ったタスクを分析し、営業AI山田と企画AI佐藤への具体的な指示を日本語で出してください。200文字以内で簡潔に。",
+      "あなたはホリエモンAI学校のCEO戦略AIアシスタント堀江です。ビジネスの本質を見抜き、売上最大化のための大胆な戦略を指示します。遠慮なく本質を突いた指示を200文字以内で出してください。余計な前置きは不要。",
+  },
+  marketing: {
+    name: "西野",
+    role: "マーケAI",
+    model: "claude-haiku-4-5",
+    system:
+      "あなたはホリエモンAI学校のマーケティングAI西野です。SNS・コミュニティ・ファネル設計のプロです。CEOの指示を受けて、集客から購買までの具体的なマーケ施策を300文字以内で提案してください。",
+  },
+  content: {
+    name: "田村",
+    role: "コンテンツAI",
+    model: "claude-haiku-4-5",
+    system:
+      "あなたはホリエモンAI学校のコンテンツAI田村です。講座設計・カリキュラム・教材企画のプロです。CEOの指示を受けて、受講生が熱狂するコンテンツ戦略を300文字以内で提案してください。",
   },
   sales: {
     name: "山田",
-    role: "営業AI",
+    role: "セールスAI",
     model: "claude-haiku-4-5",
     system:
-      "あなたはnanapleの営業AIアシスタント山田です。時計修理の営業・顧客提案が専門です。コーディネーターの指示を受けて、営業観点での提案や文案を300文字以内で作成してください。",
+      "あなたはホリエモンAI学校のセールスAI山田です。成約率向上・オファー設計・価格戦略のプロです。CEOの指示とマーケ・コンテンツ案を踏まえて、売上直結の販売戦略を300文字以内で提案してください。",
   },
-  planning: {
+  analyst: {
     name: "佐藤",
-    role: "企画AI",
+    role: "分析AI",
     model: "claude-haiku-4-5",
     system:
-      "あなたはnanapleの企画AIアシスタント佐藤です。事業企画・資料作成が専門です。コーディネーターの指示を受けて、企画・施策の観点からアイデアや構成案を300文字以内で提示してください。",
-  },
-  qa: {
-    name: "鈴木",
-    role: "品質AI",
-    model: "claude-haiku-4-5",
-    system:
-      "あなたはnanapleの品質確認AIアシスタント鈴木です。内容のチェックと改善提案が専門です。営業AIと企画AIの出力を確認し、改善点や補足事項を200文字以内でフィードバックしてください。",
+      "あなたはホリエモンAI学校の数値分析AI佐藤です。KPI設計・施策評価・改善提案のプロです。チーム全員の提案を数字の観点でレビューし、優先度と改善点を200文字以内でフィードバックしてください。",
   },
 };
 
@@ -131,55 +138,49 @@ app.post("/api/task", async (req, res) => {
 
   try {
     // ============================================================
-    // ステップ1: コーディネーター田中 - タスク分析と指示出し
+    // ステップ1: CEO戦略AI堀江 - タスク分析と指示出し
     // ============================================================
     const coordinatorOutput = await runAgent(
       res,
       "coordinator",
-      [{ role: "user", content: `以下のタスクを分析し、チームへの指示を出してください:\n\n${task}` }],
-      "田中"
+      [{ role: "user", content: `以下のタスクを分析し、売上最大化のためにチームへの指示を出してください:\n\n${task}` }],
+      "堀江"
     );
 
     // ============================================================
-    // ステップ2: 営業AI山田 と 企画AI佐藤 (並列実行)
+    // ステップ2: マーケAI西野・コンテンツAI田村・セールスAI山田 (並列実行)
     // ============================================================
-    const salesInput = [
-      {
-        role: "user",
-        content: `コーディネーターからの指示:\n${coordinatorOutput}\n\n元のタスク:\n${task}\n\n上記の指示に基づき、営業観点での提案を作成してください。`,
-      },
-    ];
+    const baseContext = `CEOからの指示:\n${coordinatorOutput}\n\n元のタスク:\n${task}\n\n`;
 
-    const planningInput = [
-      {
-        role: "user",
-        content: `コーディネーターからの指示:\n${coordinatorOutput}\n\n元のタスク:\n${task}\n\n上記の指示に基づき、企画・施策の観点からアイデアを提示してください。`,
-      },
-    ];
-
-    // 営業AIと企画AIを並列実行
-    const [salesOutput, planningOutput] = await Promise.all([
-      runAgent(res, "sales", salesInput, "山田"),
-      runAgent(res, "planning", planningInput, "佐藤"),
+    const [marketingOutput, contentOutput, salesOutput] = await Promise.all([
+      runAgent(res, "marketing",
+        [{ role: "user", content: `${baseContext}上記を踏まえ、集客・SNS・ファネル設計の観点で施策を提案してください。` }],
+        "西野"),
+      runAgent(res, "content",
+        [{ role: "user", content: `${baseContext}上記を踏まえ、コンテンツ・講座設計の観点で施策を提案してください。` }],
+        "田村"),
+      runAgent(res, "sales",
+        [{ role: "user", content: `${baseContext}上記を踏まえ、オファー設計・成約率向上の観点で施策を提案してください。` }],
+        "山田"),
     ]);
 
     // ============================================================
-    // ステップ3: 品質AI鈴木 - レビューとフィードバック
+    // ステップ3: 分析AI佐藤 - 数値レビューとフィードバック
     // ============================================================
-    const qaOutput = await runAgent(
+    const analystOutput = await runAgent(
       res,
-      "qa",
+      "analyst",
       [
         {
           role: "user",
-          content: `以下の営業AIと企画AIの出力を確認し、改善点や補足事項をフィードバックしてください:\n\n【営業AI山田の提案】\n${salesOutput}\n\n【企画AI佐藤のアイデア】\n${planningOutput}`,
+          content: `以下のチームの提案を数値・優先度の観点でレビューしてください:\n\n【マーケAI西野】\n${marketingOutput}\n\n【コンテンツAI田村】\n${contentOutput}\n\n【セールスAI山田】\n${salesOutput}`,
         },
       ],
-      "鈴木"
+      "佐藤"
     );
 
     // ============================================================
-    // ステップ4: コーディネーター田中 - 最終まとめ
+    // ステップ4: CEO戦略AI堀江 - 最終決断・アクションプラン
     // ============================================================
     await runAgent(
       res,
@@ -187,10 +188,10 @@ app.post("/api/task", async (req, res) => {
       [
         {
           role: "user",
-          content: `チーム全員のアウトプットをまとめ、最終的なアクションプランを箇条書きで提示してください。\n\n【元のタスク】\n${task}\n\n【営業AI山田の提案】\n${salesOutput}\n\n【企画AI佐藤のアイデア】\n${planningOutput}\n\n【品質AI鈴木のフィードバック】\n${qaOutput}`,
+          content: `チーム全員のアウトプットを受けて、売上最大化のための最終アクションプランを箇条書きで決断してください。優先度順に。\n\n【元のタスク】\n${task}\n\n【マーケAI西野】\n${marketingOutput}\n\n【コンテンツAI田村】\n${contentOutput}\n\n【セールスAI山田】\n${salesOutput}\n\n【分析AI佐藤のレビュー】\n${analystOutput}`,
         },
       ],
-      "田中（最終まとめ）"
+      "堀江（最終決断）"
     );
 
     // パイプライン完了イベント

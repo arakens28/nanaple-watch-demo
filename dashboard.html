@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>nanaple AI社員システム</title>
+  <title>ホリエモンAI学校 AI社員システム</title>
   <style>
     /* ===== Reset & Base ===== */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -438,10 +438,11 @@
     .error-box.visible { display: block; }
 
     /* Agent color variables */
-    .agent-tanaka   { --agent-color: #2563eb; }
+    .agent-horie    { --agent-color: #ea580c; }
+    .agent-nishino  { --agent-color: #2563eb; }
+    .agent-tamura   { --agent-color: #7c3aed; }
     .agent-yamada   { --agent-color: #16a34a; }
-    .agent-sato     { --agent-color: #7c3aed; }
-    .agent-suzuki   { --agent-color: #dc2626; }
+    .agent-sato     { --agent-color: #dc2626; }
 
     /* Scrollbar for right panel */
     .right-panel::-webkit-scrollbar { width: 6px; }
@@ -453,9 +454,9 @@
 
 <!-- ===== Header ===== -->
 <header>
-  <div class="header-logo">⌚</div>
-  <div class="header-title">nanaple AI社員システム</div>
-  <div class="header-subtitle">時計修理マルチエージェントダッシュボード</div>
+  <div class="header-logo">🚀</div>
+  <div class="header-title">ホリエモンAI学校 AI社員システム</div>
+  <div class="header-subtitle">売上最大化マルチエージェントダッシュボード</div>
 </header>
 
 <div class="layout">
@@ -464,22 +465,42 @@
   <aside class="sidebar">
     <div class="sidebar-heading">AIチームメンバー</div>
 
-    <!-- 田中 -->
-    <div class="agent-card agent-tanaka" id="card-tanaka">
-      <div class="agent-avatar">🧑‍💼</div>
+    <!-- 堀江 -->
+    <div class="agent-card agent-horie" id="card-horie">
+      <div class="agent-avatar">🔥</div>
       <div class="agent-info">
-        <div class="agent-name">コーディネーター田中</div>
-        <div class="agent-role">タスク管理・総括</div>
+        <div class="agent-name">CEO戦略AI堀江</div>
+        <div class="agent-role">戦略判断・最終決断</div>
       </div>
-      <span class="status-badge status-idle" id="status-tanaka">待機中</span>
+      <span class="status-badge status-idle" id="status-horie">待機中</span>
+    </div>
+
+    <!-- 西野 -->
+    <div class="agent-card agent-nishino" id="card-nishino">
+      <div class="agent-avatar">📣</div>
+      <div class="agent-info">
+        <div class="agent-name">マーケAI西野</div>
+        <div class="agent-role">集客・SNS・ファネル設計</div>
+      </div>
+      <span class="status-badge status-idle" id="status-nishino">待機中</span>
+    </div>
+
+    <!-- 田村 -->
+    <div class="agent-card agent-tamura" id="card-tamura">
+      <div class="agent-avatar">🎓</div>
+      <div class="agent-info">
+        <div class="agent-name">コンテンツAI田村</div>
+        <div class="agent-role">講座設計・カリキュラム</div>
+      </div>
+      <span class="status-badge status-idle" id="status-tamura">待機中</span>
     </div>
 
     <!-- 山田 -->
     <div class="agent-card agent-yamada" id="card-yamada">
-      <div class="agent-avatar">💼</div>
+      <div class="agent-avatar">💰</div>
       <div class="agent-info">
-        <div class="agent-name">営業AI山田</div>
-        <div class="agent-role">営業・顧客提案</div>
+        <div class="agent-name">セールスAI山田</div>
+        <div class="agent-role">成約率・オファー設計</div>
       </div>
       <span class="status-badge status-idle" id="status-yamada">待機中</span>
     </div>
@@ -488,20 +509,10 @@
     <div class="agent-card agent-sato" id="card-sato">
       <div class="agent-avatar">📊</div>
       <div class="agent-info">
-        <div class="agent-name">企画AI佐藤</div>
-        <div class="agent-role">事業企画・資料作成</div>
+        <div class="agent-name">分析AI佐藤</div>
+        <div class="agent-role">KPI設計・数値分析</div>
       </div>
       <span class="status-badge status-idle" id="status-sato">待機中</span>
-    </div>
-
-    <!-- 鈴木 -->
-    <div class="agent-card agent-suzuki" id="card-suzuki">
-      <div class="agent-avatar">🔍</div>
-      <div class="agent-info">
-        <div class="agent-name">品質AI鈴木</div>
-        <div class="agent-role">品質確認・改善提案</div>
-      </div>
-      <span class="status-badge status-idle" id="status-suzuki">待機中</span>
     </div>
   </aside>
 
@@ -524,7 +535,7 @@
     <!-- Task Input -->
     <div class="panel-section">
       <div class="panel-section-title">タスク入力</div>
-      <textarea id="task-input" placeholder="例: 時計修理の春のキャンペーンを企画してください。SNSでの告知方法も含めて提案してほしい。"></textarea>
+      <textarea id="task-input" placeholder="例: 次の四半期の売上を30%伸ばすための施策を考えてほしい。新規入会者を増やすSNS戦略と、既存会員の継続率を上げる方法も含めて。"></textarea>
       <button class="btn-submit" id="btn-submit" onclick="startPipeline()">
         ▶ AIチームに依頼する
       </button>
@@ -551,51 +562,59 @@
 <script>
 // ===== Agent config =====
 const AGENT_CONFIG = {
-  '田中': {
-    cardId: 'card-tanaka',
-    statusId: 'status-tanaka',
-    color: '#2563eb',
-    bgColor: 'rgba(37,99,235,0.12)',
-    emoji: '🧑‍💼',
-    label: 'コーディネーター田中',
+  '堀江': {
+    cardId: 'card-horie',
+    statusId: 'status-horie',
+    color: '#ea580c',
+    bgColor: 'rgba(234,88,12,0.12)',
+    emoji: '🔥',
+    label: 'CEO戦略AI堀江',
   },
-  '田中（最終まとめ）': {
-    cardId: 'card-tanaka',
-    statusId: 'status-tanaka',
+  '堀江（最終決断）': {
+    cardId: 'card-horie',
+    statusId: 'status-horie',
+    color: '#ea580c',
+    bgColor: 'rgba(234,88,12,0.12)',
+    emoji: '🔥',
+    label: 'CEO戦略AI堀江（最終決断）',
+    isSummary: true,
+  },
+  '西野': {
+    cardId: 'card-nishino',
+    statusId: 'status-nishino',
     color: '#2563eb',
     bgColor: 'rgba(37,99,235,0.12)',
-    emoji: '🧑‍💼',
-    label: 'コーディネーター田中（最終まとめ）',
-    isSummary: true,
+    emoji: '📣',
+    label: 'マーケAI西野',
+  },
+  '田村': {
+    cardId: 'card-tamura',
+    statusId: 'status-tamura',
+    color: '#7c3aed',
+    bgColor: 'rgba(124,58,237,0.12)',
+    emoji: '🎓',
+    label: 'コンテンツAI田村',
   },
   '山田': {
     cardId: 'card-yamada',
     statusId: 'status-yamada',
     color: '#16a34a',
     bgColor: 'rgba(22,163,74,0.12)',
-    emoji: '💼',
-    label: '営業AI山田',
+    emoji: '💰',
+    label: 'セールスAI山田',
   },
   '佐藤': {
     cardId: 'card-sato',
     statusId: 'status-sato',
-    color: '#7c3aed',
-    bgColor: 'rgba(124,58,237,0.12)',
-    emoji: '📊',
-    label: '企画AI佐藤',
-  },
-  '鈴木': {
-    cardId: 'card-suzuki',
-    statusId: 'status-suzuki',
     color: '#dc2626',
     bgColor: 'rgba(220,38,38,0.12)',
-    emoji: '🔍',
-    label: '品質AI鈴木',
+    emoji: '📊',
+    label: '分析AI佐藤',
   },
 };
 
 // Pipeline steps for progress tracking
-const PIPELINE_STEPS = ['田中', '山田', '佐藤', '鈴木', '田中（最終まとめ）'];
+const PIPELINE_STEPS = ['堀江', '西野', '田村', '山田', '佐藤', '堀江（最終決断）'];
 let currentStepIndex = 0;
 
 // ===== Helpers =====

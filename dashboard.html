@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ホリエモンAI学校 AI社員システム</title>
+  <style>
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: 'Segoe UI', 'Hiragino Sans', 'Yu Gothic UI', sans-serif; }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    /* ===== Header ===== */
+    header {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border-bottom: 1px solid #334155;
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .header-logo {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .header-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      background: linear-gradient(90deg, #60a5fa, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-subtitle {
+      font-size: 12px;
+      color: #64748b;
+      margin-left: auto;
+    }
+
+    /* ===== Main Layout ===== */
+    .layout {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ===== Left Sidebar — Agent Cards ===== */
+    .sidebar {
+      width: 280px;
+      flex-shrink: 0;
+      background: #1e293b;
+      border-right: 1px solid #334155;
+      padding: 20px 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .sidebar-heading {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: #64748b;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .agent-card {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .agent-card.active {
+      border-color: var(--agent-color);
+      box-shadow: 0 0 12px color-mix(in srgb, var(--agent-color) 25%, transparent);
+    }
+
+    .agent-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--agent-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    /* thinking ring animation */
+    .agent-avatar::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      border: 2px solid var(--agent-color);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .agent-card.thinking .agent-avatar::after {
+      opacity: 1;
+      animation: spin-ring 1.2s linear infinite;
+    }
+
+    @keyframes spin-ring {
+      from { transform: rotate(0deg); clip-path: polygon(50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%); }
+      to   { transform: rotate(360deg); }
+    }
+
+    .agent-info { flex: 1; min-width: 0; }
+    .agent-name { font-size: 15px; font-weight: 600; color: #f1f5f9; }
+    .agent-role { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+
+    .status-badge {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 8px;
+      border-radius: 20px;
+      white-space: nowrap;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .status-idle    { background: #1e293b; color: #64748b; border: 1px solid #334155; }
+    .status-thinking { background: #422006; color: #fbbf24; border: 1px solid #92400e; animation: pulse-badge 1s ease-in-out infinite; }
+    .status-speaking { background: #052e16; color: #4ade80; border: 1px solid #166534; }
+
+    @keyframes pulse-badge {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.6; }
+    }
+
+    /* ===== Center — Conversation Log ===== */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .convo-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid #334155;
+      font-size: 13px;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .convo-header .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+
+    .convo-log {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .convo-log::-webkit-scrollbar { width: 6px; }
+    .convo-log::-webkit-scrollbar-track { background: transparent; }
+    .convo-log::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+
+    /* Empty state */
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: #475569;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .empty-state .empty-icon { font-size: 48px; opacity: 0.4; }
+    .empty-state p { font-size: 14px; line-height: 1.6; }
+
+    /* Message bubble */
+    .message {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      animation: fade-in 0.3s ease;
+    }
+
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .msg-body { flex: 1; min-width: 0; }
+
+    .msg-meta {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .msg-name {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .msg-time {
+      font-size: 11px;
+      color: #64748b;
+    }
+
+    .msg-bubble {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 4px 12px 12px 12px;
+      padding: 12px 16px;
+      font-size: 14px;
+      line-height: 1.7;
+      color: #cbd5e1;
+      white-space: pre-wrap;
+      word-break: break-word;
+      position: relative;
+    }
+
+    .msg-bubble.streaming::after {
+      content: '▌';
+      animation: blink 0.7s step-end infinite;
+      color: #60a5fa;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
+    /* Thinking indicator */
+    .thinking-indicator {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .thinking-dots {
+      display: flex;
+      gap: 5px;
+      padding: 14px 18px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 4px 12px 12px 12px;
+    }
+
+    .thinking-dots span {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #64748b;
+      animation: bounce-dot 1.2s ease-in-out infinite;
+    }
+    .thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce-dot {
+      0%, 80%, 100% { transform: scale(0.7); opacity: 0.4; }
+      40%            { transform: scale(1);   opacity: 1; }
+    }
+
+    /* ===== Right Panel ===== */
+    .right-panel {
+      width: 320px;
+      flex-shrink: 0;
+      background: #1e293b;
+      border-left: 1px solid #334155;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .panel-section {
+      padding: 20px;
+      border-bottom: 1px solid #334155;
+    }
+
+    .panel-section-title {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #64748b;
+      margin-bottom: 14px;
+    }
+
+    textarea#task-input {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 12px;
+      color: #e2e8f0;
+      font-size: 14px;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 120px;
+      line-height: 1.6;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    textarea#task-input:focus { border-color: #2563eb; }
+
+    textarea#task-input::placeholder { color: #475569; }
+
+    .btn-submit {
+      width: 100%;
+      margin-top: 12px;
+      padding: 12px;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      letter-spacing: 0.05em;
+    }
+
+    .btn-submit:hover:not(:disabled) { opacity: 0.9; }
+    .btn-submit:active:not(:disabled) { transform: scale(0.98); }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Progress bar */
+    .progress-wrap {
+      margin-top: 14px;
+      display: none;
+    }
+
+    .progress-wrap.visible { display: block; }
+
+    .progress-bar-bg {
+      background: #0f172a;
+      border-radius: 4px;
+      height: 6px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #2563eb, #7c3aed);
+      transition: width 0.4s ease;
+      width: 0%;
+    }
+
+    .progress-label {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 6px;
+    }
+
+    /* Final summary */
+    .summary-card {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #94a3b8;
+      white-space: pre-wrap;
+      word-break: break-word;
+      min-height: 80px;
+    }
+
+    .summary-card.has-content { color: #cbd5e1; }
+
+    .summary-placeholder {
+      color: #475569;
+      font-style: italic;
+    }
+
+    /* Error box */
+    .error-box {
+      background: #450a0a;
+      border: 1px solid #7f1d1d;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 13px;
+      color: #fca5a5;
+      display: none;
+      margin-top: 12px;
+    }
+
+    .error-box.visible { display: block; }
+
+    /* Agent color variables */
+    .agent-horie    { --agent-color: #ea580c; }
+    .agent-nishino  { --agent-color: #2563eb; }
+    .agent-tamura   { --agent-color: #7c3aed; }
+    .agent-yamada   { --agent-color: #16a34a; }
+    .agent-sato     { --agent-color: #dc2626; }
+
+    /* Scrollbar for right panel */
+    .right-panel::-webkit-scrollbar { width: 6px; }
+    .right-panel::-webkit-scrollbar-track { background: transparent; }
+    .right-panel::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- ===== Header ===== -->
+<header>
+  <div class="header-logo">🚀</div>
+  <div class="header-title">ホリエモンAI学校 AI社員システム</div>
+  <div class="header-subtitle">売上最大化マルチエージェントダッシュボード</div>
+</header>
+
+<div class="layout">
+
+  <!-- ===== Left Sidebar ===== -->
+  <aside class="sidebar">
+    <div class="sidebar-heading">AIチームメンバー</div>
+
+    <!-- 堀江 -->
+    <div class="agent-card agent-horie" id="card-horie">
+      <div class="agent-avatar">🔥</div>
+      <div class="agent-info">
+        <div class="agent-name">CEO戦略AI堀江</div>
+        <div class="agent-role">戦略判断・最終決断</div>
+      </div>
+      <span class="status-badge status-idle" id="status-horie">待機中</span>
+    </div>
+
+    <!-- 西野 -->
+    <div class="agent-card agent-nishino" id="card-nishino">
+      <div class="agent-avatar">📣</div>
+      <div class="agent-info">
+        <div class="agent-name">マーケAI西野</div>
+        <div class="agent-role">集客・SNS・ファネル設計</div>
+      </div>
+      <span class="status-badge status-idle" id="status-nishino">待機中</span>
+    </div>
+
+    <!-- 田村 -->
+    <div class="agent-card agent-tamura" id="card-tamura">
+      <div class="agent-avatar">🎓</div>
+      <div class="agent-info">
+        <div class="agent-name">コンテンツAI田村</div>
+        <div class="agent-role">講座設計・カリキュラム</div>
+      </div>
+      <span class="status-badge status-idle" id="status-tamura">待機中</span>
+    </div>
+
+    <!-- 山田 -->
+    <div class="agent-card agent-yamada" id="card-yamada">
+      <div class="agent-avatar">💰</div>
+      <div class="agent-info">
+        <div class="agent-name">セールスAI山田</div>
+        <div class="agent-role">成約率・オファー設計</div>
+      </div>
+      <span class="status-badge status-idle" id="status-yamada">待機中</span>
+    </div>
+
+    <!-- 佐藤 -->
+    <div class="agent-card agent-sato" id="card-sato">
+      <div class="agent-avatar">📊</div>
+      <div class="agent-info">
+        <div class="agent-name">分析AI佐藤</div>
+        <div class="agent-role">KPI設計・数値分析</div>
+      </div>
+      <span class="status-badge status-idle" id="status-sato">待機中</span>
+    </div>
+  </aside>
+
+  <!-- ===== Center Conversation Log ===== -->
+  <main class="main">
+    <div class="convo-header">
+      <div class="dot"></div>
+      リアルタイム会議ログ
+    </div>
+    <div class="convo-log" id="convo-log">
+      <div class="empty-state" id="empty-state">
+        <div class="empty-icon">💬</div>
+        <p>タスクを入力してAIチームを起動すると、<br>ここにリアルタイムで会議が表示されます</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===== Right Panel ===== -->
+  <aside class="right-panel">
+    <!-- Task Input -->
+    <div class="panel-section">
+      <div class="panel-section-title">タスク入力</div>
+      <textarea id="task-input" placeholder="例: 次の四半期の売上を30%伸ばすための施策を考えてほしい。新規入会者を増やすSNS戦略と、既存会員の継続率を上げる方法も含めて。"></textarea>
+      <button class="btn-submit" id="btn-submit" onclick="startPipeline()">
+        ▶ AIチームに依頼する
+      </button>
+      <div class="progress-wrap" id="progress-wrap">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-fill"></div>
+        </div>
+        <div class="progress-label" id="progress-label">処理中...</div>
+      </div>
+      <div class="error-box" id="error-box"></div>
+    </div>
+
+    <!-- Final Summary -->
+    <div class="panel-section">
+      <div class="panel-section-title">最終まとめ</div>
+      <div class="summary-card" id="summary-card">
+        <span class="summary-placeholder">AIチームの最終アクションプランがここに表示されます</span>
+      </div>
+    </div>
+  </aside>
+
+</div><!-- /.layout -->
+
+<script>
+// ===== Agent config =====
+const AGENT_CONFIG = {
+  '堀江': {
+    cardId: 'card-horie',
+    statusId: 'status-horie',
+    color: '#ea580c',
+    bgColor: 'rgba(234,88,12,0.12)',
+    emoji: '🔥',
+    label: 'CEO戦略AI堀江',
+  },
+  '堀江（最終決断）': {
+    cardId: 'card-horie',
+    statusId: 'status-horie',
+    color: '#ea580c',
+    bgColor: 'rgba(234,88,12,0.12)',
+    emoji: '🔥',
+    label: 'CEO戦略AI堀江（最終決断）',
+    isSummary: true,
+  },
+  '西野': {
+    cardId: 'card-nishino',
+    statusId: 'status-nishino',
+    color: '#2563eb',
+    bgColor: 'rgba(37,99,235,0.12)',
+    emoji: '📣',
+    label: 'マーケAI西野',
+  },
+  '田村': {
+    cardId: 'card-tamura',
+    statusId: 'status-tamura',
+    color: '#7c3aed',
+    bgColor: 'rgba(124,58,237,0.12)',
+    emoji: '🎓',
+    label: 'コンテンツAI田村',
+  },
+  '山田': {
+    cardId: 'card-yamada',
+    statusId: 'status-yamada',
+    color: '#16a34a',
+    bgColor: 'rgba(22,163,74,0.12)',
+    emoji: '💰',
+    label: 'セールスAI山田',
+  },
+  '佐藤': {
+    cardId: 'card-sato',
+    statusId: 'status-sato',
+    color: '#dc2626',
+    bgColor: 'rgba(220,38,38,0.12)',
+    emoji: '📊',
+    label: '分析AI佐藤',
+  },
+};
+
+// Pipeline steps for progress tracking
+const PIPELINE_STEPS = ['堀江', '西野', '田村', '山田', '佐藤', '堀江（最終決断）'];
+let currentStepIndex = 0;
+
+// ===== Helpers =====
+function getAgent(name) {
+  return AGENT_CONFIG[name] || {
+    cardId: null, statusId: null,
+    color: '#64748b', bgColor: 'rgba(100,116,139,0.12)',
+    emoji: '🤖', label: name,
+  };
+}
+
+function formatTime() {
+  const now = new Date();
+  return now.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+
+function setAgentStatus(name, status) {
+  const cfg = getAgent(name);
+  if (!cfg.cardId) return;
+  const card = document.getElementById(cfg.cardId);
+  const badge = document.getElementById(cfg.statusId);
+  if (!card || !badge) return;
+
+  card.classList.remove('active', 'thinking');
+  badge.className = 'status-badge';
+
+  if (status === 'thinking') {
+    card.classList.add('active', 'thinking');
+    badge.classList.add('status-thinking');
+    badge.textContent = '考え中...';
+  } else if (status === 'speaking') {
+    card.classList.add('active');
+    badge.classList.add('status-speaking');
+    badge.textContent = '発言中';
+  } else {
+    badge.classList.add('status-idle');
+    badge.textContent = '待機中';
+  }
+}
+
+function resetAllAgents() {
+  Object.keys(AGENT_CONFIG).forEach(name => setAgentStatus(name, 'idle'));
+}
+
+// Progress bar
+const TOTAL_STEPS = PIPELINE_STEPS.length;
+
+function updateProgress(stepName, label) {
+  currentStepIndex = PIPELINE_STEPS.indexOf(stepName);
+  if (currentStepIndex < 0) currentStepIndex = 0;
+  const pct = Math.round(((currentStepIndex) / TOTAL_STEPS) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = label || '処理中...';
+}
+
+function finishProgress() {
+  document.getElementById('progress-fill').style.width = '100%';
+  document.getElementById('progress-label').textContent = '完了しました ✓';
+  setTimeout(() => {
+    document.getElementById('progress-wrap').classList.remove('visible');
+  }, 2000);
+}
+
+// ===== Conversation log =====
+let currentMsgEl = null;    // current streaming bubble
+let currentThinkingEl = null; // current thinking indicator
+
+function removeThinking() {
+  if (currentThinkingEl) {
+    currentThinkingEl.remove();
+    currentThinkingEl = null;
+  }
+}
+
+function addThinkingIndicator(agentName) {
+  removeThinking();
+  const cfg = getAgent(agentName);
+  const log = document.getElementById('convo-log');
+
+  const wrap = document.createElement('div');
+  wrap.className = 'thinking-indicator message';
+  wrap.innerHTML = `
+    <div class="msg-avatar" style="background:${cfg.color}20; border:1.5px solid ${cfg.color}40;">
+      ${cfg.emoji}
+    </div>
+    <div class="thinking-dots">
+      <span></span><span></span><span></span>
+    </div>
+  `;
+  log.appendChild(wrap);
+  currentThinkingEl = wrap;
+  scrollLog();
+}
+
+function startMessage(agentName) {
+  removeThinking();
+  const cfg = getAgent(agentName);
+  const log = document.getElementById('convo-log');
+
+  // Remove empty state if present
+  const empty = document.getElementById('empty-state');
+  if (empty) empty.remove();
+
+  const wrap = document.createElement('div');
+  wrap.className = 'message';
+
+  const time = formatTime();
+  wrap.innerHTML = `
+    <div class="msg-avatar" style="background:${cfg.color}20; border:1.5px solid ${cfg.color}40;">
+      ${cfg.emoji}
+    </div>
+    <div class="msg-body">
+      <div class="msg-meta">
+        <span class="msg-name" style="color:${cfg.color};">${cfg.label}</span>
+        <span class="msg-time">${time}</span>
+      </div>
+      <div class="msg-bubble streaming" id="active-bubble"></div>
+    </div>
+  `;
+  log.appendChild(wrap);
+  currentMsgEl = wrap.querySelector('#active-bubble');
+  currentMsgEl.removeAttribute('id');
+  scrollLog();
+  return currentMsgEl;
+}
+
+function appendToken(token) {
+  if (!currentMsgEl) return;
+  currentMsgEl.textContent += token;
+  scrollLog();
+}
+
+function endMessage() {
+  if (!currentMsgEl) return;
+  currentMsgEl.classList.remove('streaming');
+  currentMsgEl = null;
+}
+
+function scrollLog() {
+  const log = document.getElementById('convo-log');
+  log.scrollTop = log.scrollHeight;
+}
+
+// ===== SSE pipeline =====
+let eventSource = null;
+let summaryAgent = null;
+let summaryBubble = null;
+
+function startPipeline() {
+  const task = document.getElementById('task-input').value.trim();
+  if (!task) {
+    alert('タスクを入力してください');
+    return;
+  }
+
+  // Reset UI
+  document.getElementById('convo-log').innerHTML = '';
+  document.getElementById('summary-card').innerHTML = '<span class="summary-placeholder">処理中...</span>';
+  document.getElementById('error-box').classList.remove('visible');
+  document.getElementById('progress-wrap').classList.add('visible');
+  document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('progress-label').textContent = '起動中...';
+  document.getElementById('btn-submit').disabled = true;
+  resetAllAgents();
+  currentMsgEl = null;
+  currentThinkingEl = null;
+  summaryBubble = null;
+
+  if (eventSource) { eventSource.close(); eventSource = null; }
+
+  // POST then read SSE
+  fetch('/api/task', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ task }),
+  }).then(response => {
+    if (!response.ok) {
+      return response.json().then(d => { throw new Error(d.error || 'サーバーエラー'); });
+    }
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    function read() {
+      reader.read().then(({ done, value }) => {
+        if (done) {
+          handleDone();
+          return;
+        }
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop(); // keep incomplete line
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const raw = line.slice(6).trim();
+            if (!raw) continue;
+            try {
+              const evt = JSON.parse(raw);
+              handleEvent(evt);
+            } catch {}
+          }
+        }
+        read();
+      }).catch(err => {
+        showError('接続エラー: ' + err.message);
+        enableForm();
+      });
+    }
+    read();
+  }).catch(err => {
+    showError(err.message);
+    enableForm();
+  });
+}
+
+function handleEvent(evt) {
+  switch (evt.type) {
+    case 'agent_start': {
+      const name = evt.agent;
+      setAgentStatus(name, 'thinking');
+      updateProgress(name, `${getAgent(name).label} が考え中...`);
+      addThinkingIndicator(name);
+      break;
+    }
+    case 'agent_token': {
+      const name = evt.agent;
+      if (!currentMsgEl) {
+        // First token — swap thinking for message bubble
+        setAgentStatus(name, 'speaking');
+        const cfg = getAgent(name);
+        if (cfg.isSummary) {
+          // For summary agent, also mirror into right panel
+          summaryBubble = startMessage(name);
+        } else {
+          startMessage(name);
+        }
+      }
+      appendToken(evt.content);
+      // Mirror summary tokens to right panel
+      if (getAgent(evt.agent).isSummary) {
+        const sc = document.getElementById('summary-card');
+        if (!sc.dataset.started) {
+          sc.innerHTML = '';
+          sc.dataset.started = '1';
+          sc.classList.add('has-content');
+        }
+        sc.textContent += evt.content;
+      }
+      break;
+    }
+    case 'agent_done': {
+      endMessage();
+      setAgentStatus(evt.agent, 'idle');
+      break;
+    }
+    case 'pipeline_done': {
+      handleDone();
+      break;
+    }
+    case 'error': {
+      removeThinking();
+      endMessage();
+      showError(evt.content || '不明なエラー');
+      enableForm();
+      resetAllAgents();
+      break;
+    }
+  }
+}
+
+function handleDone() {
+  removeThinking();
+  endMessage();
+  resetAllAgents();
+  finishProgress();
+  enableForm();
+  // Clean up summary card
+  const sc = document.getElementById('summary-card');
+  delete sc.dataset.started;
+  if (!sc.textContent.trim()) {
+    sc.innerHTML = '<span class="summary-placeholder">まとめが生成されませんでした</span>';
+    sc.classList.remove('has-content');
+  }
+}
+
+function enableForm() {
+  document.getElementById('btn-submit').disabled = false;
+}
+
+function showError(msg) {
+  const box = document.getElementById('error-box');
+  box.textContent = 'エラー: ' + msg;
+  box.classList.add('visible');
+  document.getElementById('progress-wrap').classList.remove('visible');
+}
+
+// Allow Ctrl+Enter to submit
+document.getElementById('task-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+    e.preventDefault();
+    startPipeline();
+  }
+});
+</script>
+</body>
+</html>

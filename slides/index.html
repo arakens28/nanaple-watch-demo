@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>月商10億円プロジェクト — 事業計画スライド</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{ --bg:#0f172a; --bg2:#1e293b; --line:#334155; --txt:#e2e8f0; --sub:#94a3b8; --or:#fb923c; --pp:#a78bfa; --gr:#4ade80; --rd:#f87171; }
+  html,body{height:100%;font-family:'Segoe UI','Hiragino Sans','Yu Gothic UI',sans-serif;background:#000;color:var(--txt);}
+  .deck{position:relative;width:100vw;height:100vh;overflow:hidden;}
+  .slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;
+    padding:6vh 8vw;background:radial-gradient(ellipse at 70% 10%,#1e293b 0%,#0f172a 55%,#0b1120 100%);}
+  .slide.active{display:flex;animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .kicker{font-size:1.6vh;letter-spacing:.18em;color:var(--or);text-transform:uppercase;font-weight:700;margin-bottom:1.5vh;}
+  h1{font-size:6.2vh;line-height:1.12;font-weight:800;letter-spacing:.01em;
+     background:linear-gradient(90deg,var(--or),var(--pp));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  h2{font-size:4.6vh;line-height:1.2;font-weight:800;margin-bottom:2.5vh;}
+  h2 .em{color:var(--or);} h2 .rd{color:var(--rd);} h2 .gr{color:var(--gr);}
+  .lead{font-size:2.4vh;color:var(--sub);line-height:1.7;margin-top:2vh;max-width:60ch;}
+  ul{list-style:none;display:flex;flex-direction:column;gap:1.6vh;margin-top:1vh;}
+  li{font-size:2.5vh;line-height:1.5;padding-left:3.2vh;position:relative;}
+  li::before{content:'▸';position:absolute;left:0;color:var(--or);}
+  li b{color:#fff;} li .rd{color:var(--rd);font-weight:700;} li .gr{color:var(--gr);font-weight:700;}
+  .big{font-size:11vh;font-weight:800;line-height:1;letter-spacing:-.02em;}
+  .big.rd{color:var(--rd);} .big.gr{color:var(--gr);} .big.or{color:var(--or);}
+  .unit{font-size:3vh;color:var(--sub);font-weight:600;}
+  .row{display:flex;gap:2.5vw;align-items:center;flex-wrap:wrap;}
+  .col{flex:1;min-width:0;}
+  .cards{display:flex;gap:1.6vw;margin-top:2vh;flex-wrap:wrap;}
+  .card{flex:1;min-width:180px;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:2.6vh 2vw;}
+  .card .n{font-size:4.4vh;font-weight:800;} .card .l{font-size:1.9vh;color:var(--sub);margin-top:.6vh;}
+  .card.acc{border-color:var(--or);box-shadow:0 0 24px rgba(251,146,60,.15);}
+  /* bars */
+  .bar-wrap{display:flex;flex-direction:column;gap:1.5vh;margin-top:2vh;}
+  .bar{display:grid;grid-template-columns:13vw 1fr auto;align-items:center;gap:1.5vw;font-size:2vh;}
+  .bar .track{height:3.2vh;background:#0b1120;border:1px solid var(--line);border-radius:6px;overflow:hidden;}
+  .bar .fill{height:100%;border-radius:6px;}
+  .bar .val{color:var(--sub);font-size:1.8vh;white-space:nowrap;}
+  table{width:100%;border-collapse:collapse;margin-top:2vh;font-size:2.1vh;}
+  th,td{padding:1.3vh 1.4vw;text-align:left;border-bottom:1px solid var(--line);}
+  th{color:var(--sub);font-size:1.7vh;font-weight:600;text-transform:uppercase;letter-spacing:.05em;}
+  tr.hi td{background:rgba(74,222,128,.08);} tr.hi td b{color:var(--gr);}
+  td.r,th.r{text-align:right;}
+  .note{font-size:1.7vh;color:#64748b;margin-top:2.5vh;line-height:1.6;}
+  .pill{display:inline-block;font-size:1.7vh;padding:.5vh 1.4vh;border-radius:20px;background:#422006;border:1px solid #92400e;color:#fbbf24;font-weight:600;}
+  .flow{display:flex;align-items:center;gap:1vw;flex-wrap:wrap;margin-top:2vh;font-size:2.1vh;}
+  .flow .step{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:1.8vh 1.6vw;text-align:center;}
+  .flow .step b{display:block;font-size:2.6vh;color:#fff;}
+  .flow .ar{color:var(--or);font-size:2.6vh;font-weight:700;}
+  /* chrome */
+  .topbar{position:fixed;top:0;left:0;right:0;height:6px;background:#0b1120;z-index:10;}
+  .topbar .prog{height:100%;background:linear-gradient(90deg,var(--or),var(--pp));transition:width .35s;}
+  .pager{position:fixed;bottom:2.5vh;right:3vw;font-size:1.8vh;color:var(--sub);z-index:10;}
+  .pager b{color:var(--txt);}
+  .hint{position:fixed;bottom:2.5vh;left:3vw;font-size:1.5vh;color:#475569;z-index:10;}
+  .brand{position:fixed;top:2.5vh;left:3vw;font-size:1.6vh;color:#64748b;z-index:10;letter-spacing:.05em;}
+  @media print{ .slide{display:flex !important;position:relative;height:100vh;page-break-after:always;} .topbar,.pager,.hint,.brand{display:none;} }
+</style>
+</head>
+<body>
+<div class="topbar"><div class="prog" id="prog"></div></div>
+<div class="brand">ホリエモンAI学校 / 月商10億円プロジェクト</div>
+
+<div class="deck" id="deck">
+
+  <!-- 1 表紙 -->
+  <section class="slide active">
+    <div class="kicker">事業計画</div>
+    <h1>月商10億円<br>プロジェクト</h1>
+    <p class="lead">AI上司3名（ChatGPT・Gemini・Claude）× 人間チーム3名（マーケ1・営業2）で、<br>ホリエモンAI学校の法人受講・FC加盟を伸ばす。</p>
+    <div class="cards" style="margin-top:4vh">
+      <div class="card"><div class="n">¥4,441万</div><div class="l">現在の月商（2026/5）</div></div>
+      <div class="card acc"><div class="n">¥10億</div><div class="l">目標 月商（約23倍）</div></div>
+      <div class="card"><div class="n">7資料</div><div class="l">実データで裏付け</div></div>
+    </div>
+  </section>
+
+  <!-- 2 現在地 -->
+  <section class="slide">
+    <div class="kicker">現在地 / 損益帳票 2026年5月</div>
+    <h2>月商 <span class="em">¥4,441万</span>。<br>1年で約4倍に成長した。</h2>
+    <div class="bar-wrap">
+      <div class="bar"><span>2025/02</span><div class="track"><div class="fill" style="width:24%;background:#475569"></div></div><span class="val">¥1,085万</span></div>
+      <div class="bar"><span>2025/08</span><div class="track"><div class="fill" style="width:68%;background:#7c3aed"></div></div><span class="val">¥3,017万</span></div>
+      <div class="bar"><span>2026/03（ピーク）</span><div class="track"><div class="fill" style="width:100%;background:linear-gradient(90deg,#ea580c,#fb923c)"></div></div><span class="val">¥4,667万</span></div>
+      <div class="bar"><span>2026/05</span><div class="track"><div class="fill" style="width:95%;background:linear-gradient(90deg,#ea580c,#fb923c)"></div></div><span class="val">¥4,441万</span></div>
+    </div>
+    <p class="note">成長は本物。ただし「成長＝黒字」ではない（→後述）。</p>
+  </section>
+
+  <!-- 3 売上構成 -->
+  <section class="slide">
+    <div class="kicker">売上構成</div>
+    <h2>売上の<span class="em">85%が法人</span>。<br>消費者ビジネスではなくB2B。</h2>
+    <div class="bar-wrap">
+      <div class="bar"><span>法人・本部直販</span><div class="track"><div class="fill" style="width:55%;background:#a78bfa"></div></div><span class="val">¥2,458万・55%</span></div>
+      <div class="bar"><span>法人・FC経由</span><div class="track"><div class="fill" style="width:30%;background:#fb923c"></div></div><span class="val">¥1,312万・30%</span></div>
+      <div class="bar"><span>個人</span><div class="track"><div class="fill" style="width:10%;background:#38bdf8"></div></div><span class="val">¥427万・10%</span></div>
+      <div class="bar"><span>その他</span><div class="track"><div class="fill" style="width:5%;background:#4ade80"></div></div><span class="val">¥244万・5.5%</span></div>
+    </div>
+    <p class="note">勝ち筋は2軸 ─ ①本部の法人営業を磨く ②FC経由の販売網を増やす。個人は「入口」。</p>
+  </section>
+
+  <!-- 4 財務の現実 -->
+  <section class="slide">
+    <div class="kicker">財務の現実 / 損益計算書</div>
+    <h2><span class="rd">いま、毎月赤字。</span></h2>
+    <div class="row">
+      <div class="col"><div class="big rd">-¥15.0M</div><div class="unit">営業損益 / 月（4ヶ月平均）</div></div>
+      <div class="col">
+        <table>
+          <tr><td>売上高</td><td class="r"><b>¥33.6M</b></td></tr>
+          <tr><td>販管費</td><td class="r"><b>¥48.4M</b></td></tr>
+          <tr class="hi"><td>営業損益</td><td class="r"><b>-¥15.0M</b></td></tr>
+        </table>
+      </div>
+    </div>
+    <p class="note rd" style="color:var(--rd)">⚠ ピーク月（売上¥40.8M）でも赤字。売上が立っている月ですら、販管費が上回る。</p>
+  </section>
+
+  <!-- 5 債務超過の正体 -->
+  <section class="slide">
+    <div class="kicker">財務の現実 / 貸借対照表</div>
+    <h2>「債務超過」は<span class="gr">恐れなくてよい</span>。</h2>
+    <div class="cards">
+      <div class="card"><div class="n">-¥76M</div><div class="l">純資産（会計上は債務超過）</div></div>
+      <div class="card acc"><div class="n">¥278M</div><div class="l">前受収益＝年額受講料の前払い</div></div>
+      <div class="card"><div class="n">¥6.8M</div><div class="l">有利子負債（長期借入のみ）</div></div>
+    </div>
+    <ul style="margin-top:3vh">
+      <li>債務超過の主因は<b>前受収益</b>。これは「先にお金をもらった将来の売上」＝<span class="gr">資金繰り危機ではない</span></li>
+      <li>ただし<span class="rd">この前受収益は1年で売上に振り替わって"消える"</span> → 新規を取り続けないと売上は減る（＝ランオフ）</li>
+    </ul>
+  </section>
+
+  <!-- 6 ランオフ -->
+  <section class="slide">
+    <div class="kicker">最大リスク</div>
+    <h2>新規が止まると、<span class="rd">売上は急減する</span>。</h2>
+    <div class="bar-wrap">
+      <div class="bar"><span>現在</span><div class="track"><div class="fill" style="width:100%;background:linear-gradient(90deg,#ea580c,#fb923c)"></div></div><span class="val">¥4,441万</span></div>
+      <div class="bar"><span>8ヶ月後（新規ゼロ前提）</span><div class="track"><div class="fill" style="width:46%;background:#f87171"></div></div><span class="val">約¥2,063万（半減）</span></div>
+    </div>
+    <p class="lead">年額契約は満了すると剥落する。<b>「売って終わり」を「売って積み上がる」へ。</b><br>→ 生命線は <b>①新規の継続獲得 ②更新率の向上</b>。</p>
+  </section>
+
+  <!-- 7 黒字化シミュレーション -->
+  <section class="slide">
+    <div class="kicker">黒字化シミュレーション</div>
+    <h2>黒字化には<span class="em">「両輪」</span>が要る。</h2>
+    <table>
+      <tr><th>シナリオ</th><th class="r">売上</th><th class="r">販管費</th><th class="r">営業損益/月</th></tr>
+      <tr><td>現状</td><td class="r">¥33.6M</td><td class="r">¥48.4M</td><td class="r"><b style="color:var(--rd)">-¥15.0M</b></td></tr>
+      <tr><td>A コスト削減のみ（最大限）</td><td class="r">¥33.6M</td><td class="r">¥33.9M</td><td class="r">-¥0.6M</td></tr>
+      <tr><td>B 売上+45%のみ</td><td class="r">¥48.7M</td><td class="r">¥48.4M</td><td class="r">+¥0.1M</td></tr>
+      <tr class="hi"><td><b>C 両輪（推奨）</b> 売上+25% & 変動費-35%</td><td class="r">¥41.9M</td><td class="r">¥39.5M</td><td class="r"><b>+¥2.2M ✓</b></td></tr>
+    </table>
+    <p class="note">粗利率99.3%（デジタル商材）＝売上≒貢献利益。Cで月-¥15M → +¥2.2M（<b style="color:var(--gr)">年換算 約+¥2億の改善</b>）。</p>
+  </section>
+
+  <!-- 8 黒字化の打ち手 -->
+  <section class="slide">
+    <div class="kicker">黒字化の打ち手 / 推奨C</div>
+    <h2>AIで<span class="em">重いコストを置き換える</span>。</h2>
+    <table>
+      <tr><th>費目（月）</th><th>打ち手</th><th class="r">削減目安</th></tr>
+      <tr><td>外注費 ¥7.7M</td><td>ChatGPT/Claudeで内製化（コピー・台本・実装下書き）</td><td class="r"><b>-50%</b></td></tr>
+      <tr><td>広告宣伝費 ¥8.2M</td><td>面談化率31→50%改善で同じ広告費から契約+50%</td><td class="r"><b>実質効率+</b></td></tr>
+      <tr><td>通信費 ¥2.8M</td><td>ツール棚卸し・プラン最適化</td><td class="r"><b>-30〜40%</b></td></tr>
+      <tr><td>外注アポ手数料</td><td>CAC¥74万の架電をインバウンド/AI選別へ置換</td><td class="r"><b>圧縮</b></td></tr>
+    </table>
+  </section>
+
+  <!-- 9 ファネルの穴 -->
+  <section class="slide">
+    <div class="kicker">売上を増やす / 法人ファネル実数</div>
+    <h2>最大の穴は<span class="rd">「面談化率31%」</span>。</h2>
+    <div class="flow">
+      <div class="step"><b>576</b>リード</div><span class="ar">→ 31.2%</span>
+      <div class="step"><b>180</b>面談</div><span class="ar">→ 36.1%</span>
+      <div class="step"><b>65</b>契約</div>
+    </div>
+    <ul style="margin-top:3vh">
+      <li><span class="rd">面談に至らず消えたリード 396件（68%）</span>＝最大の取りこぼし</li>
+      <li>Crisp＋Lステップ＋AIで即レス・自動日程調整 → 面談化率 <b>31%→50%</b></li>
+      <li><span class="gr">追加広告費ゼロで、契約65→104件（+39件・法人新規+50%）</span></li>
+    </ul>
+  </section>
+
+  <!-- 10 FCフライホイール -->
+  <section class="slide">
+    <div class="kicker">主エンジン</div>
+    <h2>FCは<span class="em">積み上がる&自己増殖</span>する。</h2>
+    <div class="cards">
+      <div class="card"><div class="n">¥1,400万</div><div class="l">FC1校の初期収入（受講料+加盟金）</div></div>
+      <div class="card acc"><div class="n">¥2,500万/年</div><div class="l">成熟FC1校の本部取り分（売上50%）</div></div>
+      <div class="card"><div class="n">18→現在</div><div class="l">FC加盟数（100校まで募集中）</div></div>
+    </div>
+    <ul style="margin-top:3vh">
+      <li>現状は成熟目標の<b>約35%</b>（¥875万/年）→ <span class="gr">成熟だけで約3倍の伸びしろ</span></li>
+      <li><b>FCがFCを勧誘できる</b>＝販売網が自己増殖。本部の営業工数を増やさず売上が積み上がる</li>
+    </ul>
+  </section>
+
+  <!-- 11 構造的天井 -->
+  <section class="slide">
+    <div class="kicker">正直な話</div>
+    <h2>10億円は<span class="rd">現行モデルの延長では届かない</span>。</h2>
+    <div class="row">
+      <div class="col"><div class="big or">¥3〜4億</div><div class="unit">現行モデルの月商の天井</div></div>
+      <div class="col">
+        <ul>
+          <li>到達には次のいずれか（モデル拡張）が必要：</li>
+          <li><b>① 100校の募集上限を引き上げる</b>（新業界・海外）</li>
+          <li><b>② FC1校の生産性を¥5,000万/年超へ</b></li>
+          <li><b>③ 新収益ライン</b>（経営塾・AIプロダクト/SaaS化）</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note">「いまの勝ち筋を磨く」のは月商¥3〜4億まで。10億はモデル自体の拡張＝経営判断事項。</p>
+  </section>
+
+  <!-- 12 ロードマップ -->
+  <section class="slide">
+    <div class="kicker">ロードマップ</div>
+    <h2>順序が大事。<span class="em">黒字化が先、規模は後。</span></h2>
+    <table>
+      <tr><th>フェーズ</th><th>目標</th><th>やること</th></tr>
+      <tr class="hi"><td><b>★ Now〜3ヶ月</b></td><td><b>黒字化＋ランオフ阻止</b></td><td>面談化率改善・更新率向上・販管費効率化</td></tr>
+      <tr><td>Phase 2（〜9ヶ月）</td><td>月商1億円</td><td>FC経由を主軸に・本部直販の安定積み上げ</td></tr>
+      <tr><td>Phase 3（〜18ヶ月）</td><td>月商3〜4億円</td><td>FC本格展開・地方開拓（自走化）</td></tr>
+      <tr><td>Phase 4（18ヶ月〜）</td><td>月商10億円</td><td>モデル拡張（上限引上げ・新収益）</td></tr>
+    </table>
+  </section>
+
+  <!-- 13 次アクション -->
+  <section class="slide">
+    <div class="kicker">まとめ / 次の一手</div>
+    <h2>まず、ここから動く。</h2>
+    <ul>
+      <li><span class="rd">①</span> 満了予定の法人契約をリスト化し、<b>更新の追客を自動化</b>（ランオフ阻止）</li>
+      <li><span class="rd">②</span> <b>面談化率31→50%</b>：Crisp＋AIで即レス・自動日程調整</li>
+      <li><span class="rd">③</span> <b>販管費の効率化</b>：外注・広告・通信をAIで圧縮 → 月+¥2.2M黒字へ</li>
+      <li><span class="em">④</span> 10億の前提＝<b>モデル拡張の経営判断</b>（100校上限・新収益ライン）</li>
+    </ul>
+    <p class="lead" style="margin-top:3vh">現状 <b style="color:var(--rd)">-¥15M/月</b> → 黒字化 → 月商¥3〜4億 → <b style="color:var(--gr)">モデル拡張で10億円</b></p>
+  </section>
+
+</div>
+
+<div class="pager"><b id="cur">1</b> / <span id="total">13</span></div>
+<div class="hint">← → / Space でめくる ・ F で全画面 ・ P で印刷(PDF)</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  let i=0; const total=slides.length;
+  document.getElementById('total').textContent=total;
+  function show(n){
+    i=Math.max(0,Math.min(total-1,n));
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    document.getElementById('cur').textContent=i+1;
+    document.getElementById('prog').style.width=((i+1)/total*100)+'%';
+  }
+  document.addEventListener('keydown',e=>{
+    if(['ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();show(i+1);}
+    else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1);}
+    else if(e.key==='Home'){show(0);} else if(e.key==='End'){show(total-1);}
+    else if(e.key.toLowerCase()==='f'){ if(!document.fullscreenElement)document.documentElement.requestFullscreen();else document.exitFullscreen(); }
+    else if(e.key.toLowerCase()==='p'){ window.print(); }
+  });
+  // tap/click navigation
+  document.getElementById('deck').addEventListener('click',e=>{ show(i + (e.clientX > window.innerWidth/2 ? 1 : -1)); });
+  show(0);
+</script>
+</body>
+</html>

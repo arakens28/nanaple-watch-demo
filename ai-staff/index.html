@@ -286,10 +286,15 @@
 
     <div class="panel-section">
       <div class="panel-section-title">📈 月商10億円 KPIダッシュボード</div>
-      <div class="kpi-goal"><span class="num">¥10億</span><span class="unit">/ 月（目標）</span></div>
-      <div class="kpi-current">複合モデル（シナリオB）で逆算した必要レバー</div>
+      <div class="kpi-goal"><span class="num">¥4,000万</span><span class="unit">/ 月（現在地）</span></div>
+      <div class="kpi-current">目標 ¥10億 まで残り <b style="color:#fbbf24">25倍</b>（達成率 4%）</div>
+      <div class="kpi-item">
+        <div class="kpi-item-head"><span class="lbl">現状 → 目標</span><span class="val">¥4,000万 / ¥10億</span></div>
+        <div class="kpi-bar-bg"><div class="kpi-bar-fill" style="width:4%;background:linear-gradient(90deg,#ea580c,#fbbf24)"></div></div>
+      </div>
+      <div class="kpi-current" style="margin-top:14px">目標達成時の内訳（シナリオB・逆算）</div>
       <div id="kpi-list"></div>
-      <div class="kpi-note">※ 数値は事業計画書のモデル仮説。実データに合わせて更新する。</div>
+      <div class="kpi-note">※ 現状4,000万円。内訳バーは目標10億円達成時のモデル仮説。実データに合わせて更新する。</div>
     </div>
 
     <div class="panel-section">
@@ -510,7 +515,7 @@ async function startPipeline() {
   thinkingEl = null;
 
   try {
-    const context = `【会社の目標】ホリエモンAI学校の法人受講・FC加盟・個人受講で月商10億円。\n【チーム】人間=マーケ1・営業2／AI上司=ChatGPT・Gemini・Claude。\n【ツール】X・Lステップ・HubSpot・Crisp。\n\n【経営タスク】\n${task}`;
+    const context = `【現在地】月商4,000万円。【目標】ホリエモンAI学校の法人受講・FC加盟・個人受講で月商10億円（=現状の25倍）。\n【チーム】人間=マーケ1・営業2／AI上司=ChatGPT・Gemini・Claude。\n【ツール】X・Lステップ・HubSpot・Crisp。\n\n【経営タスク】\n${task}`;
 
     // Step 1: ChatGPT — 発散・アイデア出し
     const ideaOut = await callAgent('chatgpt',

@@ -153,6 +153,22 @@
     .kpi-bar-fill { height: 100%; border-radius: 4px; }
     .kpi-note { font-size: 11px; color: #475569; line-height: 1.6; margin-top: 8px; }
 
+    /* ===== Break-even Simulator ===== */
+    .sim-out { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; }
+    .sim-row { display: flex; justify-content: space-between; font-size: 13px; padding: 3px 0; color: #cbd5e1; }
+    .sim-row b { color: #e2e8f0; }
+    .sim-op { border-top: 1px solid #334155; margin-top: 4px; padding-top: 6px; font-size: 14px; }
+    .sim-op b { font-size: 16px; }
+    .sim-op.black b { color: #4ade80; }
+    .sim-op.red b { color: #f87171; }
+    .sim-ctrl { margin-bottom: 9px; }
+    .sim-ctrl label { display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8; margin-bottom: 3px; }
+    .sim-ctrl label span { color: #fb923c; font-weight: 600; }
+    .sim-ctrl input[type=range] { width: 100%; accent-color: #ea580c; height: 4px; }
+    .sim-presets { display: flex; gap: 6px; margin: 10px 0 4px; }
+    .sim-presets button { flex: 1; font-size: 11px; padding: 6px 4px; background: #0f172a; border: 1px solid #334155; border-radius: 6px; color: #cbd5e1; cursor: pointer; transition: border-color .2s; }
+    .sim-presets button:hover { border-color: #ea580c; color: #fb923c; }
+
     /* ===== API Key Modal ===== */
     .modal-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100;
@@ -297,6 +313,45 @@
       <div class="kpi-note" style="color:#fca5a5">🔴 営業赤字: 法人エンティティはピーク月でも営業赤字(年間-¥6,070万見込み)。販売手数料/広告/外注が重く、規模より先に各月の黒字化が必要。</div>
       <div class="kpi-note" style="color:#fca5a5">🔴 ランオフ: 前受収益¥278M(年額前払い)の取り崩しで、新規・更新が止まると売上急減。新規+更新率の確保が生命線。</div>
       <div class="kpi-note">✅ 債務超過(純資産-¥76M)の主因は前受収益＝会計上の見え方で資金繰り危機ではない。／構造的天井は月商¥3〜4億、10億はモデル拡張が前提。</div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-section-title">🧮 黒字化シミュレーター（月次）</div>
+      <div class="sim-out">
+        <div class="sim-row"><span>売上高</span><b id="sim-rev">¥33.6M</b></div>
+        <div class="sim-row"><span>販管費</span><b id="sim-sga">¥48.4M</b></div>
+        <div class="sim-row sim-op"><span>営業損益</span><b id="sim-op">-¥15.0M</b></div>
+      </div>
+      <div class="sim-ctrl">
+        <label>売上倍率 <span id="v-rev">1.00x</span></label>
+        <input type="range" id="s-rev" min="100" max="200" value="100">
+      </div>
+      <div class="sim-ctrl">
+        <label>外注費 削減 <span id="v-out">0%</span></label>
+        <input type="range" id="s-out" min="0" max="100" value="0">
+      </div>
+      <div class="sim-ctrl">
+        <label>広告宣伝費 削減 <span id="v-ad">0%</span></label>
+        <input type="range" id="s-ad" min="0" max="100" value="0">
+      </div>
+      <div class="sim-ctrl">
+        <label>通信費 削減 <span id="v-com">0%</span></label>
+        <input type="range" id="s-com" min="0" max="100" value="0">
+      </div>
+      <div class="sim-ctrl">
+        <label>販売手数料 削減 <span id="v-fee">0%</span></label>
+        <input type="range" id="s-fee" min="0" max="100" value="0">
+      </div>
+      <div class="sim-ctrl">
+        <label>研究開発費 削減 <span id="v-rd">0%</span></label>
+        <input type="range" id="s-rd" min="0" max="100" value="0">
+      </div>
+      <div class="sim-presets">
+        <button onclick="simPreset('now')">現状</button>
+        <button onclick="simPreset('C')">推奨C（両輪）</button>
+        <button onclick="simPreset('reset')">リセット</button>
+      </div>
+      <div class="kpi-note">粗利率99.3%＝売上≒貢献利益。現状-¥15.0M/月を黒字へ。推奨Cで+¥2.2M（年+約¥2億改善）。</div>
     </div>
 
     <div class="panel-section">
@@ -568,6 +623,35 @@ async function startPipeline() {
 document.getElementById('task-input').addEventListener('keydown', e => {
   if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); startPipeline(); }
 });
+
+// ===== Break-even simulator (P&L実数: 損益計算書 2026/2-5 月次平均) =====
+const SIM = {
+  rev: 33.552, cogs: 0.225, fixed: 13.674,
+  var: { out: 7.704, ad: 8.176, com: 2.806, fee: 10.187, rd: 1.333, other: 4.482 }, // 百万円, other=支払報酬料(固定的に扱い)
+};
+function yenM(m){ const s = m<0?'-':''; return s+'¥'+Math.abs(m).toFixed(1)+'M'; }
+function simCalc(){
+  const g=id=>+document.getElementById(id).value;
+  const rm=g('s-rev')/100, cut={out:g('s-out')/100, ad:g('s-ad')/100, com:g('s-com')/100, fee:g('s-fee')/100, rd:g('s-rd')/100};
+  document.getElementById('v-rev').textContent=rm.toFixed(2)+'x';
+  ['out','ad','com','fee','rd'].forEach(k=>document.getElementById('v-'+k).textContent=Math.round(cut[k]*100)+'%');
+  const v=SIM.var;
+  const varCost = v.out*(1-cut.out)+v.ad*(1-cut.ad)+v.com*(1-cut.com)+v.fee*(1-cut.fee)+v.rd*(1-cut.rd)+v.other;
+  const rev=SIM.rev*rm, sga=SIM.fixed+varCost, op=(rev-SIM.cogs)-sga;
+  document.getElementById('sim-rev').textContent=yenM(rev);
+  document.getElementById('sim-sga').textContent=yenM(sga);
+  const opEl=document.getElementById('sim-op'), wrap=opEl.closest('.sim-op');
+  opEl.textContent=yenM(op)+(op>=0?' 黒字':' 赤字');
+  wrap.classList.toggle('black', op>=0); wrap.classList.toggle('red', op<0);
+}
+function simPreset(p){
+  const set=(id,v)=>document.getElementById(id).value=v;
+  if(p==='now'||p==='reset'){ set('s-rev',100);set('s-out',0);set('s-ad',0);set('s-com',0);set('s-fee',0);set('s-rd',0); }
+  if(p==='C'){ set('s-rev',125);set('s-out',50);set('s-ad',20);set('s-com',40);set('s-fee',0);set('s-rd',100); }
+  simCalc();
+}
+['s-rev','s-out','s-ad','s-com','s-fee','s-rd'].forEach(id=>document.getElementById(id).addEventListener('input',simCalc));
+simCalc();
 </script>
 </body>
 </html>

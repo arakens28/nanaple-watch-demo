@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FC獲得 投資提案＆実行プラン</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{ --bg:#0f172a; --bg2:#1e293b; --line:#334155; --txt:#e2e8f0; --sub:#94a3b8; --or:#fb923c; --pp:#a78bfa; --gr:#4ade80; --rd:#f87171; --bl:#38bdf8; }
+  html,body{height:100%;font-family:'Segoe UI','Hiragino Sans','Yu Gothic UI',sans-serif;background:#000;color:var(--txt);}
+  .deck{position:relative;width:100vw;height:100vh;overflow:hidden;}
+  .slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;
+    padding:6vh 8vw;background:radial-gradient(ellipse at 70% 10%,#1e293b 0%,#0f172a 55%,#0b1120 100%);}
+  .slide.active{display:flex;animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .kicker{font-size:1.6vh;letter-spacing:.18em;color:var(--or);text-transform:uppercase;font-weight:700;margin-bottom:1.5vh;}
+  .kicker.p2{color:var(--bl);}
+  h1{font-size:6vh;line-height:1.12;font-weight:800;letter-spacing:.01em;
+     background:linear-gradient(90deg,var(--or),var(--pp));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  h2{font-size:4.4vh;line-height:1.2;font-weight:800;margin-bottom:2.5vh;}
+  h2 .em{color:var(--or);} h2 .rd{color:var(--rd);} h2 .gr{color:var(--gr);} h2 .bl{color:var(--bl);}
+  .lead{font-size:2.4vh;color:var(--sub);line-height:1.7;margin-top:2vh;max-width:62ch;}
+  ul{list-style:none;display:flex;flex-direction:column;gap:1.5vh;margin-top:1vh;}
+  li{font-size:2.4vh;line-height:1.5;padding-left:3.2vh;position:relative;}
+  li::before{content:'▸';position:absolute;left:0;color:var(--or);}
+  li b{color:#fff;} li .rd{color:var(--rd);font-weight:700;} li .gr{color:var(--gr);font-weight:700;} li .bl{color:var(--bl);font-weight:700;}
+  .big{font-size:10vh;font-weight:800;line-height:1;letter-spacing:-.02em;}
+  .big.rd{color:var(--rd);} .big.gr{color:var(--gr);} .big.or{color:var(--or);}
+  .unit{font-size:2.6vh;color:var(--sub);font-weight:600;}
+  .row{display:flex;gap:2.5vw;align-items:center;flex-wrap:wrap;}
+  .col{flex:1;min-width:0;}
+  .cards{display:flex;gap:1.6vw;margin-top:2vh;flex-wrap:wrap;}
+  .card{flex:1;min-width:180px;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:2.6vh 2vw;}
+  .card .n{font-size:4.2vh;font-weight:800;} .card .l{font-size:1.85vh;color:var(--sub);margin-top:.6vh;}
+  .card.acc{border-color:var(--or);box-shadow:0 0 24px rgba(251,146,60,.15);}
+  .card.bl{border-color:var(--bl);box-shadow:0 0 24px rgba(56,189,248,.15);}
+  table{width:100%;border-collapse:collapse;margin-top:2vh;font-size:2vh;}
+  th,td{padding:1.2vh 1.4vw;text-align:left;border-bottom:1px solid var(--line);}
+  th{color:var(--sub);font-size:1.6vh;font-weight:600;text-transform:uppercase;letter-spacing:.05em;}
+  tr.hi td{background:rgba(74,222,128,.08);} tr.hi td b{color:var(--gr);}
+  td.r,th.r{text-align:right;}
+  .note{font-size:1.7vh;color:#64748b;margin-top:2.5vh;line-height:1.6;}
+  .flow{display:flex;align-items:stretch;gap:.8vw;flex-wrap:wrap;margin-top:2.5vh;font-size:1.9vh;}
+  .flow .step{flex:1;min-width:120px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:1.6vh 1vw;text-align:center;display:flex;flex-direction:column;justify-content:center;gap:.5vh;}
+  .flow .step b{display:block;font-size:2.1vh;color:#fff;} .flow .step span{font-size:1.5vh;color:var(--sub);}
+  .flow .ar{display:flex;align-items:center;color:var(--or);font-size:2.4vh;font-weight:700;}
+  .eng{display:flex;gap:1.6vw;margin-top:2vh;}
+  .eng .e{flex:1;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:2.2vh 1.6vw;}
+  .eng .e .h{font-size:2.4vh;font-weight:700;color:var(--or);margin-bottom:1vh;}
+  .eng .e p{font-size:1.8vh;color:var(--sub);line-height:1.55;}
+  .topbar{position:fixed;top:0;left:0;right:0;height:6px;background:#0b1120;z-index:10;}
+  .topbar .prog{height:100%;background:linear-gradient(90deg,var(--or),var(--pp));transition:width .35s;}
+  .pager{position:fixed;bottom:2.5vh;right:3vw;font-size:1.8vh;color:var(--sub);z-index:10;} .pager b{color:var(--txt);}
+  .hint{position:fixed;bottom:2.5vh;left:3vw;font-size:1.5vh;color:#475569;z-index:10;}
+  .brand{position:fixed;top:2.5vh;left:3vw;font-size:1.6vh;color:#64748b;z-index:10;letter-spacing:.05em;}
+  .tag{position:fixed;top:2.5vh;right:3vw;font-size:1.5vh;z-index:10;padding:.4vh 1.2vh;border-radius:20px;font-weight:600;}
+  @media print{ .slide{display:flex !important;position:relative;height:100vh;page-break-after:always;} .topbar,.pager,.hint,.brand,.tag{display:none;} }
+</style>
+</head>
+<body>
+<div class="topbar"><div class="prog" id="prog"></div></div>
+<div class="brand">ホリエモンAI学校 / FC獲得 投資提案＆実行プラン</div>
+
+<div class="deck" id="deck">
+
+  <!-- 1 -->
+  <section class="slide">
+    <div class="kicker">投資提案 ＆ 実行プラン</div>
+    <h1>FC獲得で<br>積み上げる。</h1>
+    <p class="lead">法人受講は1年契約・更新ゼロのフロー。<br><b style="color:#fff">積み上がるのはFCだけ。</b>資本と工数をFC獲得に集中する。</p>
+    <div class="cards" style="margin-top:3.5vh">
+      <div class="card acc"><div class="n">¥4億</div><div class="l">投資（FC100校の獲得）</div></div>
+      <div class="card"><div class="n">¥12億</div><div class="l">初期収益（即ペイ）</div></div>
+      <div class="card"><div class="n">+¥1億/月</div><div class="l">積み上がる継続収益</div></div>
+    </div>
+  </section>
+
+  <!-- 2 エグゼクティブサマリー -->
+  <section class="slide">
+    <div class="kicker">結論</div>
+    <h2>「¥4億で100校」を<span class="gr">実行すべき</span>。</h2>
+    <ul>
+      <li>FC獲得は<b>CAC¥400万 → 初期¥1,200万で即3倍回収</b>＋<b class="gr">¥100万/月が積み上がる</b></li>
+      <li>100校で<b>初期収益¥12億（投資¥4億を即ペイ・純+¥8億）</b>＋継続<b class="gr">+¥1億/月</b></li>
+      <li>赤字の法人直販（更新ゼロ）に資本を入れるより、<b>FCに全振りする方が黒字化に近い</b></li>
+      <li><span class="rd">成否を分ける唯一の変数＝加盟ペース</span>（現0.5校/月 → 目標3校/月）</li>
+    </ul>
+    <p class="note">本資料 = 前半:投資の妥当性／後半:加盟ペースを上げる実行プラン。</p>
+  </section>
+
+  <!-- 3 なぜFCか -->
+  <section class="slide">
+    <div class="kicker">なぜFCか</div>
+    <h2>法人は<span class="rd">消える</span>、FCは<span class="gr">残る</span>。</h2>
+    <table>
+      <tr><th></th><th>法人受講（直販）</th><th>FC</th></tr>
+      <tr><td>契約</td><td>1年・<b style="color:var(--rd)">更新ほぼゼロ</b></td><td>継続（FCが売り続ける）</td></tr>
+      <tr><td>獲得単価</td><td>¥74万</td><td>¥400万</td></tr>
+      <tr><td>1件の価値</td><td>¥137万で<b style="color:var(--rd)">消える</b></td><td><b style="color:var(--gr)">¥1,200万＋¥100万/月が残る</b></td></tr>
+      <tr><td>スケール</td><td>営業2名の生産量が上限</td><td><b style="color:var(--gr)">FCがFCを生む（自己増殖）</b></td></tr>
+    </table>
+    <p class="note">同じ労力なら、積み上がるFCに投じる方が圧倒的に資本効率が高い。</p>
+  </section>
+
+  <!-- 4 ユニットエコノミクス -->
+  <section class="slide">
+    <div class="kicker">FC1校の経済性</div>
+    <h2>1校が<span class="em">¥1,200万＋¥100万/月</span>。</h2>
+    <div class="cards">
+      <div class="card"><div class="n">¥400万</div><div class="l">獲得単価（CAC）</div></div>
+      <div class="card acc"><div class="n">¥1,200万</div><div class="l">初期収益（加盟時・一括）</div></div>
+      <div class="card acc"><div class="n">¥100万/月</div><div class="l">継続収益（=¥1,200万/年）</div></div>
+    </div>
+    <ul style="margin-top:2.5vh">
+      <li>加盟初日で純 <b class="gr">+¥800万/校</b>（CACを初期収益で即3倍回収）</li>
+      <li>1年目 ¥2,000万/校、2年目以降 <b class="gr">¥1,200万/年が積み上がり</b></li>
+      <li>現状 18校 × ¥100万 = <b>¥1,800万/月</b> が土台</li>
+    </ul>
+  </section>
+
+  <!-- 5 投資収支 -->
+  <section class="slide">
+    <div class="kicker">投資収支 / 100校</div>
+    <h2><span class="em">¥4億</span>が <span class="gr">¥12億＋¥1億/月</span> に。</h2>
+    <table>
+      <tr><th>項目</th><th class="r">金額</th></tr>
+      <tr><td>投資（CAC 100校 × ¥400万）</td><td class="r"><b>¥4.0億</b></td></tr>
+      <tr class="hi"><td>初期収益（100校 × ¥1,200万・一括）</td><td class="r"><b>¥12.0億</b></td></tr>
+      <tr><td>差引（初期収益 − 投資）</td><td class="r"><b style="color:var(--gr)">+¥8.0億</b></td></tr>
+      <tr class="hi"><td>継続収益（100校 × ¥100万/月）</td><td class="r"><b>+¥1.0億/月</b></td></tr>
+    </table>
+    <p class="note">投資¥4億は初期収益で即ペイ＝実質「自己資金で回る成長投資」。継続収益¥1億/月（現¥1,800万→¥1.18億/月）が資産として残る。</p>
+  </section>
+
+  <!-- 6 成長トラジェクトリ -->
+  <section class="slide">
+    <div class="kicker">成長トラジェクトリ</div>
+    <h2>加盟ペースが<span class="em">月商を決める</span>。</h2>
+    <table>
+      <tr><th>加盟ペース</th><th class="r">12ヶ月後</th><th class="r">24ヶ月後</th><th class="r">36ヶ月後</th></tr>
+      <tr><td>1校/月</td><td class="r">¥0.42億</td><td class="r">¥0.54億</td><td class="r">¥0.66億</td></tr>
+      <tr class="hi"><td><b>3校/月（目標）</b></td><td class="r">¥0.90億</td><td class="r"><b>¥1.26億</b></td><td class="r">¥1.62億</td></tr>
+      <tr><td>5校/月</td><td class="r">¥1.38億</td><td class="r">¥1.98億</td><td class="r">¥2.58億</td></tr>
+      <tr><td>10校/月</td><td class="r">¥2.58億</td><td class="r">¥3.78億</td><td class="r">¥4.98億</td></tr>
+    </table>
+    <p class="note">月商＝累計FC×¥100万（継続）＋当月新規×¥1,200万（初期）。※100校超は募集上限の引き上げが前提。</p>
+  </section>
+
+  <!-- 7 リスク -->
+  <section class="slide">
+    <div class="kicker">リスクと前提</div>
+    <h2>論点は「やるか」より<span class="em">「回せるか」</span>。</h2>
+    <ul>
+      <li><span class="rd">① 加盟ペース</span>：現0.5校/月。3校/月に上げる導線が要る（→後半の実行プラン）</li>
+      <li><span class="rd">② 供給能力</span>：1校¥1,200万・3ヶ月研修×100校を提供する体制（AIでスケール）</li>
+      <li><span class="rd">③ 募集上限</span>：18+100=118校 &gt; 公称100校 → <b>上限引き上げ or 業界別×地域別で枠確保</b></li>
+      <li><span class="rd">④ 前提検証</span>：CAC¥400万・初期¥1,200万の提供原価・助成金依存を実績で確認</li>
+    </ul>
+  </section>
+
+  <!-- 8 意思決定 -->
+  <section class="slide">
+    <div class="kicker">意思決定</div>
+    <h2>段階投資で<span class="gr">リスクを抑えて</span>始める。</h2>
+    <div class="cards">
+      <div class="card bl"><div class="n">STEP 1</div><div class="l">まず¥1億で25校（3ヶ月）。CAC・転換・供給を実証</div></div>
+      <div class="card bl"><div class="n">STEP 2</div><div class="l">指標が合えば残り¥3億で75校へ加速</div></div>
+      <div class="card acc"><div class="n">GO判定</div><div class="l">CAC≤¥400万・加盟3校/月・黒字化を確認できたら全力</div></div>
+    </div>
+    <p class="lead">一括¥4億ではなく<b>「¥1億で実証 → ¥3億で拡大」</b>の二段階。下振れリスクを抑えつつ、上振れは取りに行く。</p>
+  </section>
+
+  <!-- 9 Part2 ボトルネック -->
+  <section class="slide">
+    <div class="kicker p2">実行プラン ①</div>
+    <h2>ボトルネックは<span class="bl">加盟ペース</span>だけ。</h2>
+    <div class="row">
+      <div class="col"><div class="big or">0.5→3</div><div class="unit">校/月（6倍に上げる）</div></div>
+      <div class="col">
+        <ul>
+          <li>実績：2025/7に12校 → 2026/6に18校 ＝ <b>0.5校/月</b></li>
+          <li>経済性は申し分なし。<b class="bl">"加盟が増えない"こと</b>だけが課題</li>
+          <li>→ 加盟導線を「3つのエンジン」で作る（次ページ）</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 FC獲得ファネル -->
+  <section class="slide">
+    <div class="kicker p2">実行プラン ② / 加盟ファネル</div>
+    <h2>認知から加盟までを<span class="bl">設計する</span>。</h2>
+    <div class="flow">
+      <div class="step"><b>認知</b><span>X・ホリエモン<br>ブランド・紹介</span></div><div class="ar">→</div>
+      <div class="step"><b>FC説明会</b><span>Lステップ送客<br>Crisp一次対応</span></div><div class="ar">→</div>
+      <div class="step"><b>社労士面談</b><span>助成金診断<br>(TRIPORT)</span></div><div class="ar">→</div>
+      <div class="step"><b>受講契約</b><span>¥1,200万<br>(FCトラック)</span></div><div class="ar">→</div>
+      <div class="step"><b>FC加盟</b><span>受講3ヶ月後<br>開校・営業</span></div>
+    </div>
+    <p class="note">FCは受講企業のみ。各段でAIが一次対応・資料作成・書類下書きを担い、人間は説明会と最終クロージングに集中。HubSpotでFCパイプラインを管理。</p>
+  </section>
+
+  <!-- 11 3つのエンジン -->
+  <section class="slide">
+    <div class="kicker p2">実行プラン ③ / 加盟を増やす3エンジン</div>
+    <h2>送客 × 紹介 × 標準化。</h2>
+    <div class="eng">
+      <div class="e"><div class="h">① マーケ送客</div><p>Xで実績発信（初年度差引+¥2,119万のFC事例など）。広告＋Lステップで<b>FC説明会へ自動送客</b>。Crispで24h一次対応。</p></div>
+      <div class="e"><div class="h">② FC→FC紹介</div><p>FCはFCを勧誘OK。既存18校＋新規へ<b>紹介インセンティブ</b>を設計。加盟が加盟を生む自己増殖ループ。</p></div>
+      <div class="e"><div class="h">③ AI標準化</div><p>加盟〜開校（240講義＋チャット＋伴走）をAIで標準化し<b>参入障壁と運営工数を下げる</b>。少人数で100校を支える。</p></div>
+    </div>
+  </section>
+
+  <!-- 12 役割分担 -->
+  <section class="slide">
+    <div class="kicker p2">実行プラン ④ / 役割分担</div>
+    <h2>6人＋AIで<span class="bl">回す</span>。</h2>
+    <table>
+      <tr><th>担当</th><th>役割</th><th>ツール</th></tr>
+      <tr><td>マーケ（1名）</td><td>X発信・広告・説明会送客の設計</td><td>X / Lステップ / 広告</td></tr>
+      <tr><td>営業A（1名）</td><td>FC説明会・受講クロージング</td><td>HubSpot / Crisp</td></tr>
+      <tr><td>営業B（1名）</td><td>FC化・大型法人・紹介開拓</td><td>HubSpot / 社労士連携</td></tr>
+      <tr><td>ChatGPT</td><td>説明会台本・X投稿・提案文の量産</td><td>—</td></tr>
+      <tr><td>Gemini</td><td>市場/競合リサーチ・データ検証</td><td>—</td></tr>
+      <tr><td>Claude</td><td>統合・品質管理・最終プラン決定</td><td>—</td></tr>
+    </table>
+  </section>
+
+  <!-- 13 90日プラン -->
+  <section class="slide">
+    <div class="kicker p2">実行プラン ⑤ / 90日アクション</div>
+    <h2>最初の<span class="bl">90日</span>。</h2>
+    <table>
+      <tr><th>期間</th><th>やること</th><th>到達</th></tr>
+      <tr><td>Month 1</td><td>説明会の型・X発信開始・Lステップ送客・HubSpotにFCパイプライン・既存18FCへ紹介依頼</td><td>導線が動く</td></tr>
+      <tr><td>Month 2</td><td>説明会を週次運用・社労士連携を標準化・加盟〜開校のAIテンプレ整備</td><td>加盟1〜2校/月</td></tr>
+      <tr class="hi"><td>Month 3</td><td>送客×紹介×標準化を回し、黒字化施策と並行</td><td><b>加盟3校/月＆黒字化</b></td></tr>
+    </table>
+  </section>
+
+  <!-- 14 KPI/まとめ -->
+  <section class="slide">
+    <div class="kicker p2">KPI ＆ まとめ</div>
+    <h2>追う数字は<span class="bl">これだけ</span>。</h2>
+    <div class="cards">
+      <div class="card"><div class="n">3校/月</div><div class="l">FC加盟ペース（最重要）</div></div>
+      <div class="card"><div class="n">≤¥400万</div><div class="l">FC獲得単価（CAC）</div></div>
+      <div class="card"><div class="n">+¥1億/月</div><div class="l">100校到達時の継続収益</div></div>
+    </div>
+    <p class="lead" style="margin-top:3vh"><b>STEP1（¥1億で25校・実証）</b> → 指標OKなら <b class="gr">¥4億で100校</b> → FCで土台¥1〜3億/月 → 上限引き上げで10億へ。</p>
+  </section>
+
+</div>
+
+<div class="pager"><b id="cur">1</b> / <span id="total">14</span></div>
+<div class="hint">← → / Space でめくる ・ F で全画面 ・ P で印刷(PDF)</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  let i=0; const total=slides.length;
+  document.getElementById('total').textContent=total;
+  const tags=['投資提案','投資提案','投資提案','投資提案','投資提案','投資提案','投資提案','投資提案','実行プラン','実行プラン','実行プラン','実行プラン','実行プラン','実行プラン'];
+  function show(n){
+    i=Math.max(0,Math.min(total-1,n));
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    document.getElementById('cur').textContent=i+1;
+    document.getElementById('prog').style.width=((i+1)/total*100)+'%';
+  }
+  document.addEventListener('keydown',e=>{
+    if(['ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();show(i+1);}
+    else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1);}
+    else if(e.key==='Home'){show(0);} else if(e.key==='End'){show(total-1);}
+    else if(e.key.toLowerCase()==='f'){ if(!document.fullscreenElement)document.documentElement.requestFullscreen();else document.exitFullscreen(); }
+    else if(e.key.toLowerCase()==='p'){ window.print(); }
+  });
+  document.getElementById('deck').addEventListener('click',e=>{ show(i + (e.clientX > window.innerWidth/2 ? 1 : -1)); });
+  show(0);
+</script>
+</body>
+</html>

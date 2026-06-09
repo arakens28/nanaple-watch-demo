@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ホリエモンAI学校 FC説明会</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{ --bg:#0f172a; --bg2:#1e293b; --line:#334155; --txt:#e2e8f0; --sub:#94a3b8; --or:#fb923c; --pp:#a78bfa; --gr:#4ade80; --rd:#f87171; --bl:#38bdf8; }
+  html,body{height:100%;font-family:'Segoe UI','Hiragino Sans','Yu Gothic UI',sans-serif;background:#000;color:var(--txt);}
+  .deck{position:relative;width:100vw;height:100vh;overflow:hidden;}
+  .slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;
+    padding:6vh 8vw;background:radial-gradient(ellipse at 70% 10%,#1e293b 0%,#0f172a 55%,#0b1120 100%);}
+  .slide.active{display:flex;animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .kicker{font-size:1.6vh;letter-spacing:.18em;color:var(--or);text-transform:uppercase;font-weight:700;margin-bottom:1.5vh;}
+  h1{font-size:6.4vh;line-height:1.12;font-weight:800;
+     background:linear-gradient(90deg,var(--or),var(--pp));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  h2{font-size:4.6vh;line-height:1.2;font-weight:800;margin-bottom:2.5vh;}
+  h2 .em{color:var(--or);} h2 .rd{color:var(--rd);} h2 .gr{color:var(--gr);} h2 .bl{color:var(--bl);}
+  .lead{font-size:2.5vh;color:var(--sub);line-height:1.7;margin-top:2vh;max-width:62ch;}
+  ul{list-style:none;display:flex;flex-direction:column;gap:1.6vh;margin-top:1vh;}
+  li{font-size:2.6vh;line-height:1.5;padding-left:3.2vh;position:relative;}
+  li::before{content:'▸';position:absolute;left:0;color:var(--or);}
+  li b{color:#fff;} li .gr{color:var(--gr);font-weight:700;} li .bl{color:var(--bl);font-weight:700;}
+  .big{font-size:11vh;font-weight:800;line-height:1;letter-spacing:-.02em;}
+  .big.gr{color:var(--gr);} .big.or{color:var(--or);}
+  .unit{font-size:2.8vh;color:var(--sub);font-weight:600;}
+  .row{display:flex;gap:2.5vw;align-items:center;flex-wrap:wrap;}
+  .col{flex:1;min-width:0;}
+  .cards{display:flex;gap:1.6vw;margin-top:2vh;flex-wrap:wrap;}
+  .card{flex:1;min-width:170px;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:2.6vh 1.8vw;}
+  .card .n{font-size:4.2vh;font-weight:800;} .card .l{font-size:1.85vh;color:var(--sub);margin-top:.6vh;}
+  .card.acc{border-color:var(--or);box-shadow:0 0 24px rgba(251,146,60,.15);}
+  table{width:100%;border-collapse:collapse;margin-top:2vh;font-size:2.1vh;}
+  th,td{padding:1.2vh 1.4vw;text-align:left;border-bottom:1px solid var(--line);}
+  th{color:var(--sub);font-size:1.7vh;font-weight:600;}
+  tr.hi td{background:rgba(74,222,128,.08);} tr.hi td b{color:var(--gr);}
+  td.r,th.r{text-align:right;}
+  .note{font-size:1.6vh;color:#64748b;margin-top:2.5vh;line-height:1.6;}
+  .flow{display:flex;align-items:stretch;gap:.7vw;flex-wrap:wrap;margin-top:2.5vh;}
+  .flow .step{flex:1;min-width:110px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:1.5vh .8vw;text-align:center;}
+  .flow .step b{display:block;font-size:1.95vh;color:#fff;} .flow .step span{font-size:1.4vh;color:var(--sub);}
+  .flow .ar{display:flex;align-items:center;color:var(--or);font-size:2.2vh;font-weight:700;}
+  /* presenter notes */
+  .notes{position:fixed;left:0;right:0;bottom:0;max-height:42vh;overflow:auto;background:rgba(2,6,23,.97);
+    border-top:2px solid var(--or);padding:2.5vh 4vw;z-index:20;display:none;}
+  .notes.show{display:block;}
+  .notes .nt{font-size:1.4vh;letter-spacing:.1em;color:var(--or);font-weight:700;text-transform:uppercase;margin-bottom:1vh;}
+  .notes p{font-size:2vh;line-height:1.7;color:#e2e8f0;white-space:pre-wrap;}
+  .topbar{position:fixed;top:0;left:0;right:0;height:6px;background:#0b1120;z-index:10;}
+  .topbar .prog{height:100%;background:linear-gradient(90deg,var(--or),var(--pp));transition:width .35s;}
+  .pager{position:fixed;bottom:2.5vh;right:3vw;font-size:1.8vh;color:var(--sub);z-index:10;} .pager b{color:var(--txt);}
+  .hint{position:fixed;bottom:2.5vh;left:3vw;font-size:1.5vh;color:#475569;z-index:10;}
+  .brand{position:fixed;top:2.5vh;left:3vw;font-size:1.6vh;color:#64748b;z-index:10;letter-spacing:.05em;}
+  @media print{ .slide{display:flex !important;position:relative;height:100vh;page-break-after:always;} .topbar,.pager,.hint,.brand,.notes{display:none;} }
+</style>
+</head>
+<body>
+<div class="topbar"><div class="prog" id="prog"></div></div>
+<div class="brand">ホリエモンAI学校 / フランチャイズ説明会</div>
+
+<div class="deck" id="deck">
+
+  <!-- 1 -->
+  <section class="slide" data-note="（つかみ・自己紹介）本日はお忙しい中ありがとうございます。30分で『AIで業務を変える側から、AI活用を“広める側”に回って事業にする』というFCの仕組みをお話しします。最後に、御社が当てはまるか・次に何をすればいいかまでお持ち帰りいただけます。まず結論から——これは“受講して終わり”ではなく、御社の販路を使って収益事業にする提案です。">
+    <div class="kicker">フランチャイズ説明会</div>
+    <h1>AIを“広める側”に<br>回りませんか。</h1>
+    <p class="lead">ホリエモンAI学校のFCとして、各業界・各地域でAI活用DXを支援し、<br>収益事業にする。<b style="color:#fff">堀江貴文 共同創業・取締役。</b></p>
+  </section>
+
+  <!-- 2 なぜ今AIか -->
+  <section class="slide" data-note="（課題提起）いまどの会社も『AIを使え』と言われるが、現場は何から手をつけるか分からない。FAX・手入力・属人化が残る。ここに“伴走して業務改善まで持っていく”需要が爆発的にある。つまり、教える側・支援する側には巨大な市場が広がっている、という話をします。">
+    <div class="kicker">なぜ今か</div>
+    <h2>AIを<span class="em">「使え」</span>と言われても、<br>現場は動けない。</h2>
+    <ul>
+      <li>多くの企業が「何から始めるか」で止まっている（FAX・手入力・属人化が残る）</li>
+      <li>必要なのは技術ではなく <b>業務改善まで伴走する人</b></li>
+      <li>＝ <b class="gr">支援する側に、巨大な需要と市場がある</b></li>
+    </ul>
+  </section>
+
+  <!-- 3 学校とは -->
+  <section class="slide" data-note="（信頼づくり）ホリエモンAI学校は、堀江貴文が共同創業・取締役を務める企業の事業。単なる動画学習ではなく“DX部長”として伴走するのが特徴。240以上の講義、チャットでの講師サポート、毎月の伴走MTG。受講者の95%がAI未経験の経理・総務・営業・経営者。つまり“専門家でなくても成果が出る”設計です。">
+    <div class="kicker">ホリエモンAI学校とは</div>
+    <h2>“DX部長”として<span class="em">伴走</span>する学校。</h2>
+    <div class="cards">
+      <div class="card"><div class="n">240+</div><div class="l">動画講義</div></div>
+      <div class="card"><div class="n">毎月</div><div class="l">伴走MTG＋チャット講師サポート</div></div>
+      <div class="card"><div class="n">95%</div><div class="l">受講者はAI未経験（経理・総務・営業・経営者）</div></div>
+    </div>
+    <p class="note">堀江貴文 共同創業・取締役「ホリエモンAI学校株式会社」の事業。</p>
+  </section>
+
+  <!-- 4 成果事例 -->
+  <section class="slide" data-note="（価値の証明）実際の受講企業の成果。問い合わせ対応で月20時間削減、入力作業で月65時間削減など。非エンジニアがツールを組み合わせて自動化した結果です。“こういう成果を顧客に届けられる”——それがFCの商品になります。数字は事例であり成果を保証するものではない点だけ補足しておきます。">
+    <div class="kicker">受講企業の成果（事例）</div>
+    <h2>非エンジニアが<span class="gr">業務を自動化</span>。</h2>
+    <div class="cards">
+      <div class="card acc"><div class="n">-20h/月</div><div class="l">問い合わせ対応（100件/月）</div></div>
+      <div class="card acc"><div class="n">-65h/月</div><div class="l">入力作業（1,300件/月）</div></div>
+      <div class="card acc"><div class="n">-10h/月</div><div class="l">入力作業（1,000件/月）</div></div>
+    </div>
+    <p class="note">※ 受講企業の実績事例であり、成果を保証するものではありません。</p>
+  </section>
+
+  <!-- 5 FCという機会 -->
+  <section class="slide" data-note="（提案の核）ここからが本題。この“成果を出す支援”を、御社の販路で売れるのがFCです。学校に例えると、業界別FCは『介護学部・建設学部』のような学部、地域別FCは対面で動ける“地域校”。御社の既存の顧客基盤・業界知見に、AI支援という商品を載せるイメージです。">
+    <div class="kicker">FCという機会</div>
+    <h2>その支援を<span class="em">御社の販路で売る</span>。</h2>
+    <ul>
+      <li><b>業界別FC</b>＝「介護学部」「建設学部」のような“学部”（教える内容で分かれる）</li>
+      <li><b>地域別FC</b>＝対面で動ける“地域校”</li>
+      <li>御社の<b class="gr">既存の顧客基盤・業界知見</b>に、AI支援という商品を載せる</li>
+    </ul>
+  </section>
+
+  <!-- 6 収益モデル -->
+  <section class="slide" data-note="（儲かる仕組み）収益モデルはシンプル。研修やコンサルを共同で販売し、売上の約50%が御社の収益。例えば1社5名研修で年155万、100名なら年1200万、コンサルは年600万〜。これを御社の販路で積み上げていきます。">
+    <div class="kicker">収益モデル</div>
+    <h2>売上の<span class="em">約50%</span>が御社の収益。</h2>
+    <table>
+      <tr><th>商品</th><th class="r">年間売上の目安</th></tr>
+      <tr><td>1社5名 研修</td><td class="r">¥155万</td></tr>
+      <tr><td>1社100名 研修</td><td class="r">¥1,200万</td></tr>
+      <tr><td>コンサル</td><td class="r">¥600万〜</td></tr>
+    </table>
+    <p class="note">研修・コンサルを共同販売し、いただく売上の約50%をお渡しします。1校あたり年間売上目標 ¥5,000万〜。</p>
+  </section>
+
+  <!-- 7 収益例 -->
+  <section class="slide" data-note="（一番効くスライド）実際に昨年加盟したFCの1年間の例。21社に販売し売上5,454万円、御社の受取は50%で2,727万円。さらに助成金792万円。初期費用1,400万円を引いても初年度で+2,119万円。つまり初年度から回収して黒字になった実例です。もちろん成果は販路や活動量で変わります。">
+    <div class="kicker">収益例 / 昨年加盟したFCの1年間</div>
+    <h2>初年度で<span class="gr">+¥2,119万</span>（実例）。</h2>
+    <table>
+      <tr><td>販売実績</td><td class="r">21社・売上 ¥5,454万</td></tr>
+      <tr><td>受取収益（売上の50%）</td><td class="r">+¥2,727万</td></tr>
+      <tr><td>助成金</td><td class="r">+¥792万</td></tr>
+      <tr><td>初期費用</td><td class="r">-¥1,400万</td></tr>
+      <tr class="hi"><td><b>初年度 差引</b></td><td class="r"><b>+¥2,119万</b></td></tr>
+    </table>
+    <p class="note">※ 実際に加盟したFCの一例。収益は販路・活動量により異なり、成果を保証するものではありません。</p>
+  </section>
+
+  <!-- 8 助成金 -->
+  <section class="slide" data-note="（売りやすさの根拠）なぜ売れるのか。顧客側は厚労省の人材開発支援助成金で受講料の最大75%（大企業60%）が助成される。つまり顧客の実質負担が大きく下がるので提案が通りやすい。申請は社労士（TRIPORT）がサポートします。ただし助成金の交付・却下は当社では責任を負えないので、必ず社労士の診断を受けていただく、という前提です。">
+    <div class="kicker">なぜ売れるのか</div>
+    <h2>顧客は<span class="em">最大75%助成</span>で買える。</h2>
+    <ul>
+      <li>厚労省「人材開発支援助成金」で受講料の<b>最大75%（大企業60%）</b>が助成</li>
+      <li>＝ 顧客の<b class="gr">実質負担が大きく下がり、提案が通りやすい</b></li>
+      <li>申請は提携社労士（TRIPORT）がサポート</li>
+    </ul>
+    <p class="note">※ 助成金の交付・却下・金額について当社は責任を負いません。必ず社労士の診断・サポートをご利用ください。</p>
+  </section>
+
+  <!-- 9 加盟条件 -->
+  <section class="slide" data-note="（自分ごと化）加盟いただける目安は3つのうち最低1つ。特定エリアに販路がある／特定業界に販路がある／社員42名以上の法人。どれか当てはまれば候補になります。御社はいかがでしょう？——ここで一度、相手に当てはまるか確認する。最短3ヶ月で支援を開始できます。">
+    <div class="kicker">加盟の目安</div>
+    <h2>この<span class="em">どれか1つ</span>に当てはまれば。</h2>
+    <div class="cards">
+      <div class="card"><div class="n">エリア</div><div class="l">特定の地域に販路がある</div></div>
+      <div class="card"><div class="n">業界</div><div class="l">特定の業界に販路がある</div></div>
+      <div class="card"><div class="n">42名+</div><div class="l">社員42名以上の法人</div></div>
+    </div>
+    <p class="note">最短3ヶ月で、各業界・各地域のAI活用DX支援を開始できます。</p>
+  </section>
+
+  <!-- 10 初期費用と手に入るもの -->
+  <section class="slide" data-note="（投資の説明）初期費用は受講料1,200万円〜＋加盟金200万円〜（人数に応じて見積り）。高く感じるかもしれませんが、先ほどの実例のように初年度で回収・黒字化した例があります。手に入るのは“最初から4点そろっている強み”——商品・カリキュラム・サポート体制・ブランド。ゼロから作る必要がありません。">
+    <div class="kicker">初期費用 / 手に入るもの</div>
+    <h2>最初から<span class="em">4点そろう</span>。</h2>
+    <div class="row">
+      <div class="col">
+        <table>
+          <tr><td>受講料</td><td class="r">¥1,200万〜</td></tr>
+          <tr><td>加盟金</td><td class="r">¥200万〜</td></tr>
+        </table>
+        <p class="note">※ 人数に応じてお見積り。</p>
+      </div>
+      <div class="col">
+        <ul style="gap:1vh">
+          <li>① 売れる商品（AI研修・コンサル）</li>
+          <li>② カリキュラム（240+講義）</li>
+          <li>③ サポート体制（伴走・チャット）</li>
+          <li>④ ブランド（ホリエモンAI学校）</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 申込みの流れ -->
+  <section class="slide" data-note="（不安解消・段取り）流れはシンプル。まず社労士面談で助成金診断 → 受講契約 → 3ヶ月受講後にFC契約 → FC公開 → 法人営業を開始、という順序。いきなりFCではなく“まず受講、良ければFC”という安心設計です。隔週MTGで運営も支援します。">
+    <div class="kicker">お申し込みの流れ</div>
+    <h2>まず受講、<span class="em">良ければFC</span>。</h2>
+    <div class="flow">
+      <div class="step"><b>① 社労士面談</b><span>助成金診断</span></div><div class="ar">→</div>
+      <div class="step"><b>② 受講契約</b><span>3ヶ月受講</span></div><div class="ar">→</div>
+      <div class="step"><b>③ FC契約</b><span>受講3ヶ月後</span></div><div class="ar">→</div>
+      <div class="step"><b>④ FC公開</b><span>隔週MTG・研究</span></div><div class="ar">→</div>
+      <div class="step"><b>⑤ 法人営業</b><span>契約獲得・支援</span></div>
+    </div>
+    <p class="note">FC契約は受講企業のみ。まず受講し、受講後に「FC加盟したい」とお声がけください。</p>
+  </section>
+
+  <!-- 12 CTA -->
+  <section class="slide" data-note="（クロージング）まとめ。2025年時点でFCは12社、エリア別・業界別とも100校まで募集中＝先行者で枠を取れる段階です。本日の次の一歩は2つ。①無料の社労士面談で“御社がいくら助成を受けられるか”を診断 ②御社の販路でいくら狙えるか個別シミュレーション。どちらも無料です。今日、面談の日程だけ決めて帰りませんか？">
+    <div class="kicker">次の一歩</div>
+    <h2>いまは<span class="gr">枠を取れる</span>段階です。</h2>
+    <ul>
+      <li>FCは現在<b>募集中（エリア別・業界別とも100校まで）</b>＝先行者利益が取れる</li>
+      <li>次の一歩①：<b class="gr">無料の社労士面談</b>で助成額を診断</li>
+      <li>次の一歩②：<b class="gr">御社の販路での収益シミュレーション</b>（個別・無料）</li>
+    </ul>
+    <p class="lead" style="margin-top:2.5vh"><b style="color:#fff">本日、面談の日程だけ決めて帰りませんか？</b></p>
+  </section>
+
+</div>
+
+<div class="notes" id="notes"><div class="nt">🎤 台本（Nキーで表示/非表示）</div><p id="note-text"></p></div>
+
+<div class="pager"><b id="cur">1</b> / <span id="total">12</span></div>
+<div class="hint">← → / Space めくる ・ N 台本 ・ F 全画面 ・ P 印刷(PDF)</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  let i=0; const total=slides.length;
+  document.getElementById('total').textContent=total;
+  const notes=document.getElementById('notes'), noteText=document.getElementById('note-text');
+  function show(n){
+    i=Math.max(0,Math.min(total-1,n));
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    document.getElementById('cur').textContent=i+1;
+    document.getElementById('prog').style.width=((i+1)/total*100)+'%';
+    noteText.textContent=slides[i].dataset.note||'';
+  }
+  document.addEventListener('keydown',e=>{
+    if(['ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();show(i+1);}
+    else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1);}
+    else if(e.key==='Home'){show(0);} else if(e.key==='End'){show(total-1);}
+    else if(e.key.toLowerCase()==='n'){ notes.classList.toggle('show'); }
+    else if(e.key.toLowerCase()==='f'){ if(!document.fullscreenElement)document.documentElement.requestFullscreen();else document.exitFullscreen(); }
+    else if(e.key.toLowerCase()==='p'){ window.print(); }
+  });
+  document.getElementById('deck').addEventListener('click',e=>{ show(i + (e.clientX > window.innerWidth/2 ? 1 : -1)); });
+  show(0);
+</script>
+</body>
+</html>

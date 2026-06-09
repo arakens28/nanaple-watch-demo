@@ -292,9 +292,9 @@
         <div class="kpi-item-head"><span class="lbl">現状 → 目標</span><span class="val">¥4,000万 / ¥10億</span></div>
         <div class="kpi-bar-bg"><div class="kpi-bar-fill" style="width:4%;background:linear-gradient(90deg,#ea580c,#fbbf24)"></div></div>
       </div>
-      <div class="kpi-current" style="margin-top:14px">目標達成時の内訳（シナリオB・逆算）</div>
+      <div class="kpi-current" style="margin-top:14px">現状内訳(5/50/45)を伸ばす目標構成</div>
       <div id="kpi-list"></div>
-      <div class="kpi-note">※ 現状4,000万円。内訳バーは目標10億円達成時のモデル仮説。実データに合わせて更新する。</div>
+      <div class="kpi-note">※ 現状4,000万円は法人50%+FC45%のB2B/FC型。主エンジンはFC(自己増殖)。個人は入口として活用。</div>
     </div>
 
     <div class="panel-section">
@@ -327,11 +327,9 @@ const MODEL = 'claude-haiku-4-5-20251001';
 
 // ===== KPI dashboard (model assumptions from the business plan, scenario B) =====
 const KPI = [
-  { lbl: '個人受講', val: '25,000人 × ¥2万 = ¥5.0億', pct: 50, color: '#38bdf8' },
-  { lbl: '法人受講', val: '750社 × ¥40万 = ¥3.0億', pct: 30, color: '#a78bfa' },
-  { lbl: 'FCロイヤリティ', val: '150件 × ¥80万 = ¥1.2億', pct: 12, color: '#fb923c' },
-  { lbl: 'FC加盟金(償却)', val: '¥0.5億', pct: 5, color: '#f472b6' },
-  { lbl: 'イベント/付帯', val: '¥0.3億', pct: 3, color: '#34d399' },
+  { lbl: 'FC（主エンジン）', val: '現¥1,800万 → ¥5.0億（約28倍）', pct: 50, color: '#fb923c' },
+  { lbl: '法人受講（柱）', val: '現¥2,000万 → ¥4.5億（約23倍）', pct: 45, color: '#a78bfa' },
+  { lbl: '個人受講（入口）', val: '現¥200万 → ¥0.5億（約25倍）', pct: 5, color: '#38bdf8' },
 ];
 
 function renderKpi() {
@@ -515,7 +513,7 @@ async function startPipeline() {
   thinkingEl = null;
 
   try {
-    const context = `【現在地】月商4,000万円。【目標】ホリエモンAI学校の法人受講・FC加盟・個人受講で月商10億円（=現状の25倍）。\n【チーム】人間=マーケ1・営業2／AI上司=ChatGPT・Gemini・Claude。\n【ツール】X・Lステップ・HubSpot・Crisp。\n\n【経営タスク】\n${task}`;
+    const context = `【現在地】月商4,000万円（内訳: 法人受講50%=¥2,000万／FC45%=¥1,800万／個人受講5%=¥200万）。法人＋FCで95%のB2B/FC型。\n【目標】月商10億円（=現状の25倍）。主エンジンはFC（オーナーが自己増殖）、安定の柱は法人受講。個人受講は法人・FCへの入口（リード源）。\n【チーム】人間=マーケ1・営業2／AI上司=ChatGPT・Gemini・Claude。\n【ツール】X・Lステップ・HubSpot・Crisp。\n\n【経営タスク】\n${task}`;
 
     // Step 1: ChatGPT — 発散・アイデア出し
     const ideaOut = await callAgent('chatgpt',

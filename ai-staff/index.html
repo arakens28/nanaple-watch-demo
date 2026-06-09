@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ホリエモンAI学校 AI社員システム</title>
+  <title>月商10億円プロジェクト — AI上司 × 人間チーム</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; font-family: 'Segoe UI', 'Hiragino Sans', 'Yu Gothic UI', sans-serif; }
@@ -22,9 +22,13 @@
     }
     .header-logo { font-size: 24px; }
     .header-title {
-      font-size: 18px; font-weight: 700; letter-spacing: 0.05em;
+      font-size: 18px; font-weight: 700; letter-spacing: 0.04em;
       background: linear-gradient(90deg, #fb923c, #a78bfa);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .header-goal {
+      font-size: 12px; color: #fbbf24; margin-left: 16px;
+      background: #422006; border: 1px solid #92400e; border-radius: 20px; padding: 4px 12px;
     }
     .header-subtitle { font-size: 12px; color: #64748b; margin-left: auto; }
     .btn-settings {
@@ -39,21 +43,21 @@
 
     /* ===== Sidebar ===== */
     .sidebar {
-      width: 260px; flex-shrink: 0; background: #1e293b;
-      border-right: 1px solid #334155; padding: 20px 16px;
-      overflow-y: auto; display: flex; flex-direction: column; gap: 10px;
+      width: 280px; flex-shrink: 0; background: #1e293b;
+      border-right: 1px solid #334155; padding: 18px 14px;
+      overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
     }
-    .sidebar-heading { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #64748b; text-transform: uppercase; margin-bottom: 4px; }
+    .sidebar-heading { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #64748b; text-transform: uppercase; margin: 10px 4px 4px; }
     .agent-card {
       background: #0f172a; border: 1px solid #334155; border-radius: 12px;
-      padding: 12px; display: flex; align-items: center; gap: 10px;
+      padding: 11px; display: flex; align-items: center; gap: 10px;
       transition: border-color 0.3s, box-shadow 0.3s;
     }
     .agent-card.active { border-color: var(--c); box-shadow: 0 0 12px color-mix(in srgb, var(--c) 25%, transparent); }
     .agent-avatar {
-      width: 40px; height: 40px; border-radius: 50%; background: color-mix(in srgb, var(--c) 20%, transparent);
+      width: 38px; height: 38px; border-radius: 50%; background: color-mix(in srgb, var(--c) 20%, transparent);
       border: 1.5px solid color-mix(in srgb, var(--c) 40%, transparent);
-      display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; position: relative;
+      display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; position: relative;
     }
     .agent-avatar::after {
       content: ''; position: absolute; inset: -3px; border-radius: 50%;
@@ -62,13 +66,16 @@
     .agent-card.thinking .agent-avatar::after { opacity: 1; animation: spin-ring 1.2s linear infinite; }
     @keyframes spin-ring { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     .agent-info { flex: 1; min-width: 0; }
-    .agent-name { font-size: 14px; font-weight: 600; color: #f1f5f9; }
+    .agent-name { font-size: 13.5px; font-weight: 600; color: #f1f5f9; }
     .agent-role { font-size: 11px; color: #94a3b8; margin-top: 1px; }
     .status-badge { font-size: 10px; font-weight: 500; padding: 3px 7px; border-radius: 20px; white-space: nowrap; transition: all 0.3s; }
     .s-idle     { background: #1e293b; color: #64748b; border: 1px solid #334155; }
     .s-thinking { background: #422006; color: #fbbf24; border: 1px solid #92400e; animation: pulse 1s ease-in-out infinite; }
     .s-speaking { background: #052e16; color: #4ade80; border: 1px solid #166534; }
+    .human-badge { font-size: 10px; color: #38bdf8; border: 1px solid #0c4a6e; background: #082f49; padding: 3px 7px; border-radius: 20px; }
     @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.6; } }
+    .tool-row { display: flex; flex-wrap: wrap; gap: 6px; padding: 4px; }
+    .tool-chip { font-size: 11px; background: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 4px 9px; color: #cbd5e1; }
 
     /* ===== Main ===== */
     .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
@@ -105,13 +112,13 @@
     @keyframes bounce { 0%,80%,100% { transform:scale(0.7); opacity:0.4; } 40% { transform:scale(1); opacity:1; } }
 
     /* ===== Right Panel ===== */
-    .right-panel { width: 310px; flex-shrink: 0; background: #1e293b; border-left: 1px solid #334155; display: flex; flex-direction: column; overflow-y: auto; }
+    .right-panel { width: 320px; flex-shrink: 0; background: #1e293b; border-left: 1px solid #334155; display: flex; flex-direction: column; overflow-y: auto; }
     .panel-section { padding: 18px; border-bottom: 1px solid #334155; }
     .panel-section-title { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #64748b; margin-bottom: 12px; }
     textarea#task-input {
       width: 100%; background: #0f172a; border: 1px solid #334155; border-radius: 8px;
       padding: 11px; color: #e2e8f0; font-size: 14px; font-family: inherit;
-      resize: vertical; min-height: 110px; line-height: 1.6; outline: none; transition: border-color 0.2s;
+      resize: vertical; min-height: 100px; line-height: 1.6; outline: none; transition: border-color 0.2s;
     }
     textarea#task-input:focus { border-color: #ea580c; }
     textarea#task-input::placeholder { color: #475569; }
@@ -128,10 +135,23 @@
     .progress-bar-bg { background: #0f172a; border-radius: 4px; height: 6px; overflow: hidden; }
     .progress-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, #ea580c, #7c3aed); transition: width 0.4s ease; width: 0%; }
     .progress-label { font-size: 11px; color: #64748b; margin-top: 5px; }
-    .summary-card { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 13px; font-size: 13px; line-height: 1.75; color: #94a3b8; white-space: pre-wrap; word-break: break-word; min-height: 80px; }
+    .summary-card { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 13px; font-size: 13px; line-height: 1.75; color: #94a3b8; white-space: pre-wrap; word-break: break-word; min-height: 60px; }
     .summary-card.has-content { color: #cbd5e1; }
     .error-box { background: #450a0a; border: 1px solid #7f1d1d; border-radius: 8px; padding: 11px; font-size: 13px; color: #fca5a5; display: none; margin-top: 10px; }
     .error-box.visible { display: block; }
+
+    /* ===== KPI Dashboard ===== */
+    .kpi-goal { display: flex; align-items: baseline; gap: 6px; margin-bottom: 4px; }
+    .kpi-goal .num { font-size: 26px; font-weight: 800; color: #fbbf24; }
+    .kpi-goal .unit { font-size: 13px; color: #94a3b8; }
+    .kpi-current { font-size: 12px; color: #64748b; margin-bottom: 12px; }
+    .kpi-item { margin-bottom: 12px; }
+    .kpi-item-head { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
+    .kpi-item-head .lbl { color: #cbd5e1; }
+    .kpi-item-head .val { color: #94a3b8; }
+    .kpi-bar-bg { background: #0f172a; border-radius: 4px; height: 6px; overflow: hidden; }
+    .kpi-bar-fill { height: 100%; border-radius: 4px; }
+    .kpi-note { font-size: 11px; color: #475569; line-height: 1.6; margin-top: 8px; }
 
     /* ===== API Key Modal ===== */
     .modal-overlay {
@@ -167,7 +187,7 @@
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <h2>🔑 APIキーを設定</h2>
-    <p>AI社員を動かすには、Anthropic（クロード）のAPIキーが必要です。<br>このブラウザにだけ保存され、外部には送信されません。</p>
+    <p>AI上司チームを動かすには、Anthropic（Claude）のAPIキーが必要です。<br>このブラウザにだけ保存され、外部には送信されません。</p>
     <input type="password" id="api-key-input" placeholder="sk-ant-api03-..." />
     <div class="modal-actions">
       <button class="btn-save" onclick="saveApiKey()">保存して開始</button>
@@ -175,7 +195,7 @@
     </div>
     <p class="modal-note">
       APIキーをお持ちでない方は <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> で取得できます。<br>
-      ※ キーはこのブラウザの localStorage にのみ保存されます。
+      ※ このデモではAI上司3名すべてをClaudeプロキシ経由で駆動し、各役割をシステムプロンプトで演じ分けています。
     </p>
   </div>
 </div>
@@ -183,39 +203,57 @@
 <!-- ===== Header ===== -->
 <header>
   <div class="header-logo">🚀</div>
-  <div class="header-title">ホリエモンAI学校 AI社員システム</div>
-  <div class="header-subtitle">売上最大化マルチエージェント</div>
+  <div class="header-title">月商10億円プロジェクト</div>
+  <div class="header-goal">🎯 目標 月商 10億円</div>
+  <div class="header-subtitle">AI上司3名 × 人間チーム3名</div>
   <button class="btn-settings" onclick="openModal()">⚙️ APIキー設定</button>
 </header>
 
 <div class="layout">
   <!-- ===== Sidebar ===== -->
   <aside class="sidebar">
-    <div class="sidebar-heading">AIチームメンバー</div>
-    <div class="agent-card" id="card-horie" style="--c:#ea580c">
-      <div class="agent-avatar">🔥</div>
-      <div class="agent-info"><div class="agent-name">CEO堀江</div><div class="agent-role">戦略判断・最終決断</div></div>
-      <span class="status-badge s-idle" id="st-horie">待機中</span>
+    <div class="sidebar-heading">AI上司（3名）</div>
+    <div class="agent-card" id="card-chatgpt" style="--c:#10a37f">
+      <div class="agent-avatar">💡</div>
+      <div class="agent-info"><div class="agent-name">ChatGPT</div><div class="agent-role">発散・コピー・台本生成</div></div>
+      <span class="status-badge s-idle" id="st-chatgpt">待機中</span>
     </div>
-    <div class="agent-card" id="card-nishino" style="--c:#2563eb">
+    <div class="agent-card" id="card-gemini" style="--c:#4285f4">
+      <div class="agent-avatar">🔎</div>
+      <div class="agent-info"><div class="agent-name">Gemini</div><div class="agent-role">リサーチ・データ分析</div></div>
+      <span class="status-badge s-idle" id="st-gemini">待機中</span>
+    </div>
+    <div class="agent-card" id="card-claude" style="--c:#d97757">
+      <div class="agent-avatar">🧭</div>
+      <div class="agent-info"><div class="agent-name">Claude</div><div class="agent-role">統括・品質管理・最終決断</div></div>
+      <span class="status-badge s-idle" id="st-claude">待機中</span>
+    </div>
+
+    <div class="sidebar-heading">人間スタッフ（3名）</div>
+    <div class="agent-card" style="--c:#38bdf8">
       <div class="agent-avatar">📣</div>
-      <div class="agent-info"><div class="agent-name">マーケAI西野</div><div class="agent-role">集客・SNS・ファネル</div></div>
-      <span class="status-badge s-idle" id="st-nishino">待機中</span>
+      <div class="agent-info"><div class="agent-name">マーケター</div><div class="agent-role">集客・LP・広告・SNS</div></div>
+      <span class="human-badge">実行担当</span>
     </div>
-    <div class="agent-card" id="card-tamura" style="--c:#7c3aed">
-      <div class="agent-avatar">🎓</div>
-      <div class="agent-info"><div class="agent-name">コンテンツAI田村</div><div class="agent-role">講座設計・カリキュラム</div></div>
-      <span class="status-badge s-idle" id="st-tamura">待機中</span>
+    <div class="agent-card" style="--c:#38bdf8">
+      <div class="agent-avatar">🤝</div>
+      <div class="agent-info"><div class="agent-name">セールスA</div><div class="agent-role">個人/法人クローズ</div></div>
+      <span class="human-badge">実行担当</span>
     </div>
-    <div class="agent-card" id="card-yamada" style="--c:#16a34a">
-      <div class="agent-avatar">💰</div>
-      <div class="agent-info"><div class="agent-name">セールスAI山田</div><div class="agent-role">成約率・オファー設計</div></div>
-      <span class="status-badge s-idle" id="st-yamada">待機中</span>
+    <div class="agent-card" style="--c:#38bdf8">
+      <div class="agent-avatar">🏢</div>
+      <div class="agent-info"><div class="agent-name">セールスB</div><div class="agent-role">FC加盟・大型法人</div></div>
+      <span class="human-badge">実行担当</span>
     </div>
-    <div class="agent-card" id="card-sato" style="--c:#dc2626">
-      <div class="agent-avatar">📊</div>
-      <div class="agent-info"><div class="agent-name">分析AI佐藤</div><div class="agent-role">KPI・数値レビュー</div></div>
-      <span class="status-badge s-idle" id="st-sato">待機中</span>
+
+    <div class="sidebar-heading">連携ツール</div>
+    <div class="tool-row">
+      <span class="tool-chip">𝕏 X</span>
+      <span class="tool-chip">📲 Lステップ</span>
+      <span class="tool-chip">📊 HubSpot</span>
+      <span class="tool-chip">💬 Crisp</span>
+      <span class="tool-chip">🎓 ホリエモンAI学校</span>
+      <span class="tool-chip">🏪 FC加盟</span>
     </div>
   </aside>
 
@@ -223,12 +261,12 @@
   <main class="main">
     <div class="convo-header">
       <div class="dot"></div>
-      リアルタイム会議ログ
+      リアルタイム会議ログ — 発散(ChatGPT) → 検証(Gemini) → 決断(Claude)
     </div>
     <div class="convo-log" id="convo-log">
       <div class="empty-state" id="empty-state">
         <div class="ei">💬</div>
-        <p>右のフォームからタスクを入力すると、<br>AI社員5人がリアルタイムで会議します</p>
+        <p>右のフォームから経営タスクを入力すると、<br>AI上司3名がリアルタイムで会議し、<br>人間チームへの実行プランをまとめます</p>
       </div>
     </div>
   </main>
@@ -236,49 +274,70 @@
   <!-- ===== Right Panel ===== -->
   <aside class="right-panel">
     <div class="panel-section">
-      <div class="panel-section-title">タスク入力</div>
-      <textarea id="task-input" placeholder="例: 次の四半期の売上を30%伸ばす施策を考えてほしい。新規入会と継続率向上の両方で。"></textarea>
-      <button class="btn-submit" id="btn-submit" onclick="startPipeline()">▶ AIチームに依頼する</button>
+      <div class="panel-section-title">経営タスク入力</div>
+      <textarea id="task-input" placeholder="例: 個人受講の新規登録を月1,000人増やしたい。X・Lステップ・広告を使った集客ファネルを設計してほしい。"></textarea>
+      <button class="btn-submit" id="btn-submit" onclick="startPipeline()">▶ AI上司チームに依頼する</button>
       <div class="progress-wrap" id="progress-wrap">
         <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill"></div></div>
         <div class="progress-label" id="progress-label">処理中...</div>
       </div>
       <div class="error-box" id="error-box"></div>
     </div>
+
     <div class="panel-section">
-      <div class="panel-section-title">最終決断（堀江まとめ）</div>
-      <div class="summary-card" id="summary-card">AIチームの最終アクションプランがここに表示されます</div>
+      <div class="panel-section-title">📈 月商10億円 KPIダッシュボード</div>
+      <div class="kpi-goal"><span class="num">¥10億</span><span class="unit">/ 月（目標）</span></div>
+      <div class="kpi-current">複合モデル（シナリオB）で逆算した必要レバー</div>
+      <div id="kpi-list"></div>
+      <div class="kpi-note">※ 数値は事業計画書のモデル仮説。実データに合わせて更新する。</div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-section-title">最終決断（Claudeまとめ）</div>
+      <div class="summary-card" id="summary-card">AI上司チームの最終アクションプランがここに表示されます</div>
     </div>
   </aside>
 </div>
 
 <script>
-// ===== Agent definitions =====
+// ===== AI上司 (AI boss) definitions =====
+// このデモではAI上司3名すべてをClaudeプロキシで駆動し、役割をシステムプロンプトで演じ分ける。
 const AGENTS = {
-  horie: {
-    id: 'horie', name: '堀江', label: 'CEO堀江', emoji: '🔥', color: '#ea580c',
-    system: 'あなたはホリエモンAI学校のCEO戦略AIアシスタント堀江です。ビジネスの本質を見抜き、売上最大化のための大胆な戦略を指示します。遠慮なく本質を突いた指示を200文字以内で出してください。余計な前置きは不要。',
+  chatgpt: {
+    id: 'chatgpt', name: 'ChatGPT', label: 'ChatGPT', emoji: '💡', color: '#10a37f',
+    system: 'あなたは「月商10億円プロジェクト」のAI上司の一人、発散担当のChatGPTです。広告コピー・X投稿・セールス台本・LP文面などのアイデアを大量かつ大胆に生み出すのが役割。与えられた経営タスクに対し、具体的なクリエイティブ施策案を箇条書き中心で300文字以内で提案してください。前置きは不要。',
   },
-  nishino: {
-    id: 'nishino', name: '西野', label: 'マーケAI西野', emoji: '📣', color: '#2563eb',
-    system: 'あなたはホリエモンAI学校のマーケティングAI西野です。SNS・コミュニティ・ファネル設計のプロです。CEOの指示を受けて、集客から購買までの具体的なマーケ施策を300文字以内で提案してください。',
+  gemini: {
+    id: 'gemini', name: 'Gemini', label: 'Gemini', emoji: '🔎', color: '#4285f4',
+    system: 'あなたは「月商10億円プロジェクト」のAI上司の一人、リサーチ・データ分析担当のGeminiです。市場・競合・ターゲット・数値の観点から、提案の前提が妥当か検証し、CPA/LTV/転換率などの数字感を添えて根拠を補強します。与えられたタスクと発散案を踏まえ、データ視点のリサーチと検証ポイントを300文字以内で示してください。',
   },
-  tamura: {
-    id: 'tamura', name: '田村', label: 'コンテンツAI田村', emoji: '🎓', color: '#7c3aed',
-    system: 'あなたはホリエモンAI学校のコンテンツAI田村です。講座設計・カリキュラム・教材企画のプロです。CEOの指示を受けて、受講生が熱狂するコンテンツ戦略を300文字以内で提案してください。',
-  },
-  yamada: {
-    id: 'yamada', name: '山田', label: 'セールスAI山田', emoji: '💰', color: '#16a34a',
-    system: 'あなたはホリエモンAI学校のセールスAI山田です。成約率向上・オファー設計・価格戦略のプロです。CEOの指示とマーケ・コンテンツ案を踏まえて、売上直結の販売戦略を300文字以内で提案してください。',
-  },
-  sato: {
-    id: 'sato', name: '佐藤', label: '分析AI佐藤', emoji: '📊', color: '#dc2626',
-    system: 'あなたはホリエモンAI学校の数値分析AI佐藤です。KPI設計・施策評価・改善提案のプロです。チーム全員の提案を数字の観点でレビューし、優先度と改善点を200文字以内でフィードバックしてください。',
+  claude: {
+    id: 'claude', name: 'Claude', label: 'Claude', emoji: '🧭', color: '#d97757',
+    system: 'あなたは「月商10億円プロジェクト」のAI上司の統括役、意思決定と品質管理を担うClaudeです。ChatGPTの発散案とGeminiの検証を統合し、ホリエモンAI学校の法人受講・FC加盟・個人受講を伸ばす観点で整合性をとり、人間チーム（マーケ1・営業2）への最終アクションプランを優先度順の箇条書きで決断します。誇大表現や法令上問題のある表現は避け、現実的に。',
   },
 };
 
-const PIPELINE_STEPS = ['horie', 'nishino', 'tamura', 'yamada', 'sato', 'horie_final'];
+const PIPELINE_STEPS = ['chatgpt', 'gemini', 'claude_final'];
 const MODEL = 'claude-haiku-4-5-20251001';
+
+// ===== KPI dashboard (model assumptions from the business plan, scenario B) =====
+const KPI = [
+  { lbl: '個人受講', val: '25,000人 × ¥2万 = ¥5.0億', pct: 50, color: '#38bdf8' },
+  { lbl: '法人受講', val: '750社 × ¥40万 = ¥3.0億', pct: 30, color: '#a78bfa' },
+  { lbl: 'FCロイヤリティ', val: '150件 × ¥80万 = ¥1.2億', pct: 12, color: '#fb923c' },
+  { lbl: 'FC加盟金(償却)', val: '¥0.5億', pct: 5, color: '#f472b6' },
+  { lbl: 'イベント/付帯', val: '¥0.3億', pct: 3, color: '#34d399' },
+];
+
+function renderKpi() {
+  const host = document.getElementById('kpi-list');
+  host.innerHTML = KPI.map(k => `
+    <div class="kpi-item">
+      <div class="kpi-item-head"><span class="lbl">${k.lbl}</span><span class="val">${k.val}</span></div>
+      <div class="kpi-bar-bg"><div class="kpi-bar-fill" style="width:${k.pct}%;background:${k.color}"></div></div>
+    </div>`).join('');
+}
+renderKpi();
 
 // ===== API Key =====
 let apiKey = localStorage.getItem('anthropic_api_key') || '';
@@ -286,29 +345,17 @@ let apiKey = localStorage.getItem('anthropic_api_key') || '';
 function openModal() {
   document.getElementById('api-key-input').value = apiKey;
   document.getElementById('modal').classList.remove('hidden');
-  // Hide cancel button if no key set yet
   document.getElementById('btn-cancel').style.display = apiKey ? 'block' : 'none';
 }
-
-function closeModal() {
-  document.getElementById('modal').classList.add('hidden');
-}
-
+function closeModal() { document.getElementById('modal').classList.add('hidden'); }
 function saveApiKey() {
   const val = document.getElementById('api-key-input').value.trim();
-  if (!val.startsWith('sk-ant-')) {
-    alert('APIキーは sk-ant- で始まる文字列です。確認してください。');
-    return;
-  }
+  if (!val.startsWith('sk-ant-')) { alert('APIキーは sk-ant- で始まる文字列です。確認してください。'); return; }
   apiKey = val;
   localStorage.setItem('anthropic_api_key', apiKey);
   closeModal();
 }
-
-// Show modal on load if no key
-window.addEventListener('load', () => {
-  if (!apiKey) openModal();
-});
+window.addEventListener('load', () => { if (!apiKey) openModal(); });
 
 // ===== Status helpers =====
 function setStatus(agentId, status) {
@@ -330,19 +377,12 @@ function setStatus(agentId, status) {
     badge.textContent = '待機中';
   }
 }
-
-function resetAll() {
-  Object.keys(AGENTS).forEach(id => setStatus(id, 'idle'));
-}
+function resetAll() { Object.keys(AGENTS).forEach(id => setStatus(id, 'idle')); }
 
 // ===== Conversation log =====
 let currentBubble = null;
 let thinkingEl = null;
-
-function removeThinking() {
-  if (thinkingEl) { thinkingEl.remove(); thinkingEl = null; }
-}
-
+function removeThinking() { if (thinkingEl) { thinkingEl.remove(); thinkingEl = null; } }
 function addThinking(agent) {
   removeThinking();
   const log = document.getElementById('convo-log');
@@ -355,7 +395,6 @@ function addThinking(agent) {
   thinkingEl = el;
   scrollLog();
 }
-
 function startMessage(agent) {
   removeThinking();
   document.getElementById('empty-state')?.remove();
@@ -377,23 +416,9 @@ function startMessage(agent) {
   scrollLog();
   return currentBubble;
 }
-
-function appendToken(token) {
-  if (!currentBubble) return;
-  currentBubble.textContent += token;
-  scrollLog();
-}
-
-function endMessage() {
-  if (!currentBubble) return;
-  currentBubble.classList.remove('streaming');
-  currentBubble = null;
-}
-
-function scrollLog() {
-  const log = document.getElementById('convo-log');
-  log.scrollTop = log.scrollHeight;
-}
+function appendToken(token) { if (currentBubble) { currentBubble.textContent += token; scrollLog(); } }
+function endMessage() { if (currentBubble) { currentBubble.classList.remove('streaming'); currentBubble = null; } }
+function scrollLog() { const log = document.getElementById('convo-log'); log.scrollTop = log.scrollHeight; }
 
 // ===== Progress =====
 function updateProgress(step, label) {
@@ -402,37 +427,24 @@ function updateProgress(step, label) {
   document.getElementById('progress-fill').style.width = pct + '%';
   document.getElementById('progress-label').textContent = label;
 }
-
 function finishProgress() {
   document.getElementById('progress-fill').style.width = '100%';
   document.getElementById('progress-label').textContent = '完了しました ✓';
   setTimeout(() => document.getElementById('progress-wrap').classList.remove('visible'), 2000);
 }
 
-// ===== Anthropic API streaming call =====
-async function callClaude(agentKey, messages, labelOverride, isSummary) {
+// ===== Anthropic API streaming call (via Netlify proxy) =====
+async function callAgent(agentKey, messages, isSummary) {
   const agent = AGENTS[agentKey];
-  const displayAgent = { ...agent };
-  if (labelOverride) displayAgent.label = labelOverride;
-
   setStatus(agent.id, 'thinking');
-  updateProgress(agentKey === 'horie' && isSummary ? 'horie_final' : agentKey, `${displayAgent.label} が考え中...`);
-  addThinking(displayAgent);
+  updateProgress(isSummary ? 'claude_final' : agentKey, `${agent.label} が考え中...`);
+  addThinking(agent);
 
   const resp = await fetch('/api/claude', {
     method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      max_tokens: 1024,
-      stream: true,
-      system: agent.system,
-      messages,
-    }),
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ model: MODEL, max_tokens: 1024, stream: true, system: agent.system, messages }),
   });
-
   if (!resp.ok) {
     const err = await resp.json().catch(() => ({}));
     throw new Error(err?.error?.message || `APIエラー: ${resp.status}`);
@@ -443,7 +455,6 @@ async function callClaude(agentKey, messages, labelOverride, isSummary) {
   const decoder = new TextDecoder();
   let buf = '';
   let bubble = null;
-
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;
@@ -461,7 +472,7 @@ async function callClaude(agentKey, messages, labelOverride, isSummary) {
           fullText += token;
           if (!bubble) {
             setStatus(agent.id, 'speaking');
-            bubble = startMessage(displayAgent);
+            bubble = startMessage(agent);
             if (isSummary) {
               const sc = document.getElementById('summary-card');
               sc.textContent = '';
@@ -470,29 +481,25 @@ async function callClaude(agentKey, messages, labelOverride, isSummary) {
             currentBubble = bubble;
           }
           appendToken(token);
-          if (isSummary) {
-            document.getElementById('summary-card').textContent += token;
-          }
+          if (isSummary) document.getElementById('summary-card').textContent += token;
         }
       } catch {}
     }
   }
-
   endMessage();
   setStatus(agent.id, 'idle');
   return fullText;
 }
 
-// ===== Pipeline =====
+// ===== Pipeline: ChatGPT(発散) → Gemini(検証) → Claude(決断) =====
 async function startPipeline() {
   if (!apiKey) { openModal(); return; }
   const task = document.getElementById('task-input').value.trim();
-  if (!task) { alert('タスクを入力してください'); return; }
+  if (!task) { alert('経営タスクを入力してください'); return; }
 
-  // Reset UI
   document.getElementById('convo-log').innerHTML = '';
   const sc = document.getElementById('summary-card');
-  sc.textContent = 'AIチームの最終アクションプランがここに表示されます';
+  sc.textContent = 'AI上司チームの最終アクションプランがここに表示されます';
   sc.classList.remove('has-content');
   document.getElementById('error-box').classList.remove('visible');
   document.getElementById('progress-wrap').classList.add('visible');
@@ -503,28 +510,22 @@ async function startPipeline() {
   thinkingEl = null;
 
   try {
-    // Step 1: CEO堀江 — 戦略指示
-    const ceoOut = await callClaude('horie',
-      [{ role: 'user', content: `以下のタスクを分析し、売上最大化のためにチームへ指示を出してください:\n\n${task}` }],
-      'CEO堀江', false);
+    const context = `【会社の目標】ホリエモンAI学校の法人受講・FC加盟・個人受講で月商10億円。\n【チーム】人間=マーケ1・営業2／AI上司=ChatGPT・Gemini・Claude。\n【ツール】X・Lステップ・HubSpot・Crisp。\n\n【経営タスク】\n${task}`;
 
-    // Step 2: 西野・田村・山田 — 並列
-    const base = `CEOからの指示:\n${ceoOut}\n\n元のタスク:\n${task}\n\n`;
-    const [mkOut, ctOut, slOut] = await Promise.all([
-      callClaude('nishino', [{ role: 'user', content: base + '集客・SNS・ファネル設計の観点で施策を提案してください。' }], 'マーケAI西野', false),
-      callClaude('tamura',  [{ role: 'user', content: base + 'コンテンツ・講座設計の観点で施策を提案してください。' }], 'コンテンツAI田村', false),
-      callClaude('yamada',  [{ role: 'user', content: base + 'オファー設計・成約率向上の観点で施策を提案してください。' }], 'セールスAI山田', false),
-    ]);
+    // Step 1: ChatGPT — 発散・アイデア出し
+    const ideaOut = await callAgent('chatgpt',
+      [{ role: 'user', content: `${context}\n\n上記タスクに対し、集客・コピー・施策のアイデアを大胆に発散してください。` }],
+      false);
 
-    // Step 3: 佐藤 — 数値レビュー
-    const anOut = await callClaude('sato',
-      [{ role: 'user', content: `チームの提案を数値・優先度の観点でレビューしてください:\n\n【西野】\n${mkOut}\n\n【田村】\n${ctOut}\n\n【山田】\n${slOut}` }],
-      '分析AI佐藤', false);
+    // Step 2: Gemini — リサーチ・検証
+    const researchOut = await callAgent('gemini',
+      [{ role: 'user', content: `${context}\n\n【ChatGPTの発散案】\n${ideaOut}\n\n上記案をデータ・市場・数値の観点から検証し、根拠と注意点を補強してください。` }],
+      false);
 
-    // Step 4: 堀江 — 最終決断
-    await callClaude('horie',
-      [{ role: 'user', content: `チーム全員のアウトプットを受けて、売上最大化の最終アクションプランを優先度順・箇条書きで決断してください。\n\n【タスク】\n${task}\n\n【西野】\n${mkOut}\n\n【田村】\n${ctOut}\n\n【山田】\n${slOut}\n\n【佐藤レビュー】\n${anOut}` }],
-      'CEO堀江（最終決断）', true);
+    // Step 3: Claude — 統合・最終決断
+    await callAgent('claude',
+      [{ role: 'user', content: `${context}\n\n【ChatGPTの発散案】\n${ideaOut}\n\n【Geminiの検証】\n${researchOut}\n\n両者を統合し、人間チーム（マーケ1・営業2）が今週から実行できる最終アクションプランを優先度順の箇条書きで決断してください。各項目に担当（マーケ/営業A/営業B）と使うツールを添えてください。` }],
+      true);
 
     finishProgress();
   } catch (e) {
@@ -535,16 +536,12 @@ async function startPipeline() {
     box.textContent = 'エラー: ' + e.message;
     box.classList.add('visible');
     document.getElementById('progress-wrap').classList.remove('visible');
-    // If 401, likely bad API key
-    if (e.message.includes('401') || e.message.includes('auth')) {
-      setTimeout(openModal, 500);
-    }
+    if (e.message.includes('401') || e.message.includes('auth')) setTimeout(openModal, 500);
   } finally {
     document.getElementById('btn-submit').disabled = false;
   }
 }
 
-// Ctrl+Enter to submit
 document.getElementById('task-input').addEventListener('keydown', e => {
   if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); startPipeline(); }
 });

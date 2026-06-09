@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lステップ配信シナリオ｜既存3,000人の掘り起こし</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{ --bg:#0f172a; --bg2:#1e293b; --line:#334155; --txt:#e2e8f0; --sub:#94a3b8; --or:#fb923c; --pp:#a78bfa; --gr:#4ade80; --rd:#f87171; --bl:#38bdf8; --line2:#475569; }
+  html,body{font-family:'Hiragino Sans','Yu Gothic UI',sans-serif;background:#0b1120;color:var(--txt);line-height:1.7;}
+  .wrap{max-width:920px;margin:0 auto;padding:48px 28px 80px;}
+  header.top{border-bottom:2px solid var(--or);padding-bottom:20px;margin-bottom:28px;}
+  .kick{font-size:12px;letter-spacing:.18em;color:var(--or);font-weight:700;text-transform:uppercase;}
+  h1{font-size:30px;font-weight:800;margin:6px 0;background:linear-gradient(90deg,var(--or),var(--pp));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .sub{color:var(--sub);font-size:14px;}
+  h2{font-size:21px;font-weight:800;margin:36px 0 12px;padding-left:12px;border-left:5px solid var(--or);}
+  h3{font-size:16px;font-weight:700;margin:20px 0 8px;color:#fff;}
+  p{font-size:14.5px;color:#cbd5e1;margin:8px 0;}
+  ul{margin:8px 0 8px 4px;list-style:none;}
+  li{font-size:14.5px;color:#cbd5e1;padding-left:20px;position:relative;margin:6px 0;}
+  li::before{content:'▸';position:absolute;left:0;color:var(--or);}
+  b{color:#fff;} .gr{color:var(--gr);font-weight:700;} .rd{color:var(--rd);font-weight:700;} .bl{color:var(--bl);font-weight:700;} .or{color:var(--or);font-weight:700;}
+  .callout{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:14px 0;}
+  .callout.warn{border-color:#92400e;background:#2a1a06;}
+  .callout.good{border-color:#166534;background:#06210f;}
+  .callout .h{font-weight:700;margin-bottom:6px;}
+  /* flow */
+  .flow{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:18px;margin:14px 0;font-size:14px;}
+  .flow .step{padding:8px 0;}
+  .flow .br{margin-left:18px;border-left:2px solid var(--line2);padding-left:16px;}
+  .badge{display:inline-block;font-size:12px;font-weight:700;border-radius:6px;padding:2px 8px;margin-right:8px;}
+  .bA{background:#082f49;color:#7dd3fc;border:1px solid #0c4a6e;}
+  .bB{background:#2e1065;color:#c4b5fd;border:1px solid #5b21b6;}
+  .bC{background:#422006;color:#fbbf24;border:1px solid #92400e;}
+  /* copy block */
+  .msg{background:#0e1626;border:1px solid var(--line2);border-radius:12px;padding:0;margin:12px 0;overflow:hidden;}
+  .msg .mh{display:flex;justify-content:space-between;align-items:center;background:#111c30;padding:8px 14px;border-bottom:1px solid var(--line);font-size:12px;color:var(--sub);}
+  .msg .mh .tag{color:var(--or);font-weight:700;}
+  .msg .mb{padding:14px 16px;font-size:14.5px;color:#e8eef7;white-space:pre-wrap;font-family:'Hiragino Sans','Yu Gothic UI',sans-serif;}
+  .btns{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;}
+  .btns .b{background:#1e293b;border:1px solid var(--line2);border-radius:20px;padding:6px 14px;font-size:13px;color:#e2e8f0;}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px;}
+  th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);}
+  th{color:var(--sub);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+  .foot{margin-top:40px;border-top:1px solid var(--line);padding-top:16px;font-size:12px;color:#64748b;}
+  @media print{ body{background:#0b1120;-webkit-print-color-adjust:exact;print-color-adjust:exact;} .wrap{max-width:none;padding:0 6mm;} h2{page-break-after:avoid;} .msg,.callout,.flow{page-break-inside:avoid;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="kick">Lステップ 配信シナリオ</div>
+  <h1>既存3,000人を“掘り起こす”</h1>
+  <div class="sub">ホリエモンAI学校／過去に登録した冷めたリストを再活性化し、FC説明会・法人相談・個人受講へ振り分ける</div>
+</header>
+
+<h2>0. 大前提（コールドリストの鉄則）</h2>
+<div class="callout warn">
+  <div class="h">⚠ いきなり売らない</div>
+  <p>3,000人は「過去に登録したが今は冷めている」状態。いきなり売り込むと<b class="rd">ブロック・通報</b>が増え、リスト全体が痛みます。最初は<b>「再接触＋価値＋1タップの質問」</b>で“生きている人”を見つけ、分類してから出し分けます。</p>
+</div>
+<ul>
+  <li><b>① まず生存確認とセグメント分け</b>：1タップで「個人 / 法人担当 / 経営者」を選んでもらいタグ付け</li>
+  <li><b>② 出し分け</b>：タグ別に最適な出口へ（個人受講／法人相談（助成金）／<span class="or">FC説明会</span>）</li>
+  <li><b>③ 反応者を人間がフォロー</b>：クリック・予約した“ホット”だけ営業が個別対応。無反応は頻度を落とす</li>
+  <li><b>④ 配信は丁寧に</b>：初週は2通まで。ブロック率を見ながら。深夜・連投を避ける</li>
+</ul>
+
+<h2>1. シナリオ全体図（最初の3週間）</h2>
+<div class="flow">
+  <div class="step"><span class="badge bC">Day1</span><b>再接触＋セグメント診断</b>（全員へ1通）→ 選択タップでA/B/Cにタグ分け</div>
+  <div class="br">
+    <div class="step"><span class="badge bA">A 個人</span>Day3 成果事例 → Day6 個人受講/資格の案内 → Day9 体験/申込CTA</div>
+    <div class="step"><span class="badge bB">B 法人担当</span>Day3 助成金で実質負担減 → Day6 導入事例 → Day9 個別相談CTA</div>
+    <div class="step"><span class="badge bC">C 経営者/FC候補</span>Day3 FC収益事例(+¥2,119万) → Day6 仕組み解説 → Day9 <b class="or">FC説明会予約CTA</b></div>
+  </div>
+  <div class="step"><span class="badge bC">Day16・21</span><b>未反応の掘り起こし</b>（別角度の質問・事例）→ それでも無反応は「休眠」タグへ</div>
+</div>
+<div class="callout good">
+  <div class="h">✅ ゴール設定</div>
+  <p>このシナリオのゴールは「販売」ではなく <b>次の面談・予約の獲得</b>。A=個人受講申込／体験、B=法人個別相談、<b class="or">C=FC説明会の予約</b>。最も価値が高いのはC（FC）なので、経営者・販路ありの人を取りこぼさない導線にする。</p>
+</div>
+
+<h2>2. メッセージ文面（そのままLステップに貼れます）</h2>
+
+<h3>Day1 ─ 再接触＋セグメント診断（全員へ）</h3>
+<div class="msg">
+  <div class="mh"><span>テキスト＋選択肢ボタン</span><span class="tag">#再接触</span></div>
+  <div class="mb">ご無沙汰しております、ホリエモンAI学校です🙇
+
+この1年でAIの使われ方は大きく変わり、
+「会社の業務をAIで自動化して月◯十時間削減」
+という事例が一気に増えました。
+
+そこで、あなたに合った最新情報だけをお届けしたいです。
+いま一番近いものを1つ選んでください👇</div>
+  <div class="btns">
+    <span class="b">① 個人でAIを学びたい</span>
+    <span class="b">② 会社にAIを導入したい（担当者）</span>
+    <span class="b">③ 経営者・AIを事業にしたい</span>
+  </div>
+</div>
+<p class="sub">→ タップで <span class="bl">#個人</span> / <span style="color:#c4b5fd">#法人担当</span> / <span class="or">#経営者FC候補</span> のタグを自動付与し、以降を分岐。未タップの人は Day4 に同じ問いを1回だけ再送。</p>
+
+<h3 style="color:#7dd3fc">A｜個人で学びたい（#個人）</h3>
+<div class="msg">
+  <div class="mh"><span>Day3 価値提供</span><span class="tag">#個人</span></div>
+  <div class="mb">AIは「触ったことがある」だけで止まる人が9割。
+逆に、業務に1つ組み込めた人は一気に時短できています。
+
+例）非エンジニアの経理の方が、勤務表づくりをAIで自動化。
+「時給が2倍になった（笑）」という声も。
+
+明日、初心者がまず使うべきAIの順番をお送りします📩</div>
+</div>
+<div class="msg">
+  <div class="mh"><span>Day6 オファー</span><span class="tag">#個人</span></div>
+  <div class="mb">ホリエモンAI学校は、AI未経験の方向けに
+240本以上の講義＋チャットで講師に質問できる学校です。
+
+「文章生成AI能力検定」の資格も取れます。
+まずは無料で中身を見てみませんか？👇
+（受講者の声・カリキュラムをまとめています）</div>
+  <div class="btns"><span class="b">▶ 無料で中身を見る</span></div>
+</div>
+
+<h3 style="color:#c4b5fd">B｜会社に導入したい・担当者（#法人担当）</h3>
+<div class="msg">
+  <div class="mh"><span>Day3 価値提供（助成金）</span><span class="tag">#法人担当</span></div>
+  <div class="mb">会社でAI研修を入れるなら、いま知っておきたいのが助成金です。
+
+厚労省の人材開発支援助成金で、
+受講料の最大75%（大企業60%）が助成される可能性があります。
+例）4名受講 124万円 → 助成金で実質28万円のケースも。
+
+※ 助成の可否・金額は社労士の診断が必要です（無料診断あり）。</div>
+</div>
+<div class="msg">
+  <div class="mh"><span>Day6→9 事例＋個別相談CTA</span><span class="tag">#法人担当</span></div>
+  <div class="mb">導入企業では、問い合わせ対応で月20時間、入力作業で月65時間の削減事例も出ています。
+
+御社に合うか・助成金がいくら使えるかを、無料の個別相談でお話しします。
+日程を選ぶだけで予約できます👇</div>
+  <div class="btns"><span class="b">▶ 無料個別相談を予約</span><span class="b">▶ 助成金を無料診断</span></div>
+</div>
+
+<h3 class="or">C｜経営者・AIを事業にしたい（#経営者FC候補）← 最重要</h3>
+<div class="msg">
+  <div class="mh"><span>Day3 収益事例で関心づけ</span><span class="tag">#経営者FC候補</span></div>
+  <div class="mb">経営者の方に、いま一番反応が大きいお知らせです。
+
+「AIを使う側」ではなく「広める側」に回り、
+昨年加盟されたある事業者は、1年で21社に支援を提供。
+初期費用を引いても初年度＋2,119万円という実例が出ています。
+
+※ 実例であり成果を保証するものではありません。
+仕組みを明日かんたんに解説します。</div>
+</div>
+<div class="msg">
+  <div class="mh"><span>Day6 仕組み解説</span><span class="tag">#経営者FC候補</span></div>
+  <div class="mb">ホリエモンAI学校のFCは、御社の販路でAI研修・コンサルを販売し、
+売上の約50%が御社の収益になる仕組みです。
+
+商品・カリキュラム・サポート・ブランドが最初から揃っているので、
+ゼロから作る必要がありません（堀江貴文 共同創業・取締役）。
+
+当てはまる方が対象です👇
+・特定の地域に販路がある
+・特定の業界に販路がある
+・社員42名以上の法人</div>
+</div>
+<div class="msg">
+  <div class="mh"><span>Day9 FC説明会 予約CTA</span><span class="tag">#経営者FC候補</span></div>
+  <div class="mb">仕組みと収益例、加盟の流れを30分でご説明する
+オンラインFC説明会を開催しています。
+
+いまエリア別・業界別とも募集枠があり、先に始めた地域・業界が有利です。
+ご都合の良い日程を選ぶだけで予約できます👇</div>
+  <div class="btns"><span class="b">▶ FC説明会に申し込む</span></div>
+</div>
+
+<h3>Day16・21 ─ 未反応の掘り起こし（無反応タグ向け）</h3>
+<div class="msg">
+  <div class="mh"><span>別角度の質問で再活性</span><span class="tag">#無反応</span></div>
+  <div class="mb">お忙しいところ恐れ入ります🙏
+AIについて、いま一番気になるのはどれですか？（1タップでOK）
+
+お選びいただいた内容に合わせて、役立つ情報だけお送りします。</div>
+  <div class="btns"><span class="b">時短・自動化</span><span class="b">助成金</span><span class="b">事業にする(FC)</span><span class="b">今は不要</span></div>
+</div>
+<p class="sub">「今は不要」を選んだ人・2回連続無反応の人は <b>#休眠</b> タグへ。配信頻度を月1〜2回に落とし、新しい事例が出た時だけ接触。</p>
+
+<h2>3. タグ設計（最小構成）</h2>
+<table>
+  <tr><th>タグ</th><th>意味</th><th>使い道</th></tr>
+  <tr><td>#個人 / #法人担当 / #経営者FC候補</td><td>セグメント</td><td>配信の出し分け</td></tr>
+  <tr><td>#反応あり（クリック/予約）</td><td>ホットリード</td><td><b class="gr">営業が個別フォロー</b></td></tr>
+  <tr><td>#説明会予約 / #個別相談予約</td><td>アポ獲得</td><td>HubSpotへ連携・リマインド</td></tr>
+  <tr><td>#無反応 → #休眠</td><td>低活性</td><td>頻度を落として温存</td></tr>
+</table>
+
+<h2>4. 運用ルール・KPI</h2>
+<ul>
+  <li><b>配信頻度</b>：初週は最大2通。以降セグメント別に週1〜2通。深夜・連投NG（ブロック対策）</li>
+  <li><b>監視指標</b>：開封/クリック率、ブロック率（急増したら頻度を下げる）、各CTAの予約数</li>
+  <li><b>最重要KPI</b>：<span class="or">FC説明会の予約数</span>（C層）＋ 法人個別相談数（B層）＋ 個人受講申込（A層）</li>
+  <li><b>引き継ぎ</b>：予約・クリックした人は即HubSpotへ。営業A=法人相談、営業B=FC説明会フォロー</li>
+  <li><b>3,000人の現実的な見込み</b>：掘り起こしで反応するのは通常 数%〜十数%。仮に5%反応＝150人、うちC層が2〜3割なら<b>FC説明会候補 数十人</b>規模を初月で発掘できる可能性</li>
+</ul>
+
+<div class="callout good">
+  <div class="h">✅ まず今週やること</div>
+  <p>① Day1の「再接触＋3択」を3,000人へ配信（セグメント診断）→ ② タグ別にA/B/Cシナリオを起動 → ③ 予約・クリックした人を営業へ即連携。<b>売り込みはCTAの1回だけ、それまでは価値提供</b>に徹する。</p>
+</div>
+
+<div class="foot">
+  ※ 助成金の交付・却下・金額は当社では保証できません。必ず社労士（TRIPORT等）の診断をご案内ください。収益・成果事例は保証ではありません（景表法・特商法に配慮）。文面は配信前にコンプラ最終チェックを推奨。
+</div>
+
+</div>
+</body>
+</html>

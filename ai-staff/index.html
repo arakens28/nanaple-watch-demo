@@ -298,6 +298,23 @@
     </div>
 
     <div class="panel-section">
+      <div class="panel-section-title">🔻 法人ファネル実数（6ヶ月）</div>
+      <div class="kpi-item">
+        <div class="kpi-item-head"><span class="lbl">リード → 面談</span><span class="val">576 → 180（<b style="color:#f87171">31.2%</b>）</span></div>
+        <div class="kpi-bar-bg"><div class="kpi-bar-fill" style="width:31%;background:#f87171"></div></div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-item-head"><span class="lbl">面談 → 契約</span><span class="val">180 → 65（36.1%）</span></div>
+        <div class="kpi-bar-bg"><div class="kpi-bar-fill" style="width:36%;background:#a78bfa"></div></div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-item-head"><span class="lbl">全体歩留まり</span><span class="val">576 → 65（11.2%）</span></div>
+        <div class="kpi-bar-bg"><div class="kpi-bar-fill" style="width:11%;background:#34d399"></div></div>
+      </div>
+      <div class="kpi-note">🔴 最大の穴: <b>面談できず396件</b>（リードの68%）。即レス＋自動日程調整で面談化率31%→50%なら、追加広告費ゼロで法人+50%。<br>OB面談346→契約14（4%・CAC¥74万）はインバウンドの1/9効率。</div>
+    </div>
+
+    <div class="panel-section">
       <div class="panel-section-title">最終決断（Claudeまとめ）</div>
       <div class="summary-card" id="summary-card">AI上司チームの最終アクションプランがここに表示されます</div>
     </div>
@@ -513,7 +530,7 @@ async function startPipeline() {
   thinkingEl = null;
 
   try {
-    const context = `【現在地】月商4,000万円（内訳: 法人受講50%=¥2,000万／FC45%=¥1,800万／個人受講5%=¥200万）。法人＋FCで95%のB2B/FC型。\n【目標】月商10億円（=現状の25倍）。主エンジンはFC（オーナーが自己増殖）、安定の柱は法人受講。個人受講は法人・FCへの入口（リード源）。\n【チーム】人間=マーケ1・営業2／AI上司=ChatGPT・Gemini・Claude。\n【ツール】X・Lステップ・HubSpot・Crisp。\n\n【経営タスク】\n${task}`;
+    const context = `【現在地】月商4,000万円。内訳: 法人受講50%=¥2,000万（フロー: 月13件×¥150万）／FC45%=¥1,800万（継続: 18社×¥100万/月）／個人受講5%=¥200万。\n【法人ファネル実数(6ヶ月)】リード576→面談180(面談化率31.2%)→契約65、面談できず396件が最大の穴。アウトバウンド面談346→契約14(4%、CAC¥74万)。インバウンドは9倍効率。\n【目標】月商10億円(25倍)。主エンジンはFC(積み上がる継続収益・オーナー自己増殖)。法人は件数25倍ではなく継続課金化＋面談化率改善(31%→50%)で伸ばす。個人は法人・FCへの入口。\n【チーム】人間=マーケ1・営業2／AI上司=ChatGPT・Gemini・Claude。【ツール】X・Lステップ・HubSpot・Crisp。\n\n【経営タスク】\n${task}`;
 
     // Step 1: ChatGPT — 発散・アイデア出し
     const ideaOut = await callAgent('chatgpt',

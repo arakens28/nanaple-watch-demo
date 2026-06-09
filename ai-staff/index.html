@@ -286,15 +286,16 @@
 
     <div class="panel-section">
       <div class="panel-section-title">📈 月商10億円 KPIダッシュボード</div>
-      <div class="kpi-goal"><span class="num">¥4,000万</span><span class="unit">/ 月（現在地）</span></div>
-      <div class="kpi-current">目標 ¥10億 まで残り <b style="color:#fbbf24">25倍</b>（達成率 4%）</div>
+      <div class="kpi-goal"><span class="num">¥4,441万</span><span class="unit">/ 月（2026年5月実績）</span></div>
+      <div class="kpi-current">目標 ¥10億 まで <b style="color:#fbbf24">約23倍</b>（達成率 4.4%）／法人で85%のB2B型</div>
       <div class="kpi-item">
-        <div class="kpi-item-head"><span class="lbl">現状 → 目標</span><span class="val">¥4,000万 / ¥10億</span></div>
-        <div class="kpi-bar-bg"><div class="kpi-bar-fill" style="width:4%;background:linear-gradient(90deg,#ea580c,#fbbf24)"></div></div>
+        <div class="kpi-item-head"><span class="lbl">現状 → 目標</span><span class="val">¥4,441万 / ¥10億</span></div>
+        <div class="kpi-bar-bg"><div class="kpi-bar-fill" style="width:4.4%;background:linear-gradient(90deg,#ea580c,#fbbf24)"></div></div>
       </div>
-      <div class="kpi-current" style="margin-top:14px">現状内訳(5/50/45)を伸ばす目標構成</div>
+      <div class="kpi-current" style="margin-top:14px">売上内訳（損益帳票 2026/5）→ 目標構成</div>
       <div id="kpi-list"></div>
-      <div class="kpi-note">※ 現状4,000万円は法人50%+FC45%のB2B/FC型。主エンジンはFC(自己増殖)。個人は入口として活用。</div>
+      <div class="kpi-note" style="color:#fca5a5">🔴 ランオフ警告: 現状ペースだと年額契約の満了で月商は8ヶ月後 ¥4,441万→約¥2,063万に半減見込み。<b>更新率の確保が最優先</b>。</div>
+      <div class="kpi-note">※ 現行モデルの構造的天井は月商¥3〜4億。10億はモデル拡張(100校上限/新業界/新収益)が前提。</div>
     </div>
 
     <div class="panel-section">
@@ -344,9 +345,10 @@ const MODEL = 'claude-haiku-4-5-20251001';
 
 // ===== KPI dashboard (model assumptions from the business plan, scenario B) =====
 const KPI = [
-  { lbl: 'FC（主エンジン）', val: '現¥1,800万 → ¥5.0億（約28倍）', pct: 50, color: '#fb923c' },
-  { lbl: '法人受講（柱）', val: '現¥2,000万 → ¥4.5億（約23倍）', pct: 45, color: '#a78bfa' },
-  { lbl: '個人受講（入口）', val: '現¥200万 → ¥0.5億（約25倍）', pct: 5, color: '#38bdf8' },
+  { lbl: '法人・本部直販', val: '¥2,458万（55%）→ ¥4.0億', pct: 55, color: '#a78bfa' },
+  { lbl: '法人・FC経由（主エンジン）', val: '¥1,312万（30%）→ ¥5.0億', pct: 30, color: '#fb923c' },
+  { lbl: '個人', val: '¥427万（10%）→ ¥1.0億', pct: 10, color: '#38bdf8' },
+  { lbl: 'その他', val: '¥244万（5.5%）', pct: 5, color: '#34d399' },
 ];
 
 function renderKpi() {
@@ -530,7 +532,7 @@ async function startPipeline() {
   thinkingEl = null;
 
   try {
-    const context = `【現在地】月商4,000万円。内訳: 法人受講50%=¥2,000万（フロー: 月13件×¥150万）／FC45%=¥1,800万（継続: 18社×¥100万/月）／個人受講5%=¥200万。\n【法人ファネル実数(6ヶ月)】リード576→面談180(面談化率31.2%)→契約65、面談できず396件が最大の穴。アウトバウンド面談346→契約14(4%、CAC¥74万)。インバウンドは9倍効率。\n【目標】月商10億円(25倍)。主エンジンはFC(積み上がる継続収益・オーナー自己増殖)。法人は件数25倍ではなく継続課金化＋面談化率改善(31%→50%)で伸ばす。個人は法人・FCへの入口。\n【チーム】人間=マーケ1・営業2／AI上司=ChatGPT・Gemini・Claude。【ツール】X・Lステップ・HubSpot・Crisp。\n\n【経営タスク】\n${task}`;
+    const context = `【現在地】月商¥4,441万(損益帳票2026/5)。内訳: 法人本部直販55%=¥2,458万／法人FC経由30%=¥1,312万／個人10%=¥427万／その他5.5%。法人で85%のB2B型。\n【最重要リスク】法人受講は年額契約で満了すると剥落。現状ペースだと8ヶ月で月商半減(¥4,441万→¥2,063万)見込み。更新率の確保が最優先。\n【法人ファネル実数(6ヶ月)】リード576→面談180(面談化率31.2%、面談できず396件が最大の穴)→契約65。アウトバウンド面談346→契約14(4%,CAC¥74万)。インバウンドは9倍効率。台帳154契約・平均¥137万/9.1名・助成金活用8割・東京偏在34%。\n【FC経済性】会社の初期収入¥1,400万/校(受講料1200+加盟金200)、以降FC売上の50%受領。成熟時¥2,500万/年/校だが現状は¥875万(35%)。FCがFCを勧誘可で自己増殖。募集上限100校。\n【目標と天井】月商10億円(約23倍)。ただし現行モデルの構造的天井は¥3〜4億。10億はモデル拡張(100校上限引上げ/新業界・海外/新収益ライン)が前提。主エンジンは法人FC経由。\n【チーム】人間=マーケ1・営業2／AI上司=ChatGPT・Gemini・Claude。【ツール】X・Lステップ・HubSpot・Crisp。\n\n【経営タスク】\n${task}`;
 
     // Step 1: ChatGPT — 発散・アイデア出し
     const ideaOut = await callAgent('chatgpt',

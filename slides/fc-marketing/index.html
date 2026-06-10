@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FC獲得マーケティング戦略（上流設計）</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{ --bg:#0f172a; --bg2:#1e293b; --line:#334155; --txt:#e2e8f0; --sub:#94a3b8; --or:#fb923c; --pp:#a78bfa; --gr:#4ade80; --rd:#f87171; --bl:#38bdf8; --line2:#475569; }
+  html,body{font-family:'Hiragino Sans','Yu Gothic UI',sans-serif;background:#0b1120;color:var(--txt);line-height:1.7;}
+  .wrap{max-width:940px;margin:0 auto;padding:48px 28px 80px;}
+  header.top{border-bottom:2px solid var(--or);padding-bottom:20px;margin-bottom:28px;}
+  .kick{font-size:12px;letter-spacing:.18em;color:var(--or);font-weight:700;text-transform:uppercase;}
+  h1{font-size:30px;font-weight:800;margin:6px 0;background:linear-gradient(90deg,var(--or),var(--pp));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .sub{color:var(--sub);font-size:14px;}
+  h2{font-size:21px;font-weight:800;margin:38px 0 12px;padding-left:12px;border-left:5px solid var(--or);}
+  h3{font-size:16px;font-weight:700;margin:20px 0 8px;color:#fff;}
+  p{font-size:14.5px;color:#cbd5e1;margin:8px 0;}
+  ul{margin:8px 0 8px 4px;list-style:none;}
+  li{font-size:14.5px;color:#cbd5e1;padding-left:20px;position:relative;margin:6px 0;}
+  li::before{content:'▸';position:absolute;left:0;color:var(--or);}
+  b{color:#fff;} .gr{color:var(--gr);font-weight:700;} .rd{color:var(--rd);font-weight:700;} .bl{color:var(--bl);font-weight:700;} .or{color:var(--or);font-weight:700;}
+  .callout{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:14px 0;}
+  .callout.warn{border-color:#92400e;background:#2a1a06;}
+  .callout.good{border-color:#166534;background:#06210f;}
+  .callout .h{font-weight:700;margin-bottom:6px;}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13.5px;}
+  th,td{padding:9px 11px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top;}
+  th{color:var(--sub);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+  tr.hi td{background:rgba(74,222,128,.08);}
+  td.r,th.r{text-align:right;white-space:nowrap;}
+  .tier{display:inline-block;font-size:12px;font-weight:800;border-radius:6px;padding:2px 9px;margin-right:6px;white-space:nowrap;}
+  .t1{background:#06210f;color:#4ade80;border:1px solid #166534;}
+  .t2{background:#082f49;color:#7dd3fc;border:1px solid #0c4a6e;}
+  .t3{background:#2e1065;color:#c4b5fd;border:1px solid #5b21b6;}
+  .t4{background:#422006;color:#fbbf24;border:1px solid #92400e;}
+  .t5{background:#2a0a0a;color:#fca5a5;border:1px solid #7f1d1d;}
+  .flow{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:14px 0;font-size:14px;}
+  .persona{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:12px 0;}
+  .persona .ph{font-size:15.5px;font-weight:800;color:var(--or);margin-bottom:6px;}
+  .persona .pq{font-size:13.5px;color:#94a3b8;font-style:italic;margin-top:8px;border-left:3px solid var(--line2);padding-left:10px;}
+  .foot{margin-top:40px;border-top:1px solid var(--line);padding-top:16px;font-size:12px;color:#64748b;}
+  @media print{ body{background:#0b1120;-webkit-print-color-adjust:exact;print-color-adjust:exact;} .wrap{max-width:none;padding:0 6mm;} h2{page-break-after:avoid;} .callout,.persona,.flow,table{page-break-inside:avoid;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="kick">マーケティング戦略 / 上流設計</div>
+  <h1>FC加盟法人を、どこで・どう獲るか</h1>
+  <div class="sub">ホリエモンAI学校 FC獲得戦略 ── 目標: 加盟ペース 0.5校/月 → 3校/月（CAC ≤ ¥400万）</div>
+</header>
+
+<h2>0. 結論（戦略の核）</h2>
+<div class="callout good">
+  <div class="h">✅ 「知らない人を広告で説得する」のではなく「すでに中小企業に売っている会社に、商品棚を一段増やしてもらう」</div>
+  <p>FCの加盟条件（エリア販路／業界販路／42名以上）が示す通り、理想のFCオーナーは<b>“販路ホルダー”＝既に中小企業との取引・顧問関係を持つ会社</b>。彼らにとってFCは「新規事業をゼロから作る」のではなく「<b class="gr">既存顧客にAI研修・コンサルという新商品を載せる</b>」話。この見立てに合わせ、チャネルは<b>身内 → 紹介 → 堀江メディア → 提携 → 広告</b>の順で攻める。広告は最後。</p>
+</div>
+<ul>
+  <li><b>勝ち筋①：身内に答えがある。</b>受講済み法人154社は「FC資格を満たし、価値を体感済み」の最有力候補。LINE3,000人にも経営者層が眠る</li>
+  <li><b>勝ち筋②：FCはFCが連れてくる。</b>紹介報酬を設計すれば CAC¥400万の半分以下で獲れる</li>
+  <li><b>勝ち筋③：堀江ブランドは説明会の集客装置。</b>X・YouTube・書籍・講演という“他社が買えないチャネル”を持っている</li>
+  <li><b>勝ち筋④：東京偏在（34%）の裏返し＝地方は空白。</b>「あなたの県のAI校はまだ空いています」が刺さる</li>
+</ul>
+
+<h2>1. 誰を獲るか（ICP＝理想のFCオーナー像）</h2>
+<p>「AIに興味がある人」ではなく「<b>販路を持っていて、第二の収益源を探している法人</b>」。優先度順に3タイプ。</p>
+
+<div class="persona">
+  <div class="ph">最優先A｜士業・コンサル・代理店型（業界別FCの担い手）</div>
+  <ul>
+    <li>社労士・税理士・中小企業診断士・保険代理店・人材会社・Web/広告制作会社・ITベンダー</li>
+    <li><b>顧問先・既存クライアント数十〜数百社</b>を持ち、月次で接触している＝販路が太い</li>
+    <li>本業が価格競争・頭打ちで「顧問先にもう一つ売れる商品」を常に探している</li>
+    <li>助成金スキームとの親和性が高い（社労士は自ら申請支援もできる）</li>
+  </ul>
+  <div class="pq">刺さる一言：「顧問先に“AI研修”という新しい商品棚を。売上の50%が御社に入ります」</div>
+</div>
+
+<div class="persona">
+  <div class="ph">優先B｜地方の有力・中堅企業（地域別FCの担い手）</div>
+  <ul>
+    <li>地方の印刷会社・地場IT・事務機/OA機器販売・地域メディア・建設関連など、<b>地元企業ネットワークの結節点</b></li>
+    <li>本業のシュリンクに危機感があり、事業承継後の二代目が新規事業を探しているケースが多い</li>
+    <li>「県内・市内のAI校を先に押さえる」という<b>地域独占の先行者利益</b>が動機になる</li>
+  </ul>
+  <div class="pq">刺さる一言：「◯◯県のAI校はまだ空いています。地域のDX需要を先に取りませんか」</div>
+</div>
+
+<div class="persona">
+  <div class="ph">優先C｜社員42名以上の法人（自社DX起点型）</div>
+  <ul>
+    <li>まず自社の研修として受講（助成金で実質負担減）→ 成果を体感 → 自社の業界・取引網に展開</li>
+    <li>運送・介護・建設・製造など<b>DXの遅れた業界の中堅企業</b>。業界団体・組合での横のつながりが販路になる</li>
+  </ul>
+  <div class="pq">刺さる一言：「自社のDXは助成金で。その成果を業界に売れば事業になります」</div>
+</div>
+
+<h2>2. 何と言って獲るか（ポジショニングとメッセージ）</h2>
+<div class="callout">
+  <div class="h">ポジショニング・ステートメント</div>
+  <p>「<b>商品・教材・ブランド・サポートが最初から揃ったAI支援事業を、御社の販路に載せる。</b>堀江貴文のブランドと助成金スキームで売りやすく、昨年加盟したFCは初年度差引+¥2,119万の実例（※成果は保証されません）。エリア・業界の枠は100校まで、先に取った者勝ち。」</p>
+</div>
+<table>
+  <tr><th>訴求レイヤー</th><th>メッセージ</th><th>裏付け（実データ）</th></tr>
+  <tr><td>① 儲かるのか</td><td>売上の50%還元・初年度+¥2,119万の実例</td><td>FC収益例（21社販売・¥5,454万）</td></tr>
+  <tr><td>② 売れるのか</td><td>顧客は助成金で最大75%負担減＝提案が通る</td><td>法人成約の8割超が助成金活用</td></tr>
+  <tr><td>③ できるのか</td><td>240講義・伴走・事務局＝最初から4点揃う。最短3ヶ月で開始</td><td>FC加盟資料</td></tr>
+  <tr><td>④ なぜ今か</td><td>エリア・業界とも100校まで。空白の地域・業界は早い者勝ち</td><td>現在18校・東京偏在34%</td></tr>
+  <tr><td>⑤ 信用できるか</td><td>堀江貴文 共同創業・取締役。受講企業の時短実例</td><td>-20h/月・-65h/月等の事例</td></tr>
+</table>
+
+<h2>3. どこで獲るか（チャネルマップ：5層）</h2>
+<p>CAC目標¥400万に対し、<b>安くて速い順</b>に攻める。Tier1〜2だけで初年度の大半を賄える計算。</p>
+<table>
+  <tr><th>Tier</th><th>チャネル</th><th>具体策</th><th class="r">CAC目安</th><th class="r">速度</th></tr>
+  <tr class="hi"><td><span class="tier t1">T1 身内</span></td><td>受講済み法人154社・受講中企業・LINE3,000人</td><td>台帳をFC適格（販路/42名+）でスコアリング→営業Bが個別打診。LINEはC層（経営者）をFC説明会へ（配信シナリオ稼働済み）</td><td class="r">〜¥50万</td><td class="r">即</td></tr>
+  <tr class="hi"><td><span class="tier t1">T1 紹介</span></td><td>既存FC18校からの紹介</td><td><b>紹介報酬の制度化（例：成約で¥100〜150万 or ロイヤリティ軽減）</b>。「FC勧誘OK」を明文化済み→仕組みに昇格。四半期ごとに紹介キャンペーン</td><td class="r">¥100〜150万</td><td class="r">即〜1ヶ月</td></tr>
+  <tr><td><span class="tier t2">T2 堀江メディア</span></td><td>X・YouTube・書籍・講演・HIU</td><td>「地方×AI×新規事業」を堀江氏が語るコンテンツ→FC説明会LPへ。Xは現状ほぼ未活用（広告経由2件）＝伸びしろ最大。月1の堀江登壇オンライン説明会を“目玉”に</td><td class="r">¥50〜150万</td><td class="r">1〜2ヶ月</td></tr>
+  <tr><td><span class="tier t3">T3 提携</span></td><td>士業ネットワーク・金融機関・業界団体</td><td>①TRIPORT起点に社労士会・税理士会へ「顧問先の新収益源」として紹介提携 ②地銀・信金の法人部に「取引先の新規事業ネタ」として持ち込み ③優先業界の団体・組合（介護/建設/運送/製造）でセミナー共催</td><td class="r">¥100〜200万</td><td class="r">2〜4ヶ月</td></tr>
+  <tr><td><span class="tier t4">T4 イベント/媒体</span></td><td>FC・新規事業系の展示会／FC募集ポータル</td><td>FCショー・FC EXPO等に出展（高単価FCの見込み客が来る）。アントレ等ポータルは「法人枠」で掲載テスト</td><td class="r">¥200〜400万</td><td class="r">3〜6ヶ月</td></tr>
+  <tr><td><span class="tier t5">T5 広告</span></td><td>meta/Google/YouTube広告</td><td>「新規事業 フランチャイズ 法人」「助成金 AI研修 代理店」等の顕在キーワード＋経営者ターゲティング→説明会LP。<b>T1〜T3で型が証明できてから投下</b></td><td class="r">¥300〜500万</td><td class="r">2〜3ヶ月</td></tr>
+</table>
+<div class="callout warn">
+  <div class="h">⚠ やらないこと</div>
+  <p>個人向け独立・開業層への大量広告（42名条件・¥1,400万の投資体力と合わない）／テレアポの物量作戦（法人受講で実証済みの低効率：面談→契約4%）／値引きでの加盟促進（ブランド毀損）。</p>
+</div>
+
+<h2>4. 獲得モーション（ファネル逆算）</h2>
+<div class="flow">
+  <b>目標から逆算（3校/月）：</b><br>
+  説明会出席 <b>29人/月（週7人）</b> →(50%)→ 個別面談 <b>14件/月</b> →(30%)→ FCトラック受講契約 <b>4.3件/月</b> →(70%)→ <b class="or">FC加盟 3校/月</b>
+</div>
+<ul>
+  <li><b>説明会が戦略のハブ。</b>全チャネルの出口を「月2回のオンラインFC説明会（うち月1回は堀江登壇回）」に集約。説明会→社労士面談→受講→FCの流れは資料化済み（fc-seminar）</li>
+  <li><b>受講(¥1,200万)が中間ゴール。</b>FC化は受講3ヶ月後なので、<b>受講契約の時点で“FC前提トラック”のタグを付け</b>、受講中からFC開校準備の伴走を始める（離脱防止）</li>
+  <li><b>Tier別チャネル→説明会の必要送客数</b>：T1身内から月10人、T1紹介から月5人、T2メディアから月8人、T3提携から月6人＝29人。広告ゼロでも目標到達可能な構成</li>
+</ul>
+
+<h2>5. 業界別 × 地域別の攻め方（空白マップ）</h2>
+<table>
+  <tr><th>軸</th><th>優先ターゲット</th><th>理由</th></tr>
+  <tr><td><b>業界別</b>（学部）</td><td>① 介護 ② 建設 ③ 運送 ④ 製造 ⑤ 士業</td><td>DXが遅れ人手不足が深刻＝AI時短の価値が最大。助成金と相性良。FC資料も「介護学部」等を例示。各業界団体・専門紙がそのまま提携チャネルになる</td></tr>
+  <tr><td><b>地域別</b>（校）</td><td>契約実績の薄い地方圏（東海・中国・四国・九州内陸・東北）</td><td>台帳は東京34%偏在＝地方は空白。「◯◯県第1号校」の希少性を訴求。地銀・信金・商工会議所が結節点</td></tr>
+</table>
+<p>運用：<b>「空き枠マップ」を作り、説明会・LP・Xで常時可視化</b>（「残り◯枠」は虚偽にならないよう実数で）。埋まった地域・業界の成功事例を、隣接地域・類似業界への営業材料に回す。</p>
+
+<h2>6. 90日実行計画 と 予算（STEP1 ¥1億の配分）</h2>
+<table>
+  <tr><th>期間</th><th>マーケ（1名+AI）</th><th>営業（2名+AI）</th><th>到達目標</th></tr>
+  <tr><td><b>Month 1</b></td><td>FC説明会LP・申込導線を整備／LINE3,000人へ配信開始／台帳154社のFC適格スコアリング（AIで一次選別）</td><td>営業B：適格上位30社へ個別打診開始／既存18FCへ紹介制度の案内</td><td>説明会2回開催・出席15人</td></tr>
+  <tr><td><b>Month 2</b></td><td>堀江登壇回の企画・X発信開始／士業・金融機関への提携資料作成</td><td>提携先行3件（社労士事務所・地銀1行・業界団体1つ）と面談／説明会→面談の追客をHubSpot+Lステップで自動化</td><td>説明会出席25人/月・面談10件</td></tr>
+  <tr class="hi"><td><b>Month 3</b></td><td>チャネル別CAC計測→勝ちチャネルに集中／空き枠マップ公開</td><td>FCトラック受講契約を月4件ペースへ</td><td><b>加盟3校/月の入り口（受講契約4件/月）・CAC実測≤¥400万</b></td></tr>
+</table>
+<h3>STEP1予算 ¥1億（25校獲得）の配分目安</h3>
+<table>
+  <tr><th>項目</th><th class="r">配分</th><th>内訳</th></tr>
+  <tr><td>紹介報酬（T1）</td><td class="r">¥2,500万</td><td>〜17校分の紹介インセンティブ原資</td></tr>
+  <tr><td>メディア・コンテンツ（T2）</td><td class="r">¥1,500万</td><td>堀江登壇回・動画制作・X運用・LP</td></tr>
+  <tr><td>提携・イベント（T3/T4）</td><td class="r">¥2,000万</td><td>共催セミナー・展示会・提携営業費</td></tr>
+  <tr><td>広告（T5・後半のみ）</td><td class="r">¥2,000万</td><td>型の証明後に投下。説明会CPA管理</td></tr>
+  <tr><td>営業体制・ツール・予備</td><td class="r">¥2,000万</td><td>HubSpot/Lステップ拡張・説明会運営・予備費</td></tr>
+</table>
+
+<h2>7. KPI（週次レビュー）</h2>
+<table>
+  <tr><th>段階</th><th>KPI</th><th class="r">目標</th></tr>
+  <tr><td>送客</td><td>説明会申込/出席（チャネル別）</td><td class="r">出席29人/月</td></tr>
+  <tr><td>商談</td><td>個別面談数・面談化率</td><td class="r">14件/月・50%</td></tr>
+  <tr><td>契約</td><td>FCトラック受講契約</td><td class="r">4件/月</td></tr>
+  <tr class="hi"><td><b>加盟</b></td><td><b>FC加盟数・実測CAC</b></td><td class="r"><b>3校/月・≤¥400万</b></td></tr>
+  <tr><td>健全性</td><td>紹介経由比率／チャネル別CAC／受講→FC転換率</td><td class="r">紹介3割以上・転換70%</td></tr>
+</table>
+
+<div class="callout good">
+  <div class="h">✅ 今週やる3つ</div>
+  <p>① 台帳154社をFC適格条件（販路/42名+/業界）でスコアリングし、上位30社のリストを営業Bへ<br>② 既存FC18校への「紹介制度」を設計・案内（報酬額の決裁を取る）<br>③ FC説明会の開催日を2枠確定し、LINE配信シナリオのC層CTAと接続</p>
+</div>
+
+<div class="foot">
+  ※ 収益例・成果は保証ではありません（景表法配慮）。「残り◯枠」等の希少性訴求は実数に基づき表示。助成金の交付・却下は社労士診断が前提。数値前提：説明会→面談50%・面談→受講30%・受講→FC70%は初期仮説であり、実測で毎月更新する。
+</div>
+
+</div>
+</body>
+</html>

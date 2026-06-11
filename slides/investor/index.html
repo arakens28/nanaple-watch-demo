@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>投資ハイライト & リターン試算｜ホリエモンAI学校</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{ --bg:#0f172a; --bg2:#1e293b; --line:#334155; --txt:#e2e8f0; --sub:#94a3b8; --or:#fb923c; --pp:#a78bfa; --gr:#4ade80; --rd:#f87171; --bl:#38bdf8; --line2:#475569; }
+  html,body{height:100%;font-family:'Segoe UI','Hiragino Sans','Yu Gothic UI',sans-serif;background:#000;color:var(--txt);}
+  .deck{position:relative;width:100vw;height:100vh;overflow:hidden;}
+  .slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;
+    padding:6vh 7vw;background:radial-gradient(ellipse at 72% 8%,#1e293b 0%,#0f172a 55%,#0b1120 100%);}
+  .slide.active{display:flex;animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .kicker{font-size:1.6vh;letter-spacing:.16em;color:var(--or);text-transform:uppercase;font-weight:700;margin-bottom:1.4vh;}
+  h1{font-size:5.8vh;line-height:1.12;font-weight:800;background:linear-gradient(90deg,var(--or),var(--pp));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  h2{font-size:4.2vh;line-height:1.2;font-weight:800;margin-bottom:2.2vh;}
+  h2 .em{color:var(--or);} h2 .rd{color:var(--rd);} h2 .gr{color:var(--gr);} h2 .bl{color:var(--bl);}
+  .lead{font-size:2.3vh;color:var(--sub);line-height:1.7;margin-top:1.6vh;max-width:64ch;}
+  ul{list-style:none;display:flex;flex-direction:column;gap:1.4vh;margin-top:1vh;}
+  li{font-size:2.4vh;line-height:1.5;padding-left:3vh;position:relative;}
+  li::before{content:'▸';position:absolute;left:0;color:var(--or);}
+  li b{color:#fff;} li .gr{color:var(--gr);font-weight:700;} li .rd{color:var(--rd);font-weight:700;} li .bl{color:var(--bl);font-weight:700;}
+  .big{font-size:9.5vh;font-weight:800;line-height:1;letter-spacing:-.02em;}
+  .big.gr{color:var(--gr);} .big.or{color:var(--or);}
+  .unit{font-size:2.4vh;color:var(--sub);font-weight:600;}
+  .row{display:flex;gap:2.4vw;align-items:center;flex-wrap:wrap;}
+  .col{flex:1;min-width:0;}
+  .cards{display:flex;gap:1.4vw;margin-top:1.8vh;flex-wrap:wrap;}
+  .card{flex:1;min-width:150px;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:2.4vh 1.6vw;}
+  .card .n{font-size:3.8vh;font-weight:800;} .card .l{font-size:1.75vh;color:var(--sub);margin-top:.5vh;}
+  .card.acc{border-color:var(--or);box-shadow:0 0 24px rgba(251,146,60,.15);}
+  .card.gr{border-color:#166534;box-shadow:0 0 24px rgba(74,222,128,.12);}
+  table{width:100%;border-collapse:collapse;margin-top:1.8vh;font-size:2vh;}
+  th,td{padding:1.1vh 1.2vw;text-align:left;border-bottom:1px solid var(--line);}
+  th{color:var(--sub);font-size:1.6vh;font-weight:600;text-transform:uppercase;letter-spacing:.04em;}
+  tr.hi td{background:rgba(74,222,128,.10);} tr.hi td b{color:var(--gr);}
+  td.r,th.r{text-align:right;white-space:nowrap;}
+  .note{font-size:1.55vh;color:#64748b;margin-top:2.2vh;line-height:1.6;}
+  /* bar chart */
+  .chart{display:flex;align-items:flex-end;gap:1.6vw;height:38vh;margin-top:2.5vh;padding-bottom:3vh;border-bottom:1px solid var(--line);}
+  .chart .bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;}
+  .chart .bar .fill{width:70%;border-radius:8px 8px 0 0;background:linear-gradient(180deg,#fb923c,#7c3aed);position:relative;}
+  .chart .bar .v{font-size:1.8vh;font-weight:700;color:#fff;margin-bottom:.6vh;}
+  .chart .bar .x{font-size:1.6vh;color:var(--sub);margin-top:.8vh;}
+  .flow3{display:flex;align-items:stretch;gap:1vw;margin-top:2.5vh;}
+  .flow3 .s{flex:1;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:2vh 1.2vw;text-align:center;}
+  .flow3 .s b{display:block;font-size:2.4vh;color:#fff;margin-bottom:.6vh;} .flow3 .s span{font-size:1.7vh;color:var(--sub);}
+  .flow3 .s.hl{border-color:var(--gr);box-shadow:0 0 20px rgba(74,222,128,.15);}
+  .flow3 .ar{display:flex;align-items:center;color:var(--or);font-size:2.6vh;font-weight:800;}
+  .verdict{background:linear-gradient(135deg,rgba(74,222,128,.12),rgba(56,189,248,.08));border:1px solid #166534;border-radius:16px;padding:3vh 3vw;margin-top:2vh;}
+  .topbar{position:fixed;top:0;left:0;right:0;height:6px;background:#0b1120;z-index:10;}
+  .topbar .prog{height:100%;background:linear-gradient(90deg,var(--or),var(--pp));transition:width .35s;}
+  .pager{position:fixed;bottom:2.5vh;right:3vw;font-size:1.7vh;color:var(--sub);z-index:10;} .pager b{color:var(--txt);}
+  .hint{position:fixed;bottom:2.5vh;left:3vw;font-size:1.4vh;color:#475569;z-index:10;}
+  .brand{position:fixed;top:2.5vh;left:3vw;font-size:1.5vh;color:#64748b;z-index:10;letter-spacing:.05em;}
+  @media print{ .slide{display:flex !important;position:relative;height:100vh;page-break-after:always;} .topbar,.pager,.hint,.brand{display:none;} }
+</style>
+</head>
+<body>
+<div class="topbar"><div class="prog" id="prog"></div></div>
+<div class="brand">ホリエモンAI学校 / 投資ハイライト（投資家向け）</div>
+
+<div class="deck" id="deck">
+
+  <!-- 1 表紙 -->
+  <section class="slide">
+    <div class="kicker">Investment Highlights & Return Analysis</div>
+    <h1>研修バリュエーションで入り、<br>SaaSバリュエーションで出る。</h1>
+    <p class="lead">FC100校 ×  業界特化AIエージェント。フロー型の研修事業を、積み上がる継続収益へ転換する。<br><b style="color:#fff">堀江貴文 共同創業・取締役。</b></p>
+    <div class="cards" style="margin-top:3vh">
+      <div class="card acc"><div class="n">¥5億</div><div class="l">想定投資（pre ¥15億）</div></div>
+      <div class="card gr"><div class="n">6.3x</div><div class="l">想定MOIC（Base・5年）</div></div>
+      <div class="card gr"><div class="n">45%</div><div class="l">想定IRR（Base）</div></div>
+    </div>
+  </section>
+
+  <!-- 2 結論 -->
+  <section class="slide">
+    <div class="kicker">投資家としての結論</div>
+    <h2>この条件なら<span class="gr">投資する</span>。</h2>
+    <ul>
+      <li><b>エントリー：¥5億／pre ¥15億・post ¥20億（持分25%）</b></li>
+      <li>5年でBase <b class="gr">6.3x・IRR45%</b>、Bull 10x、Bear でも 2.6x。下方が浅く上方が大きい非対称リターン</li>
+      <li>理由：<b>いまは“研修会社”の評価額。AIエージェントの継続収益が乗ればSaaS評価額になる</b>＝マルチプル拡張×成長の二重エンジン</li>
+      <li>カタリスト：FC100校（CAC¥400万→初期¥1,200万で即回収）が獲得装置、AIエージェントが継続収益装置</li>
+    </ul>
+    <p class="note">※ 本資料の数値は前提に基づく試算であり、将来の成果・リターンを保証するものではありません。</p>
+  </section>
+
+  <!-- 3 現在地 -->
+  <section class="slide">
+    <div class="kicker">トラクション</div>
+    <h2>すでに<span class="em">月商¥4,441万・1年で4倍</span>。</h2>
+    <div class="cards">
+      <div class="card"><div class="n">¥4,441万</div><div class="l">月商（2026/5）≒ 年商¥5.3億</div></div>
+      <div class="card"><div class="n">約4倍</div><div class="l">直近1年の成長（¥1,085万→¥4,441万）</div></div>
+      <div class="card"><div class="n">99%</div><div class="l">粗利率（デジタル商材）</div></div>
+    </div>
+    <ul style="margin-top:2vh">
+      <li>売上の<b>85%が法人</b>（本部直販55%＋FC経由30%）。FC現在18校</li>
+      <li>助成金（最大75%）で成約の8割超を獲得＝<b>売れる仕組みが既にある</b></li>
+    </ul>
+  </section>
+
+  <!-- 4 正直な課題 -->
+  <section class="slide">
+    <div class="kicker">正直な現状課題（だから今が安い）</div>
+    <h2>いまは<span class="rd">フロー型・営業赤字</span>。</h2>
+    <ul>
+      <li><span class="rd">法人受講は1年契約・更新ほぼゼロ</span>＝売上が積み上がらないフロー型</li>
+      <li>月次営業損益は<span class="rd">-¥15M</span>（販管費が先行）。ただし粗利99%で、変動費圧縮＋成長で黒字化は射程</li>
+      <li>会計上は債務超過だが、<b>主因は前受収益¥278M（年額前払い＝将来売上）</b>。有利子負債は長期借入¥6.8Mのみ＝資金繰り危機ではない</li>
+      <li>→ <b class="gr">この“フロー＆赤字”が解消する前に入るからこそ、リターンが大きい</b></li>
+    </ul>
+  </section>
+
+  <!-- 5 テーゼ -->
+  <section class="slide">
+    <div class="kicker">投資テーゼ</div>
+    <h2>三段ロケットで<span class="gr">フローをSaaSに変える</span>。</h2>
+    <div class="flow3">
+      <div class="s"><b>① 研修</b><span>中小企業向けAI研修<br>助成金で獲得（入口）</span></div><div class="ar">→</div>
+      <div class="s"><b>② コンサル</b><span>業務改善で深耕<br>単価・信頼を積む</span></div><div class="ar">→</div>
+      <div class="s hl"><b>③ AIエージェント</b><span>業界特化エージェントを<br><b style="color:#4ade80">継続課金で提供</b></span></div>
+    </div>
+    <p class="lead">獲得（研修）→深耕（コンサル）→<b style="color:#fff">継続課金（AIエージェント）</b>。同じ顧客から段階的に売上を伸ばす land & expand。AIエージェントが“積み上がる”継続収益となり、更新ゼロの弱点を構造的に解消する。</p>
+  </section>
+
+  <!-- 6 なぜ固いか -->
+  <section class="slide">
+    <div class="kicker">なぜ「固い」のか</div>
+    <h2>獲得装置 × 継続収益装置。</h2>
+    <div class="row">
+      <div class="col">
+        <ul>
+          <li><b>FC網＝獲得装置</b>：販路ホルダー（士業・代理店・地方有力企業）が現場で売る。本部は営業人数を増やさず拡大、FCがFCを生む</li>
+          <li><b class="gr">AIエージェント＝継続収益装置</b>：FCの先のエンドSME群へ業界特化エージェントをSaaS提供。100校の先に<b>数千社の継続課金</b>が積み上がる</li>
+          <li>＝ FCで“面”を取り、AIエージェントで“継続”を積む。研修単体の100校上限（月¥1億）を突破する</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="card gr"><div class="n">3,500社</div><div class="l">Y5想定 エージェント契約社数</div></div>
+        <div class="card gr" style="margin-top:1.4vh"><div class="n">¥42億</div><div class="l">Y5想定 エージェント継続収益/年</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 FCユニットエコノミクス -->
+  <section class="slide">
+    <div class="kicker">ユニットエコノミクス</div>
+    <h2>FCは<span class="em">CACの3倍を初日に回収</span>。</h2>
+    <div class="cards">
+      <div class="card"><div class="n">¥400万</div><div class="l">FC獲得単価（CAC）</div></div>
+      <div class="card acc"><div class="n">¥1,200万</div><div class="l">初期収益（即3倍回収）</div></div>
+      <div class="card acc"><div class="n">¥100万/月</div><div class="l">継続収益（研修/ロイヤリティ）</div></div>
+    </div>
+    <ul style="margin-top:2vh">
+      <li><b>「¥4億で100校」</b>＝ 初期収益¥12億で即ペイ（純+¥8億）＋継続+¥1億/月</li>
+      <li>その先にAIエージェントの継続課金（エンドSME）が乗る＝<b class="gr">1校あたりLTVが跳ねる</b></li>
+    </ul>
+  </section>
+
+  <!-- 8 売上トラジェクトリ -->
+  <section class="slide">
+    <div class="kicker">売上計画（試算）</div>
+    <h2>5年で<span class="em">¥7.5億 → ¥58億</span>。</h2>
+    <div class="chart">
+      <div class="bar"><div class="v">¥7.5</div><div class="fill" style="height:13%"></div><div class="x">Y0</div></div>
+      <div class="bar"><div class="v">¥13</div><div class="fill" style="height:23%"></div><div class="x">Y1</div></div>
+      <div class="bar"><div class="v">¥23</div><div class="fill" style="height:39%"></div><div class="x">Y2</div></div>
+      <div class="bar"><div class="v">¥35</div><div class="fill" style="height:61%"></div><div class="x">Y3</div></div>
+      <div class="bar"><div class="v">¥46</div><div class="fill" style="height:79%"></div><div class="x">Y4</div></div>
+      <div class="bar"><div class="v">¥58</div><div class="fill" style="height:100%"></div><div class="x">Y5</div></div>
+    </div>
+    <p class="note">単位：億円。Y2以降の伸びはAIエージェント継続収益が牽引（Y5 ¥42億）。FC研修は¥12億/年で安定。</p>
+  </section>
+
+  <!-- 9 利益 -->
+  <section class="slide">
+    <div class="kicker">収益性（試算）</div>
+    <h2>赤字 → <span class="gr">Y5 営業利益¥16億</span>。</h2>
+    <table>
+      <tr><th>年度</th><th class="r">売上</th><th class="r">営業利益率</th><th class="r">営業利益</th></tr>
+      <tr><td>Y0（現在）</td><td class="r">¥7.5億</td><td class="r" style="color:#f87171">-35%</td><td class="r" style="color:#f87171">-¥2.6億</td></tr>
+      <tr><td>Y1</td><td class="r">¥13億</td><td class="r" style="color:#f87171">-5%</td><td class="r">-¥0.7億</td></tr>
+      <tr><td>Y2</td><td class="r">¥23億</td><td class="r" style="color:#4ade80">+12%</td><td class="r">+¥2.7億</td></tr>
+      <tr><td>Y3</td><td class="r">¥35億</td><td class="r" style="color:#4ade80">+20%</td><td class="r">+¥7.0億</td></tr>
+      <tr class="hi"><td><b>Y5</b></td><td class="r"><b>¥58億</b></td><td class="r"><b>+28%</b></td><td class="r"><b>+¥16億</b></td></tr>
+    </table>
+    <p class="note">粗利99%のため、継続収益（AIエージェント）が積み上がるほど営業利益率は急改善。</p>
+  </section>
+
+  <!-- 10 バリュエーション -->
+  <section class="slide">
+    <div class="kicker">バリュエーション（エントリー）</div>
+    <h2>pre <span class="em">¥15億</span> での参入根拠。</h2>
+    <ul>
+      <li>現年商¥5.3億・成長4倍。<b>フォワード（Y1¥13億）に対し約1.1x、現年商の約3x</b>＝高成長企業として妥当〜やや保守</li>
+      <li>プレミアム要因：堀江ブランド、助成金で売れる仕組み、AIエージェントへの転換ストーリー</li>
+      <li>ディスカウント要因：現状フロー・営業赤字 → <b>だからこそ“安い局面”で入れる</b></li>
+      <li>提案：<b>¥5億／pre ¥15億・post ¥20億（25%）</b>。¥4億をFC100校、¥1億をAIエージェント開発＋運転資金</li>
+    </ul>
+    <p class="note">※ エントリー価格は交渉前提のアンカー。Comps（AI研修・eラーニング・FC本部・リスキリング関連の上場企業）で別途裏付け予定。</p>
+  </section>
+
+  <!-- 11 リターン試算 -->
+  <section class="slide">
+    <div class="kicker">リターン試算（5年・持分希薄化後17.5%）</div>
+    <h2>下方2.6x・<span class="gr">中央6.3x</span>・上方10x。</h2>
+    <table>
+      <tr><th>シナリオ</th><th class="r">Y5売上</th><th class="r">EXITマルチ</th><th class="r">EXIT EV</th><th class="r">投資家価値</th><th class="r">MOIC</th><th class="r">IRR</th></tr>
+      <tr><td>Bear（AIｴｰｼﾞｪﾝﾄ不発）</td><td class="r">¥25億</td><td class="r">3.0x</td><td class="r">¥75億</td><td class="r">¥13億</td><td class="r">2.6x</td><td class="r">21%</td></tr>
+      <tr class="hi"><td><b>Base（三段ロケット成立）</b></td><td class="r">¥45億</td><td class="r">4.0x</td><td class="r">¥180億</td><td class="r">¥32億</td><td class="r"><b>6.3x</b></td><td class="r"><b>45%</b></td></tr>
+      <tr><td>Bull（SaaS化進展）</td><td class="r">¥58億</td><td class="r">5.0x</td><td class="r">¥290億</td><td class="r">¥51億</td><td class="r">10.2x</td><td class="r">59%</td></tr>
+    </table>
+    <p class="note">投資¥5億・EXIT時持分17.5%（将来希薄化30%想定）。EXITはIPOまたはM&A。Bearでも元本割れせず2.6x＝下方耐性が高い。</p>
+  </section>
+
+  <!-- 12 なぜ今 -->
+  <section class="slide">
+    <div class="kicker">なぜ今が買いか</div>
+    <h2>マルチプル拡張 × 成長の<span class="gr">二重取り</span>。</h2>
+    <div class="row">
+      <div class="col">
+        <ul>
+          <li><b>いま</b>＝研修会社の評価（フロー・赤字）＝ pre¥15億</li>
+          <li><b>EXIT</b>＝AIエージェントSaaSの評価（継続・高利益）＝ ¥180〜290億</li>
+          <li>売上が<b>約4〜8倍</b>になり、同時に<b>評価マルチプルも上がる</b></li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="card"><div class="n">¥20億</div><div class="l">post（参入）</div></div>
+        <div class="ar" style="text-align:center;color:#fb923c;font-size:3vh;font-weight:800;margin:1vh 0;">↓ 5年</div>
+        <div class="card gr"><div class="n">¥180〜290億</div><div class="l">EXIT EV（Base〜Bull）</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13 リスク -->
+  <section class="slide">
+    <div class="kicker">リスクと打ち手</div>
+    <h2>論点は<span class="em">「実行」</span>に集約される。</h2>
+    <table>
+      <tr><th>リスク</th><th>打ち手</th></tr>
+      <tr><td>FC加盟ペース（現0.5校/月）</td><td>身内（受講済154社）→紹介→堀江メディア→提携の導線。月3校へ</td></tr>
+      <tr><td>AIエージェントが未構築</td><td>調達資金の主用途。既存240講義・自動化事例の資産を転用し業界特化で開発</td></tr>
+      <tr><td>100校の募集上限</td><td>AIエージェントはエンドSMEに売るため上限の外。並行で枠拡大を交渉</td></tr>
+      <tr><td>キーパーソン依存（堀江）</td><td>FC自走化・AI標準化で属人性を低減。ブランドは契約で担保</td></tr>
+      <tr><td>助成金の政策変更</td><td>AIエージェントは助成金非依存の継続収益で分散</td></tr>
+    </table>
+  </section>
+
+  <!-- 14 資金使途/マイルストーン -->
+  <section class="slide">
+    <div class="kicker">資金使途 & 次ラウンド条件</div>
+    <h2>¥5億の使い道と、握るKPI。</h2>
+    <div class="row">
+      <div class="col">
+        <table>
+          <tr><th>使途</th><th class="r">配分</th></tr>
+          <tr><td>FC100校 獲得（CAC）</td><td class="r">¥4億</td></tr>
+          <tr><td>AIエージェント開発</td><td class="r">¥0.6億</td></tr>
+          <tr><td>運転資金・管理体制</td><td class="r">¥0.4億</td></tr>
+        </table>
+      </div>
+      <div class="col">
+        <ul style="gap:1vh">
+          <li>FC加盟 <b>3校/月</b>・CAC≤¥400万</li>
+          <li>月次<b class="gr">営業黒字化</b></li>
+          <li>AIエージェント <b>初期契約100社</b></li>
+          <li>継続収益（ARR）の立ち上がり</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note">段階投資も可：STEP1 ¥1億で25校＋エージェント実証 → 指標達成でSTEP2 ¥4億。下振れリスクを抑制。</p>
+  </section>
+
+  <!-- 15 Verdict -->
+  <section class="slide">
+    <div class="kicker">投資家としての判定</div>
+    <h2>Verdict：<span class="gr">Invest</span>。</h2>
+    <div class="verdict">
+      <p style="font-size:2.4vh;line-height:1.7;color:#e2e8f0;">
+      <b style="color:#fff">¥5億／pre¥15億</b>で参入。既に4倍成長・粗利99%・売れる仕組み（助成金）があり、<b style="color:#fff">FCで獲得・AIエージェントで継続</b>という二段で“フロー＆赤字”を構造的に解消できる。<br><br>
+      <b style="color:#4ade80">研修評価で入り、SaaS評価で出る</b>ことで、Baseで <b style="color:#4ade80">5年6.3x・IRR45%</b>、Bearでも2.6x。実行（FC加盟ペースとAIエージェント立ち上げ）が最大かつ唯一の本質的リスクであり、そこは資金使途とKPIで管理できる。
+      </p>
+    </div>
+    <p class="note">※ 試算であり成果・リターンを保証するものではありません。最終判断はDD・最新実績に基づきます。</p>
+  </section>
+
+</div>
+
+<div class="pager"><b id="cur">1</b> / <span id="total">15</span></div>
+<div class="hint">← → / Space めくる ・ F 全画面 ・ P 印刷(PDF)</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  let i=0; const total=slides.length;
+  document.getElementById('total').textContent=total;
+  function show(n){i=Math.max(0,Math.min(total-1,n));slides.forEach((s,k)=>s.classList.toggle('active',k===i));document.getElementById('cur').textContent=i+1;document.getElementById('prog').style.width=((i+1)/total*100)+'%';}
+  document.addEventListener('keydown',e=>{
+    if(['ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();show(i+1);}
+    else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1);}
+    else if(e.key==='Home'){show(0);}else if(e.key==='End'){show(total-1);}
+    else if(e.key.toLowerCase()==='f'){if(!document.fullscreenElement)document.documentElement.requestFullscreen();else document.exitFullscreen();}
+    else if(e.key.toLowerCase()==='p'){window.print();}
+  });
+  document.getElementById('deck').addEventListener('click',e=>{show(i+(e.clientX>window.innerWidth/2?1:-1));});
+  show(0);
+</script>
+</body>
+</html>

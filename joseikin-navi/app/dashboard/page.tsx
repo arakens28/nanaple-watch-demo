@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase";
 import {
   getOrCreateApplication,
+  saveStepNotes,
   parseNotes,
   type Application,
   type StepStatus,
@@ -26,27 +27,54 @@ export default function DashboardPage() {
   const [bureauList, setBureauList] = useState<BureauEntry[]>([]);
   const [companySize, setCompanySize] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [imported, setImported] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
-    getOrCreateApplication(supabase)
-      .then(({ application, steps }) => {
-        setApplication(application);
-        setSteps(steps);
-        const step1 = steps.find((s) => s.step_number === 1);
-        const notes = parseNotes<Step1Notes>(step1?.notes ?? null);
-        if (notes?.bureauList && notes.bureauList.length > 0) {
-          setBureauList(notes.bureauList.filter((b) => b.prefecture));
-        } else if (notes?.answers?.prefecture) {
-          setBureauList([{ prefecture: notes.answers.prefecture, employeeCount: 0 }]);
+
+    async function init() {
+      const { application, steps } = await getOrCreateApplication(supabase);
+
+      let step1 = steps.find((s) => s.step_number === 1);
+
+      // ログイン前の診断結果をDBへ引き継ぐ
+      if (typeof window !== "undefined") {
+        const pending = localStorage.getItem("pending_check_result");
+        if (pending && !step1?.notes) {
+          try {
+            const { answers: pa } = JSON.parse(pending) as { answers: Record<string, string> };
+            const bureauEntries: BureauEntry[] = pa.prefecture
+              ? [{ prefecture: pa.prefecture, employeeCount: parseInt(pa.traineeCount || "0", 10) }]
+              : [];
+            const notesObj = { answers: pa, bureauList: bureauEntries };
+            await saveStepNotes(supabase, application.id, 1, notesObj);
+            step1 = { ...step1!, notes: JSON.stringify(notesObj) };
+            setImported(true);
+          } catch {
+            // 失敗しても無視
+          }
         }
-        if (notes?.answers?.employees) {
-          setCompanySize(notes.answers.employees);
-        }
-      })
-      .catch(() =>
-        setError("データの読み込みに失敗しました。再読み込みしてください。")
-      );
+        localStorage.removeItem("pending_check_result");
+      }
+
+      setApplication(application);
+      const updatedSteps = steps.map((s) => (s.step_number === 1 && step1 ? step1 : s));
+      setSteps(updatedSteps);
+
+      const notes = parseNotes<Step1Notes>(step1?.notes ?? null);
+      if (notes?.bureauList && notes.bureauList.length > 0) {
+        setBureauList(notes.bureauList.filter((b) => b.prefecture));
+      } else if (notes?.answers?.prefecture) {
+        setBureauList([{ prefecture: notes.answers.prefecture, employeeCount: 0 }]);
+      }
+      if (notes?.answers?.employees) {
+        setCompanySize(notes.answers.employees);
+      }
+    }
+
+    init().catch(() =>
+      setError("データの読み込みに失敗しました。再読み込みしてください。")
+    );
   }, []);
 
   if (error) {
@@ -86,6 +114,13 @@ export default function DashboardPage() {
       <AppHeader />
       <main className="mx-auto max-w-6xl px-6 py-8">
         <h1 className="mb-6 text-2xl font-bold">マイページ</h1>
+
+        {/* 診断結果引き継ぎバナー */}
+        {imported && (
+          <div className="mb-4 rounded-xl border border-green-300 bg-green-50 px-4 py-3 text-sm text-green-800">
+            ✅ ログイン前の診断結果を引き継ぎました。STEP1の内容として保存されています。
+          </div>
+        )}
 
         {/* 労働局ごとの申請カード */}
         {bureauList.length > 0 && (

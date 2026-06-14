@@ -88,6 +88,9 @@ export default function CheckPage() {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = (await res.json()) as Diagnosis;
       setResult(data);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("pending_check_result", JSON.stringify({ answers }));
+      }
     } catch {
       setError("診断に失敗しました。もう一度お試しください。");
     } finally {

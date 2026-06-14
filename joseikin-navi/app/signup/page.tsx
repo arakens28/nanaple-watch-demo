@@ -29,6 +29,8 @@ export default function SignupPage() {
       setNeedsConfirm(true);
       return;
     }
+    // お礼メール＋管理者通知メールを送信（失敗しても登録自体は完了）
+    void fetch("/api/send-welcome", { method: "POST" });
     router.push("/dashboard");
     router.refresh();
   }

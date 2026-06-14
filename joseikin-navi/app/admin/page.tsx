@@ -51,8 +51,21 @@ export default async function AdminPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user || user.email !== ADMIN_EMAIL) {
+  if (!user) {
     redirect("/login");
+  }
+
+  if (user.email?.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-8">
+        <div className="rounded-xl border border-red-200 bg-red-50 p-8 text-center max-w-sm">
+          <p className="font-bold text-red-700 text-lg mb-2">アクセス権限がありません</p>
+          <p className="text-sm text-red-500 mb-1">ログイン中のメールアドレス:</p>
+          <p className="font-mono text-sm text-red-700 mb-4">{user.email}</p>
+          <a href="/dashboard" className="text-sm text-brand-600 underline">マイページへ戻る</a>
+        </div>
+      </div>
+    );
   }
 
   // Service role key が必要。未設定の場合は案内を表示。

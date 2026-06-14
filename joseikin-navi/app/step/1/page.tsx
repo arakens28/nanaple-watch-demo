@@ -11,7 +11,8 @@ import {
 } from "@/lib/application";
 import StepShell from "@/components/StepShell";
 import Link from "next/link";
-import { PREFECTURE_LIST, BUREAU_PREFECTURE_KEY } from "@/lib/bureauData";
+import { PREFECTURE_LIST, BUREAU_PREFECTURE_KEY, getBureauByPrefecture } from "@/lib/bureauData";
+import type { BureauEntry } from "@/lib/bureauApplications";
 
 type Answers = Record<string, string>;
 type Diagnosis = { level: "高" | "中" | "低"; reason: string; advice: string };
@@ -41,20 +42,19 @@ function formatJP(dateStr: string): string {
   return `${y}年${m}月${d}日`;
 }
 
-const REQUIRED_KEYS = ["insurance", "startDate", "traineeCount", "itTraining", "employees", "prefecture"];
+const REQUIRED_KEYS = ["insurance", "startDate", "itTraining", "employees"];
 
 const KEY_LABELS: Record<string, string> = {
   insurance: "雇用保険の加入状況",
   startDate: "受講開始予定日",
-  traineeCount: "受講人数",
   itTraining: "研修内容",
   employees: "会社の従業員数",
-  prefecture: "会社の都道府県",
 };
 
 export default function Step1Page() {
   const [application, setApplication] = useState<Application | null>(null);
   const [answers, setAnswers] = useState<Answers>({});
+  const [bureauList, setBureauList] = useState<BureauEntry[]>([{ prefecture: "", employeeCount: 0 }]);
   const [result, setResult] = useState<Diagnosis | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -63,16 +63,23 @@ export default function Step1Page() {
     const supabase = createClient();
     getOrCreateApplication(supabase).then(({ application, steps }) => {
       setApplication(application);
-      const saved = parseNotes<{ answers: Answers; result: Diagnosis }>(
+      const saved = parseNotes<{ answers: Answers; bureauList?: BureauEntry[]; result: Diagnosis }>(
         steps.find((s) => s.step_number === 1)?.notes ?? null
       );
       if (saved) {
         const restoredAnswers = saved.answers ?? {};
         setAnswers(restoredAnswers);
         setResult(saved.result ?? null);
-        // localStorageに都道府県を復元
-        if (restoredAnswers.prefecture && typeof window !== "undefined") {
+        if (saved.bureauList && saved.bureauList.length > 0) {
+          setBureauList(saved.bureauList);
+          // localStorageに最初の都道府県を復元
+          if (saved.bureauList[0].prefecture && typeof window !== "undefined") {
+            localStorage.setItem(BUREAU_PREFECTURE_KEY, saved.bureauList[0].prefecture);
+          }
+        } else if (restoredAnswers.prefecture && typeof window !== "undefined") {
+          // 旧データ互換性
           localStorage.setItem(BUREAU_PREFECTURE_KEY, restoredAnswers.prefecture);
+          setBureauList([{ prefecture: restoredAnswers.prefecture, employeeCount: 0 }]);
         }
       }
     });
@@ -80,30 +87,60 @@ export default function Step1Page() {
 
   function setAnswer(key: string, value: string) {
     setAnswers((a) => ({ ...a, [key]: value }));
-    if (key === "prefecture" && typeof window !== "undefined") {
-      localStorage.setItem(BUREAU_PREFECTURE_KEY, value);
-    }
+  }
+
+  function updateBureau(index: number, field: keyof BureauEntry, value: string | number) {
+    setBureauList((list) => {
+      const next = list.map((b, i) => i === index ? { ...b, [field]: value } : b);
+      // AppHeaderのlocalStorageを最初の都道府県で更新
+      if (field === "prefecture" && index === 0 && typeof window !== "undefined") {
+        localStorage.setItem(BUREAU_PREFECTURE_KEY, value as string);
+        window.dispatchEvent(new Event("storage"));
+      }
+      return next;
+    });
+  }
+
+  function addBureau() {
+    setBureauList((list) => [...list, { prefecture: "", employeeCount: 0 }]);
+  }
+
+  function removeBureau(index: number) {
+    setBureauList((list) => {
+      const next = list.filter((_, i) => i !== index);
+      return next.length > 0 ? next : [{ prefecture: "", employeeCount: 0 }];
+    });
   }
 
   const deadline = calcDeadline(answers.startDate ?? "");
-  const allAnswered = REQUIRED_KEYS.every((k) => answers[k]);
-  const missingItems = REQUIRED_KEYS.filter((k) => !answers[k]).map((k) => KEY_LABELS[k]);
+  const hasValidBureau = bureauList.some((b) => b.prefecture !== "");
+  const allAnswered = REQUIRED_KEYS.every((k) => answers[k]) && hasValidBureau;
+  const missingItems = [
+    ...REQUIRED_KEYS.filter((k) => !answers[k]).map((k) => KEY_LABELS[k]),
+    ...(!hasValidBureau ? ["都道府県（最低1つ）"] : []),
+  ];
 
   async function diagnose() {
     if (!application || !allAnswered) return;
     setLoading(true);
     setError(null);
     try {
+      const totalEmployees = bureauList.reduce((sum, b) => sum + (b.employeeCount || 0), 0);
+      const diagAnswers = {
+        ...answers,
+        traineeCount: totalEmployees > 0 ? `${totalEmployees}名` : (answers.traineeCount ?? ""),
+        prefecture: bureauList[0]?.prefecture ?? "",
+      };
       const res = await fetch("/api/diagnose", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ answers }),
+        body: JSON.stringify({ answers: diagAnswers }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = (await res.json()) as Diagnosis;
       setResult(data);
       const supabase = createClient();
-      await saveStepNotes(supabase, application.id, 1, { answers, result: data });
+      await saveStepNotes(supabase, application.id, 1, { answers: diagAnswers, bureauList, result: data });
       await completeStep(supabase, application.id, 1);
     } catch {
       setError("診断に失敗しました。もう一度お試しください。");
@@ -212,36 +249,79 @@ export default function Step1Page() {
             )}
           </fieldset>
 
-          {/* Q3: 受講人数 */}
+          {/* Q3: 複数労働局 — 事業所ごとに都道府県＋受講人数 */}
           <fieldset>
             <legend className="mb-1 text-sm font-semibold">
-              Q3. 受講させたい従業員は何名ですか？
+              Q3. 事業所の所在地と受講人数（労働局ごと）
             </legend>
-            <p className="mb-2 text-xs text-gray-500">
-              社長・役員を除いた、雇用保険加入の従業員のみカウントしてください
+            <p className="mb-3 text-xs text-gray-500">
+              複数の都道府県に事業所がある場合は、それぞれ追加してください。<br />
+              申請は労働局ごとに別の案件として提出します。
             </p>
-            <div className="flex flex-wrap gap-2">
-              {["1名", "2〜4名", "5〜9名", "10名以上"].map((opt) => (
-                <label
-                  key={opt}
-                  className={`cursor-pointer rounded-full border px-4 py-1.5 text-sm transition ${
-                    answers.traineeCount === opt
-                      ? "border-brand-600 bg-brand-600 text-white"
-                      : "border-gray-300 bg-white text-gray-700 hover:border-brand-400"
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="traineeCount"
-                    value={opt}
-                    checked={answers.traineeCount === opt}
-                    onChange={() => setAnswer("traineeCount", opt)}
-                    className="sr-only"
-                  />
-                  {opt}
-                </label>
-              ))}
+            <div className="space-y-3">
+              {bureauList.map((bureau, i) => {
+                const bureauInfo = bureau.prefecture ? getBureauByPrefecture(bureau.prefecture) : null;
+                return (
+                  <div key={i} className="rounded-lg border border-gray-200 bg-gray-50 p-3">
+                    <div className="flex items-start gap-3 flex-wrap">
+                      <div className="flex-1 min-w-[160px]">
+                        <label className="mb-1 block text-xs font-medium text-gray-600">
+                          都道府県
+                        </label>
+                        <select
+                          className="input"
+                          value={bureau.prefecture}
+                          onChange={(e) => updateBureau(i, "prefecture", e.target.value)}
+                        >
+                          <option value="">選択...</option>
+                          {PREFECTURE_LIST.map((pref) => (
+                            <option key={pref} value={pref}>{pref}</option>
+                          ))}
+                        </select>
+                        {bureauInfo && (
+                          <p className="mt-1 text-xs text-gray-500">{bureauInfo.name}</p>
+                        )}
+                      </div>
+                      <div className="w-32">
+                        <label className="mb-1 block text-xs font-medium text-gray-600">
+                          受講人数（名）
+                        </label>
+                        <input
+                          type="number"
+                          min={0}
+                          max={999}
+                          className="input"
+                          value={bureau.employeeCount || ""}
+                          placeholder="0"
+                          onChange={(e) => updateBureau(i, "employeeCount", parseInt(e.target.value) || 0)}
+                        />
+                      </div>
+                      {i > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => removeBureau(i)}
+                          className="mt-5 text-xs text-red-500 hover:text-red-700"
+                        >
+                          削除
+                        </button>
+                      )}
+                    </div>
+                    {bureau.prefecture && bureau.employeeCount > 0 && (
+                      <p className="mt-2 text-xs text-brand-600">
+                        中小企業想定: 月額約{(Math.min(bureau.employeeCount * 20000 * 0.75, bureau.employeeCount * 20000)).toLocaleString()}円（上限 {bureau.employeeCount}名 × 1.5万円）
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
             </div>
+            <button
+              type="button"
+              onClick={addBureau}
+              className="mt-2 text-sm text-brand-600 underline hover:text-brand-800"
+            >
+              + 別の都道府県（事業所）を追加
+            </button>
           </fieldset>
 
           {/* Q4: IT研修か */}
@@ -305,25 +385,6 @@ export default function Step1Page() {
             </div>
           </fieldset>
 
-          {/* Q6: 都道府県 */}
-          <fieldset>
-            <legend className="mb-1 text-sm font-semibold">
-              Q6. 会社（事業所）の所在地の都道府県はどこですか？
-            </legend>
-            <p className="mb-2 text-xs text-gray-500">
-              管轄の労働局の連絡先を表示します（右上の「困ったら労働局に確認」ボタンに反映）
-            </p>
-            <select
-              className="input max-w-xs"
-              value={answers.prefecture ?? ""}
-              onChange={(e) => setAnswer("prefecture", e.target.value)}
-            >
-              <option value="">都道府県を選択...</option>
-              {PREFECTURE_LIST.map((pref) => (
-                <option key={pref} value={pref}>{pref}</option>
-              ))}
-            </select>
-          </fieldset>
 
           {error && <p className="text-sm text-red-600">{error}</p>}
 
@@ -376,12 +437,43 @@ export default function Step1Page() {
               <p className="text-sm leading-relaxed text-gray-700">{result.advice}</p>
             </div>
 
+            {/* 労働局ごとの助成額試算 */}
+            {bureauList.some((b) => b.prefecture && b.employeeCount > 0) && (
+              <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+                <p className="mb-2 text-xs font-bold text-blue-700">試算：労働局ごとの月額助成額</p>
+                <div className="space-y-2">
+                  {bureauList.filter((b) => b.prefecture && b.employeeCount > 0).map((b, i) => {
+                    const isSME = answers.employees !== "100名以上";
+                    const rate = isSME ? 0.75 : 0.6;
+                    const perPerson = Math.min(20000 * rate, 20000);
+                    const monthly = Math.floor(perPerson * b.employeeCount);
+                    const bureauInfo = getBureauByPrefecture(b.prefecture);
+                    return (
+                      <div key={i} className="flex items-center justify-between rounded bg-white border border-blue-100 px-3 py-2">
+                        <div>
+                          <span className="text-sm font-medium text-blue-900">{b.prefecture}</span>
+                          {bureauInfo && <span className="ml-1 text-xs text-blue-500">（{bureauInfo.name}）</span>}
+                          <span className="ml-2 text-xs text-blue-600">{b.employeeCount}名</span>
+                        </div>
+                        <span className="text-sm font-bold text-blue-800">
+                          月額 約{monthly.toLocaleString()}円
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+                <p className="mt-2 text-xs text-blue-500">
+                  ※{answers.employees === "100名以上" ? "大企業60%" : "中小企業75%"}の助成率、上限2万円/人/月で計算した参考値です
+                </p>
+              </div>
+            )}
+
             {/* 労働局に確認すべきこと */}
             <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
               <p className="mb-2 text-xs font-bold text-gray-700">労働局に確認しておくとよいこと</p>
               <ul className="space-y-1.5 text-xs text-gray-600">
                 <li>• この研修（ホリエモンAI学校等の定額制IT研修）は対象になりますか？</li>
-                <li>• 受講人数 {answers.traineeCount} で全員が対象になりますか？</li>
+                <li>• 受講人数（合計 {bureauList.reduce((s, b) => s + b.employeeCount, 0)}名）で全員が対象になりますか？</li>
                 {deadline && (
                   <li>• {formatJP(answers.startDate)} 開始の場合、計画書の必着日は {formatJP(deadline)} でよいですか？</li>
                 )}

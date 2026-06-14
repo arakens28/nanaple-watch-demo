@@ -96,6 +96,40 @@ create policy "own documents" on documents
   );
 
 -- ============================================================
+-- 複数労働局対応: 会社が複数の都道府県に事業所を持つ場合
+-- 1 application → 複数の bureau_applications（労働局ごとに別案件）
+-- ============================================================
+
+create table if not exists bureau_applications (
+  id uuid primary key default gen_random_uuid(),
+  application_id uuid references applications(id) on delete cascade not null,
+  prefecture text not null,
+  employee_count int default 0,
+  tuition_per_person int default 0,
+  plan_status text default 'todo',    -- todo / submitted / done
+  subsidy_status text default 'todo', -- todo / submitted / done
+  notes text,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now(),
+  unique (application_id, prefecture)
+);
+
+alter table bureau_applications enable row level security;
+
+create policy "own bureau_applications" on bureau_applications
+  for all using (
+    exists (
+      select 1 from applications a
+      where a.id = bureau_applications.application_id and a.user_id = auth.uid()
+    )
+  ) with check (
+    exists (
+      select 1 from applications a
+      where a.id = bureau_applications.application_id and a.user_id = auth.uid()
+    )
+  );
+
+-- ============================================================
 -- Storage: 受講履歴等のアップロード用バケット
 -- ============================================================
 

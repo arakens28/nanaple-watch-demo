@@ -25,20 +25,20 @@ export default function LandingPage() {
         {/* 2大入口 */}
         <div className="mb-8 grid gap-4 sm:grid-cols-2">
           <Link
-            href="/signup"
+            href="/check"
             className="flex flex-col items-center rounded-xl border-2 border-brand-600 bg-brand-600 px-6 py-5 text-white transition hover:bg-brand-700"
           >
             <span className="text-2xl mb-1">🎯</span>
             <span className="font-bold">自社が対象か診断する</span>
-            <span className="mt-1 text-xs text-brand-100">無料・約2分</span>
+            <span className="mt-1 text-xs text-brand-100">ゲスト診断・登録不要・約2分</span>
           </Link>
           <Link
             href="/signup"
             className="flex flex-col items-center rounded-xl border-2 border-gray-300 bg-white px-6 py-5 text-gray-700 transition hover:border-brand-400 hover:text-brand-700"
           >
-            <span className="text-2xl mb-1">💰</span>
-            <span className="font-bold">いくら出るか確認する</span>
-            <span className="mt-1 text-xs text-gray-400">受講人数・費用から試算</span>
+            <span className="text-2xl mb-1">📋</span>
+            <span className="font-bold">申請をステップ管理する</span>
+            <span className="mt-1 text-xs text-gray-400">無料アカウントで書類・期限を管理</span>
           </Link>
         </div>
 

@@ -24,8 +24,8 @@ export default function LandingPage() {
             <div className="w-full sm:w-3/5 pr-4 sm:pr-0">
               <h1 className="mb-3 text-3xl font-black leading-tight text-gray-900 sm:text-4xl md:text-5xl">
                 AI研修の費用、<br />
-                最大<span className="text-4xl sm:text-5xl md:text-6xl">75%</span>が<br className="sm:hidden" />
-                <span className="hidden sm:inline"> </span>戻ってきます。
+                最大<span className="text-4xl sm:text-5xl md:text-6xl">75%</span>が<br />
+                戻ってきます。
               </h1>
               <p className="mb-5 text-sm text-gray-800 sm:text-base">
                 人材開発支援助成金を活用すれば、<br className="hidden sm:block" />

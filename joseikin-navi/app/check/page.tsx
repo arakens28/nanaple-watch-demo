@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { PREFECTURE_LIST, getBureauByPrefecture } from "@/lib/bureauData";
 
@@ -44,6 +44,14 @@ export default function CheckPage() {
   const [result, setResult] = useState<Diagnosis | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (result) {
+      setTimeout(() => {
+        document.getElementById("check-result")?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    }
+  }, [result]);
 
   function setAnswer(key: string, value: string) {
     setAnswers((a) => ({ ...a, [key]: value }));
@@ -280,24 +288,43 @@ export default function CheckPage() {
           {error && <p className="text-sm text-red-600">{error}</p>}
 
           <div>
-            <button
-              onClick={diagnose}
-              disabled={!allAnswered || loading}
-              className="btn-primary w-full"
-            >
-              {loading ? "AIが診断中..." : "診断結果を見る"}
-            </button>
-            {!allAnswered && missingItems.length > 0 && (
-              <p className="mt-1.5 text-xs text-amber-600">
-                ▲ 未入力: {missingItems.join("・")}
-              </p>
+            {result ? (
+              <div className="space-y-2">
+                <button
+                  onClick={() => document.getElementById("check-result")?.scrollIntoView({ behavior: "smooth" })}
+                  className="btn-primary w-full"
+                >
+                  診断結果を確認する ↓
+                </button>
+                <button
+                  onClick={() => setResult(null)}
+                  className="btn-secondary w-full text-xs"
+                >
+                  回答を変えて再診断する
+                </button>
+              </div>
+            ) : (
+              <>
+                <button
+                  onClick={diagnose}
+                  disabled={!allAnswered || loading}
+                  className="btn-primary w-full"
+                >
+                  {loading ? "AIが診断中..." : "診断結果を見る"}
+                </button>
+                {!allAnswered && missingItems.length > 0 && (
+                  <p className="mt-1.5 text-xs text-amber-600">
+                    ▲ 未入力: {missingItems.join("・")}
+                  </p>
+                )}
+              </>
             )}
           </div>
         </div>
 
         {/* 診断結果 */}
         {result && (
-          <div className={`mt-6 card border-2 space-y-4 ${LEVEL_STYLES[result.level].border}`}>
+          <div id="check-result" className={`mt-6 card border-2 space-y-4 ${LEVEL_STYLES[result.level].border}`}>
             <div className="flex items-center gap-3">
               <span className="text-2xl">{LEVEL_STYLES[result.level].icon}</span>
               <div>

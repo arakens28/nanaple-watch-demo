@@ -80,7 +80,6 @@ export default function DashboardPage() {
   }
 
   const isSME = companySize !== "100名以上";
-  const subsidyRate = isSME ? 0.75 : 0.6;
 
   return (
     <div className="min-h-screen">
@@ -97,8 +96,7 @@ export default function DashboardPage() {
             <div className={`grid gap-3 ${bureauList.length > 1 ? "sm:grid-cols-2" : ""}`}>
               {bureauList.map((bureau, i) => {
                 const info = getBureauByPrefecture(bureau.prefecture);
-                const perPerson = Math.min(20000 * subsidyRate, 20000);
-                const monthly = bureau.employeeCount > 0 ? Math.floor(perPerson * bureau.employeeCount) : null;
+                const yearly = (isSME && bureau.employeeCount > 0) ? bureau.employeeCount * 240000 : null;
                 return (
                   <div key={i} className="rounded-xl border border-blue-200 bg-blue-50 p-4">
                     <div className="flex items-start justify-between">
@@ -112,15 +110,16 @@ export default function DashboardPage() {
                         </span>
                       )}
                     </div>
-                    {monthly !== null && (
+                    {yearly !== null && (
                       <div className="mt-2">
-                        <p className="text-xs text-blue-500 mb-0.5">
-                          月額助成試算（{isSME ? "中小75%" : "大企業60%"}・上限2万円/人）
-                        </p>
+                        <p className="text-xs text-blue-500 mb-0.5">年額助成試算（中小企業・月2万円/人の上限フル適用）</p>
                         <p className="text-lg font-bold text-blue-800">
-                          約{monthly.toLocaleString()}円 / 月
+                          {yearly.toLocaleString()}円 / 年
                         </p>
                       </div>
+                    )}
+                    {!isSME && bureau.employeeCount > 0 && (
+                      <p className="mt-2 text-xs text-blue-500">大企業: 税込受講料 × 60%</p>
                     )}
                     {info && (
                       <a

@@ -22,6 +22,20 @@ export default function LandingPage() {
           書類の準備から提出完了まで、6つのステップで整理します。
         </p>
 
+        {/* 解説動画 */}
+        <div className="mb-8">
+          <p className="mb-2 text-xs text-gray-500">制度の概要を動画で確認できます（約10分）</p>
+          <div className="relative w-full overflow-hidden rounded-xl" style={{ paddingBottom: "56.25%" }}>
+            <iframe
+              className="absolute inset-0 h-full w-full"
+              src="https://www.youtube.com/embed/HisOKh8i_64"
+              title="人材開発支援助成金 解説動画"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </div>
+
         {/* 2大入口 */}
         <div className="mb-8 grid gap-4 sm:grid-cols-2">
           <Link

@@ -60,6 +60,14 @@ export default function Step1Page() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (result) {
+      setTimeout(() => {
+        document.getElementById("diagnosis-result")?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    }
+  }, [result]);
+
+  useEffect(() => {
     const supabase = createClient();
     getOrCreateApplication(supabase).then(({ application, steps }) => {
       setApplication(application);
@@ -307,9 +315,13 @@ export default function Step1Page() {
                       )}
                     </div>
                     {bureau.prefecture && bureau.employeeCount > 0 && (
-                      <p className="mt-2 text-xs text-brand-600">
-                        中小企業想定: 月額約{(Math.min(bureau.employeeCount * 20000 * 0.75, bureau.employeeCount * 20000)).toLocaleString()}円（上限 {bureau.employeeCount}名 × 1.5万円）
-                      </p>
+                      <div className="mt-2 rounded-md bg-brand-50 px-3 py-2 text-xs">
+                        <p className="text-brand-700 font-semibold">
+                          中小企業: 年額 {(bureau.employeeCount * 240000).toLocaleString()}円 助成
+                          <span className="ml-1 font-normal text-brand-500">（{bureau.employeeCount}名 × 24万円/年）</span>
+                        </p>
+                        <p className="text-gray-400 mt-0.5">大企業の場合は税込受講料 × 60%（月2万円/人が上限）</p>
+                      </div>
                     )}
                   </div>
                 );
@@ -389,24 +401,43 @@ export default function Step1Page() {
           {error && <p className="text-sm text-red-600">{error}</p>}
 
           <div>
-            <button
-              onClick={diagnose}
-              disabled={!allAnswered || loading}
-              className="btn-primary w-full"
-            >
-              {loading ? "AIが診断中..." : "診断結果を見る"}
-            </button>
-            {!allAnswered && missingItems.length > 0 && (
-              <p className="mt-1.5 text-xs text-amber-600">
-                ▲ 未入力: {missingItems.join("・")}
-              </p>
+            {result ? (
+              <div className="space-y-2">
+                <button
+                  onClick={() => document.getElementById("diagnosis-result")?.scrollIntoView({ behavior: "smooth" })}
+                  className="btn-primary w-full"
+                >
+                  診断結果を確認する ↓
+                </button>
+                <button
+                  onClick={() => setResult(null)}
+                  className="btn-secondary w-full text-xs"
+                >
+                  回答を変えて再診断する
+                </button>
+              </div>
+            ) : (
+              <>
+                <button
+                  onClick={diagnose}
+                  disabled={!allAnswered || loading}
+                  className="btn-primary w-full"
+                >
+                  {loading ? "AIが診断中..." : "診断結果を見る"}
+                </button>
+                {!allAnswered && missingItems.length > 0 && (
+                  <p className="mt-1.5 text-xs text-amber-600">
+                    ▲ 未入力: {missingItems.join("・")}
+                  </p>
+                )}
+              </>
             )}
           </div>
         </div>
 
         {/* 診断結果 */}
         {result && (
-          <div className={`card border-2 space-y-4 ${LEVEL_STYLES[result.level].border}`}>
+          <div id="diagnosis-result" className={`card border-2 space-y-4 ${LEVEL_STYLES[result.level].border}`}>
             <div className="flex items-center gap-3">
               <h2 className="text-lg font-bold">診断結果</h2>
               <span className={`rounded-full px-3 py-1 text-sm font-bold ${LEVEL_STYLES[result.level].badge}`}>
@@ -440,31 +471,41 @@ export default function Step1Page() {
             {/* 労働局ごとの助成額試算 */}
             {bureauList.some((b) => b.prefecture && b.employeeCount > 0) && (
               <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-                <p className="mb-2 text-xs font-bold text-blue-700">試算：労働局ごとの月額助成額</p>
+                <p className="mb-2 text-xs font-bold text-blue-700">試算：労働局ごとの年額助成額</p>
                 <div className="space-y-2">
                   {bureauList.filter((b) => b.prefecture && b.employeeCount > 0).map((b, i) => {
                     const isSME = answers.employees !== "100名以上";
-                    const rate = isSME ? 0.75 : 0.6;
-                    const perPerson = Math.min(20000 * rate, 20000);
-                    const monthly = Math.floor(perPerson * b.employeeCount);
                     const bureauInfo = getBureauByPrefecture(b.prefecture);
                     return (
-                      <div key={i} className="flex items-center justify-between rounded bg-white border border-blue-100 px-3 py-2">
-                        <div>
-                          <span className="text-sm font-medium text-blue-900">{b.prefecture}</span>
-                          {bureauInfo && <span className="ml-1 text-xs text-blue-500">（{bureauInfo.name}）</span>}
-                          <span className="ml-2 text-xs text-blue-600">{b.employeeCount}名</span>
+                      <div key={i} className="rounded bg-white border border-blue-100 px-3 py-2">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <span className="text-sm font-medium text-blue-900">{b.prefecture}</span>
+                            {bureauInfo && <span className="ml-1 text-xs text-blue-500">（{bureauInfo.name}）</span>}
+                            <span className="ml-2 text-xs text-blue-600">{b.employeeCount}名</span>
+                          </div>
+                          {isSME ? (
+                            <span className="text-sm font-bold text-blue-800">
+                              年額 {(b.employeeCount * 240000).toLocaleString()}円
+                            </span>
+                          ) : (
+                            <span className="text-xs text-gray-500">税込受講料 × 60%</span>
+                          )}
                         </div>
-                        <span className="text-sm font-bold text-blue-800">
-                          月額 約{monthly.toLocaleString()}円
-                        </span>
+                        {isSME && (
+                          <p className="mt-0.5 text-xs text-blue-500">
+                            {b.employeeCount}名 × 24万円/年（月2万円/人の上限フル適用）
+                          </p>
+                        )}
                       </div>
                     );
                   })}
                 </div>
-                <p className="mt-2 text-xs text-blue-500">
-                  ※{answers.employees === "100名以上" ? "大企業60%" : "中小企業75%"}の助成率、上限2万円/人/月で計算した参考値です
-                </p>
+                {answers.employees === "100名以上" && (
+                  <p className="mt-2 text-xs text-blue-500">
+                    ※大企業は税込受講料 × 60%（上限2万円/人/月）。受講料確定後に労働局で確認してください。
+                  </p>
+                )}
               </div>
             )}
 

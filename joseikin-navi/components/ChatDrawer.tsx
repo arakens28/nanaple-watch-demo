@@ -90,8 +90,25 @@ export default function ChatDrawer({ step }: { step?: number }) {
           <div className="border-b bg-brand-600 px-4 py-3 text-sm font-semibold text-white">
             AIアシスタント
             <p className="text-xs font-normal text-brand-100">
-              申請に関する質問にお答えします（申請代行はできません）
+              申請に関する質問にお答えします
             </p>
+          </div>
+          {/* ガードレールバナー */}
+          <div className="border-b border-amber-200 bg-amber-50 px-4 py-2">
+            <p className="text-xs text-amber-700 leading-relaxed">
+              <strong>申請代行はできません。</strong>
+              記入・整理・確認を支援します。最終判断は
+              <strong>管轄の労働局</strong>へご確認ください。
+            </p>
+          </div>
+          {/* 状態インジケーター */}
+          <div className="flex items-center gap-1.5 border-b px-4 py-1.5 text-xs text-gray-500">
+            <span
+              className={`h-2 w-2 rounded-full ${
+                streaming ? "animate-pulse bg-amber-400" : "bg-green-400"
+              }`}
+            />
+            {streaming ? "回答中..." : messages.length === 0 ? "待機中" : "再質問できます"}
           </div>
           <div className="flex-1 space-y-3 overflow-y-auto p-4">
             {messages.length === 0 && (

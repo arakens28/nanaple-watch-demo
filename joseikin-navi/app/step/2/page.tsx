@@ -165,6 +165,42 @@ export default function Step2Page() {
           </p>
         </div>
 
+        {/* ホリエモンAI学校提供資料ダウンロード */}
+        <div className="rounded-xl border border-green-200 bg-green-50 p-4">
+          <p className="text-sm font-bold text-green-800 mb-2">
+            📥 ホリエモンAI学校の公式資料（⑤・⑧に使用可）
+          </p>
+          <p className="text-xs text-green-700 mb-3">
+            以下の資料は提出書類の一部として使用できます。ダウンロードして書類に同封してください。
+          </p>
+          <div className="grid gap-2 sm:grid-cols-2">
+            <a
+              href="/horiemon-ai-hojin.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 rounded-lg border border-green-300 bg-white px-3 py-2 text-sm font-medium text-green-800 hover:bg-green-100"
+            >
+              <span>📄</span>
+              <div>
+                <p className="font-semibold">法人資料（パンフレット）</p>
+                <p className="text-xs text-green-600">⑤ 訓練カリキュラム・受講案内として使用可</p>
+              </div>
+            </a>
+            <a
+              href="/joseikin-sankoshorui.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 rounded-lg border border-green-300 bg-white px-3 py-2 text-sm font-medium text-green-800 hover:bg-green-100"
+            >
+              <span>📄</span>
+              <div>
+                <p className="font-semibold">助成金申請参考資料</p>
+                <p className="text-xs text-green-600">⑤⑧ コース一覧・標準学習時間として使用可</p>
+              </div>
+            </a>
+          </div>
+        </div>
+
         <div className="card">
           <h2 className="mb-1 text-lg font-bold">必要書類チェックリスト（定額制サービス用）</h2>
           <p className="mb-4 text-sm text-gray-500">

@@ -10,7 +10,7 @@ import {
 } from "@/lib/application";
 import StepShell from "@/components/StepShell";
 
-const TARGET_HOURS = 12;
+const TARGET_HOURS = 10;
 
 type TrainingRecord = {
   id: string;
@@ -144,7 +144,7 @@ export default function Step3Page() {
   return (
     <StepShell
       step={3}
-      adviceContext={`現在の合計受講時間は${total.toFixed(1)}時間（目標12時間）`}
+      adviceContext={`現在の合計受講時間は${total.toFixed(1)}時間（目標10時間）`}
     >
       <div className="space-y-6">
         {/* プログレス */}
@@ -167,7 +167,7 @@ export default function Step3Page() {
           </div>
           {reached && (
             <p className="mt-2 text-sm font-medium text-green-700">
-              🎉 目標の12時間を達成しました！
+              🎉 目標の10時間を達成しました！
             </p>
           )}
         </div>
@@ -248,11 +248,28 @@ export default function Step3Page() {
           )}
         </div>
 
+        {/* ホリエモンAI学校の受講証明書 */}
+        <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
+          <p className="text-sm font-bold text-blue-800 mb-2">
+            📄 ホリエモンAI学校からの受講証明書（本申請に必要）
+          </p>
+          <p className="text-sm text-blue-700 mb-2">
+            ホリエモンAI学校はOneStreamというLMSを使用しており、受講データはPDF形式で受講企業へ配布されます。<strong>「再生完了率100%」が受講完了の証拠</strong>となります。
+          </p>
+          <ul className="text-sm text-blue-700 space-y-1 ml-3 list-disc">
+            <li>視聴ログ（受講日時・動画タイトル・再生時間・完了率）</li>
+            <li>受講証明書（社名・受講者氏名・受講講座一覧）</li>
+          </ul>
+          <p className="mt-2 text-xs text-blue-600">
+            ▶ 受講後、ホリエモンAI学校の担当者にPDF発行を依頼してください。STEP4の支給申請時に提出します。
+          </p>
+        </div>
+
         {/* 受講履歴アップロード */}
         <div className="card">
           <h2 className="mb-1 text-lg font-bold">受講履歴ファイル</h2>
           <p className="mb-3 text-sm text-gray-500">
-            eラーニングの受講履歴画面やレポート（PDF可）をアップロードして保管できます。本申請で使用します。
+            ホリエモンAI学校から受け取った受講証明書・視聴ログPDFをアップロードして保管できます。本申請で使用します。
           </p>
           <input
             type="file"
@@ -277,7 +294,7 @@ export default function Step3Page() {
         <div className="card flex items-center justify-between">
           <p className="text-sm text-gray-600">
             {reached
-              ? "12時間を達成しました。次のステップへ進めます。"
+              ? "10時間を達成しました。次のステップへ進めます。"
               : `次のステップへ進むには、あと${(TARGET_HOURS - total).toFixed(1)}時間の受講が必要です。`}
           </p>
           {done ? (

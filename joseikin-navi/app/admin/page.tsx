@@ -52,7 +52,7 @@ export default async function AdminPage() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/login");
+    redirect("/login?redirect=/admin");
   }
 
   if (user.email?.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {

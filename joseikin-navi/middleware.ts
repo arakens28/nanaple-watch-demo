@@ -37,7 +37,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
   if (user && isAuthPage) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    const dest = user.email === "araki@telewor.com" ? "/admin" : "/dashboard";
+    return NextResponse.redirect(new URL(dest, request.url));
   }
 
   return response;

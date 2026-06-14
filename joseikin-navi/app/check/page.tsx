@@ -29,6 +29,14 @@ function formatJP(dateStr: string): string {
   return `${y}年${m}月${d}日`;
 }
 
+function calcSubsidy(traineeCount: string, employees: string): { total: number; perPerson: number; isSME: boolean } | null {
+  const count = parseInt(traineeCount, 10);
+  if (isNaN(count) || count <= 0) return null;
+  const isSME = employees !== "100名以上";
+  const perPerson = isSME ? 240000 : 204600;
+  return { total: count * perPerson, perPerson, isSME };
+}
+
 const REQUIRED_KEYS = ["insurance", "startDate", "traineeCount", "itTraining", "employees"];
 
 const KEY_LABELS: Record<string, string> = {
@@ -62,6 +70,10 @@ export default function CheckPage() {
   const missingItems = REQUIRED_KEYS.filter((k) => !answers[k]).map((k) => KEY_LABELS[k]);
 
   const bureau = answers.prefecture ? getBureauByPrefecture(answers.prefecture) : null;
+  const subsidyEstimate =
+    answers.traineeCount && answers.employees
+      ? calcSubsidy(answers.traineeCount, answers.employees)
+      : null;
 
   async function diagnose() {
     if (!allAnswered) return;
@@ -89,7 +101,7 @@ export default function CheckPage() {
       <header className="border-b bg-white shadow-sm">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-3">
           <div>
-            <Link href="/" className="font-bold text-brand-700 text-sm">
+            <Link href="/" className="text-sm font-bold text-brand-700">
               助成金ナビ
             </Link>
             <span className="ml-2 text-xs text-gray-400">ホリエモンAI学校受講企業向け</span>
@@ -113,7 +125,7 @@ export default function CheckPage() {
           </p>
         </div>
 
-        {/* 申請代行禁止の注意書き */}
+        {/* 申請代行禁止 */}
         <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
           <p className="text-xs text-amber-800">
             <strong>このサービスは申請代行ではありません。</strong>
@@ -123,9 +135,7 @@ export default function CheckPage() {
 
         {/* 対象外の方 */}
         <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4">
-          <p className="mb-2 text-sm font-bold text-red-800">
-            ⚠️ 次の方は助成金の対象外です
-          </p>
+          <p className="mb-2 text-sm font-bold text-red-800">⚠️ 次の方は助成金の対象外です</p>
           <div className="flex flex-wrap gap-2">
             {INELIGIBLE_LIST.map((item) => (
               <span key={item} className="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
@@ -141,9 +151,7 @@ export default function CheckPage() {
             <legend className="mb-1 text-sm font-semibold">
               Q1. 受講させたい従業員は雇用保険に加入していますか？
             </legend>
-            <p className="mb-2 text-xs text-gray-500">
-              雇用保険番号（被保険者番号）を持っている方が対象です
-            </p>
+            <p className="mb-2 text-xs text-gray-500">雇用保険番号（被保険者番号）を持っている方が対象です</p>
             <div className="flex flex-wrap gap-2">
               {["はい", "いいえ", "わからない"].map((opt) => (
                 <label
@@ -168,9 +176,7 @@ export default function CheckPage() {
 
           {/* Q2: 受講開始日 */}
           <fieldset>
-            <legend className="mb-1 text-sm font-semibold">
-              Q2. 受講開始予定日はいつですか？
-            </legend>
+            <legend className="mb-1 text-sm font-semibold">Q2. 受講開始予定日はいつですか？</legend>
             <p className="mb-2 text-xs text-gray-500">入力すると計画書の提出期限を自動計算します</p>
             <input
               type="date"
@@ -191,34 +197,44 @@ export default function CheckPage() {
             )}
           </fieldset>
 
-          {/* Q3: 受講人数 */}
+          {/* Q3: 受講人数（数値直接入力） */}
           <fieldset>
-            <legend className="mb-1 text-sm font-semibold">
-              Q3. 受講させたい従業員は何名ですか？
-            </legend>
+            <legend className="mb-1 text-sm font-semibold">Q3. 受講させたい従業員は何名ですか？</legend>
             <p className="mb-2 text-xs text-gray-500">社長・役員を除いた、雇用保険加入の従業員のみ</p>
-            <div className="flex flex-wrap gap-2">
-              {["1名", "2〜4名", "5〜9名", "10名以上"].map((opt) => (
-                <label
-                  key={opt}
-                  className={`cursor-pointer rounded-full border px-4 py-1.5 text-sm transition ${
-                    answers.traineeCount === opt
-                      ? "border-brand-600 bg-brand-600 text-white"
-                      : "border-gray-300 bg-white text-gray-700 hover:border-brand-400"
-                  }`}
-                >
-                  <input type="radio" name="traineeCount" value={opt} checked={answers.traineeCount === opt} onChange={() => setAnswer("traineeCount", opt)} className="sr-only" />
-                  {opt}
-                </label>
-              ))}
+            <div className="flex items-center gap-3">
+              <input
+                type="number"
+                min="1"
+                max="300"
+                className="input w-28"
+                placeholder="例: 5"
+                value={answers.traineeCount ?? ""}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  if (v === "" || (parseInt(v, 10) >= 1 && parseInt(v, 10) <= 300)) {
+                    setAnswer("traineeCount", v);
+                  }
+                }}
+              />
+              <span className="text-sm text-gray-500">名</span>
             </div>
+            {subsidyEstimate && (
+              <div className="mt-3 rounded-lg border border-green-200 bg-green-50 p-3">
+                <p className="text-xs text-green-600">助成金試算（制度上の上限額・確定ではありません）</p>
+                <p className="text-lg font-bold text-green-800 mt-0.5">
+                  最大 {subsidyEstimate.total.toLocaleString()}円/年 の助成が見込まれます
+                </p>
+                <p className="text-xs text-green-600 mt-0.5">
+                  {answers.traineeCount}名 × {subsidyEstimate.perPerson.toLocaleString()}円/年
+                  （{subsidyEstimate.isSME ? "中小企業: 月2万円/人上限フル適用" : "大企業: 税込受講料×60%"}）
+                </p>
+              </div>
+            )}
           </fieldset>
 
           {/* Q4: IT研修か */}
           <fieldset>
-            <legend className="mb-1 text-sm font-semibold">
-              Q4. 研修内容はAI・IT・デジタル分野ですか？
-            </legend>
+            <legend className="mb-1 text-sm font-semibold">Q4. 研修内容はAI・IT・デジタル分野ですか？</legend>
             <p className="mb-2 text-xs text-gray-500">AI活用、プログラミング、DX、デジタルマーケティング等が該当します</p>
             <div className="flex flex-wrap gap-2">
               {["はい", "いいえ", "わからない"].map((opt) => (
@@ -239,9 +255,7 @@ export default function CheckPage() {
 
           {/* Q5: 従業員数 */}
           <fieldset>
-            <legend className="mb-1 text-sm font-semibold">
-              Q5. 会社の従業員数（正規雇用）は何名ですか？
-            </legend>
+            <legend className="mb-1 text-sm font-semibold">Q5. 会社の従業員数（正規雇用）は何名ですか？</legend>
             <div className="flex flex-wrap gap-2">
               {["1〜9名", "10〜99名", "100名以上"].map((opt) => (
                 <label
@@ -259,11 +273,9 @@ export default function CheckPage() {
             </div>
           </fieldset>
 
-          {/* Q6: 都道府県（任意・連絡先表示のみ） */}
+          {/* Q6: 都道府県（任意） */}
           <fieldset>
-            <legend className="mb-1 text-sm font-semibold">
-              Q6. 会社の所在地（任意）
-            </legend>
+            <legend className="mb-1 text-sm font-semibold">Q6. 会社の所在地（任意）</legend>
             <p className="mb-2 text-xs text-gray-500">管轄労働局の連絡先を表示します</p>
             <select
               className="input max-w-xs"
@@ -337,6 +349,25 @@ export default function CheckPage() {
 
             <p className="text-sm leading-relaxed text-gray-700">{result.reason}</p>
 
+            {/* 助成金試算（受給可能性が高・中の場合） */}
+            {result.level !== "低" && subsidyEstimate && (
+              <div className="rounded-xl border-2 border-green-400 bg-green-50 p-5 text-center">
+                <p className="text-xs font-bold uppercase tracking-wide text-green-600 mb-2">
+                  助成金試算（制度上の上限額・確定ではありません）
+                </p>
+                <p className="text-4xl font-bold text-green-800">
+                  {subsidyEstimate.total.toLocaleString()}円
+                </p>
+                <p className="text-base font-semibold text-green-700 mt-1">年間の助成額（見込み）</p>
+                <p className="text-xs text-green-600 mt-2">
+                  {answers.traineeCount}名 × {subsidyEstimate.perPerson.toLocaleString()}円/年
+                  （{subsidyEstimate.isSME
+                    ? "中小企業: 受講料75%・月2万円/人の上限フル適用"
+                    : "大企業: 税込受講料×60%"}）
+                </p>
+              </div>
+            )}
+
             {deadline && (
               <div className="rounded-lg border border-red-300 bg-red-50 p-4">
                 <p className="text-xs font-bold text-red-600 mb-1">
@@ -356,37 +387,33 @@ export default function CheckPage() {
               <p className="text-sm leading-relaxed text-gray-700">{result.advice}</p>
             </div>
 
-            {/* ホリエモンAI学校 CTA */}
-            <div className="rounded-xl border-2 border-brand-600 bg-brand-600 p-5 text-white text-center">
-              <p className="text-xs font-semibold text-brand-100 mb-1">
-                ホリエモンAI学校は定額制IT研修として助成金の対象になります
-              </p>
-              <p className="text-lg font-bold mb-3">受講のご相談はこちら</p>
-              <a
-                href="https://horiemon.ai/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block rounded-full bg-white px-6 py-2 text-sm font-bold text-brand-700 hover:bg-brand-50 transition"
-              >
-                ホリエモンAI学校を見る →
-              </a>
-            </div>
-
-            {/* 申請をトラッキングするCTA */}
-            <div className="rounded-xl border border-gray-200 bg-gray-50 p-5 text-center">
-              <p className="text-sm font-semibold text-gray-700 mb-1">申請の進捗を管理したい方へ</p>
-              <p className="text-xs text-gray-500 mb-3">
-                無料アカウントを作成すると、書類チェック・期限管理・AIサポートが使えます
-              </p>
+            {/* CTA1: 申請をステップ管理する（メイン） */}
+            <div className="rounded-xl border-2 border-brand-600 bg-brand-600 p-5 text-center text-white">
+              <p className="text-xs font-semibold text-brand-200 mb-1">無料アカウントで申請を最後まで管理</p>
+              <p className="text-lg font-bold mb-3">書類チェック・期限管理・AIサポート</p>
               <Link
                 href="/signup"
-                className="inline-block rounded-full border-2 border-brand-600 px-6 py-2 text-sm font-bold text-brand-700 hover:bg-brand-50 transition"
+                className="inline-block rounded-full bg-white px-6 py-2 text-sm font-bold text-brand-700 transition hover:bg-brand-50"
               >
                 無料でアカウント作成 →
               </Link>
             </div>
 
-            <p className="text-xs text-gray-400 text-center leading-relaxed">
+            {/* CTA2: ホリエモンAI学校（サブ） */}
+            <div className="rounded-xl border border-gray-200 bg-gray-50 p-5 text-center">
+              <p className="text-xs text-gray-500 mb-1">ホリエモンAI学校は定額制IT研修として助成金の対象になります</p>
+              <p className="text-sm font-semibold text-gray-700 mb-3">受講のご相談はこちら</p>
+              <a
+                href="https://horiemon.ai/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block rounded-full border border-gray-300 bg-white px-6 py-2 text-sm font-bold text-gray-700 transition hover:border-brand-400 hover:text-brand-700"
+              >
+                ホリエモンAI学校を見る →
+              </a>
+            </div>
+
+            <p className="text-center text-xs leading-relaxed text-gray-400">
               このサービスは申請代行ではありません。最終的な制度の判断は管轄の労働局にご確認ください。
             </p>
           </div>

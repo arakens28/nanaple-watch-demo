@@ -2,140 +2,148 @@ import Link from "next/link";
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-gray-50">
-      {/* ヒーローセクション */}
-      <div className="mx-auto max-w-3xl px-6 py-16 text-center">
-        <p className="mb-2 inline-block rounded-full bg-brand-100 px-4 py-1 text-sm font-semibold text-brand-700">
-          ホリエモンAI学校受講企業向け
-        </p>
-        <p className="mb-3 text-xs text-gray-500">
-          人材開発支援助成金（事業展開等リスキリング支援コース）定額制訓練
-        </p>
-        <h1 className="mb-4 text-4xl font-bold leading-tight text-gray-900">
-          助成金、自分で申請できます。
-        </h1>
-        <p className="mb-2 text-lg text-gray-600">
-          社労士に丸投げせず、自社で進める助成金申請サポートツール
-        </p>
-        <p className="mb-8 text-sm text-gray-500">
-          「自社が対象か」「いくら出るか」を最短で確認。
-          書類の準備から提出完了まで、6つのステップで整理します。
-        </p>
+    <main className="min-h-screen bg-white">
+      {/* ヒーロー */}
+      <div className="bg-gradient-to-b from-brand-50 to-white">
+        <div className="mx-auto max-w-2xl px-6 pt-14 pb-10 text-center">
+          <p className="mb-4 inline-block rounded-full bg-brand-100 px-4 py-1 text-sm font-semibold text-brand-700">
+            ホリエモンAI学校受講企業向け 無料診断ツール
+          </p>
+          <h1 className="mb-4 text-4xl font-bold leading-tight text-gray-900">
+            自社が助成金の対象か<br className="hidden sm:block" />2分で分かります
+          </h1>
+          <p className="mb-2 text-lg text-gray-600">
+            AI研修の受講料、最大<span className="font-bold text-brand-700">75%</span>が国から助成されます
+          </p>
+          <p className="mb-8 text-sm text-gray-400">登録不要・無料・AIが即時診断</p>
 
-        {/* 解説動画 */}
-        <div className="mb-8">
-          <p className="mb-2 text-xs text-gray-500">制度の概要を動画で確認できます（約10分）</p>
-          <div className="relative w-full overflow-hidden rounded-xl" style={{ paddingBottom: "56.25%" }}>
-            <iframe
-              className="absolute inset-0 h-full w-full"
-              src="https://www.youtube.com/embed/HisOKh8i_64"
-              title="人材開発支援助成金 解説動画"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </div>
-        </div>
-
-        {/* 2大入口 */}
-        <div className="mb-8 grid gap-4 sm:grid-cols-2">
           <Link
             href="/check"
-            className="flex flex-col items-center rounded-xl border-2 border-brand-600 bg-brand-600 px-6 py-5 text-white transition hover:bg-brand-700"
+            className="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-10 py-4 text-lg font-bold text-white shadow-lg transition hover:bg-brand-700"
           >
-            <span className="text-2xl mb-1">🎯</span>
-            <span className="font-bold">自社が対象か診断する</span>
-            <span className="mt-1 text-xs text-brand-100">ゲスト診断・登録不要・約2分</span>
+            🎯 無料で診断する
+            <span className="text-brand-200 text-base">→</span>
           </Link>
-          <Link
-            href="/signup"
-            className="flex flex-col items-center rounded-xl border-2 border-gray-300 bg-white px-6 py-5 text-gray-700 transition hover:border-brand-400 hover:text-brand-700"
-          >
-            <span className="text-2xl mb-1">📋</span>
-            <span className="font-bold">申請をステップ管理する</span>
-            <span className="mt-1 text-xs text-gray-400">無料アカウントで書類・期限を管理</span>
-          </Link>
+          <p className="mt-3 text-xs text-gray-400">登録不要・約2分</p>
         </div>
-
-        <Link href="/login" className="text-sm text-gray-500 underline hover:text-gray-700">
-          すでにアカウントをお持ちの方はこちら
-        </Link>
       </div>
 
-      {/* 重要事項 */}
+      {/* 数字3つ */}
+      <div className="border-y border-gray-200">
+        <div className="mx-auto grid max-w-2xl grid-cols-3 divide-x divide-gray-200">
+          <div className="px-4 py-5 text-center">
+            <p className="text-3xl font-bold text-brand-700">75%</p>
+            <p className="mt-1 text-xs text-gray-500">中小企業の助成率</p>
+          </div>
+          <div className="px-4 py-5 text-center">
+            <p className="text-3xl font-bold text-brand-700">24万円</p>
+            <p className="mt-1 text-xs text-gray-500">1人あたり年間の上限</p>
+          </div>
+          <div className="px-4 py-5 text-center">
+            <p className="text-3xl font-bold text-brand-700">R8年度</p>
+            <p className="mt-1 text-xs text-gray-500">制度の終了期限</p>
+          </div>
+        </div>
+      </div>
+
+      {/* こんな方に */}
+      <div className="mx-auto max-w-2xl px-6 py-10">
+        <h2 className="mb-5 text-center text-lg font-bold text-gray-800">こんな方にぴったりです</h2>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {[
+            { icon: "💭", text: "ホリエモンAI学校の受講を検討中だが、費用負担が気になる" },
+            { icon: "📋", text: "助成金を使いたいが、何から始めれば良いか分からない" },
+            { icon: "💼", text: "社労士に頼むほどじゃないが、自社で申請できるか確認したい" },
+            { icon: "⏰", text: "受講前に計画書の締め切りをすぐに把握しておきたい" },
+          ].map(({ icon, text }) => (
+            <div key={text} className="flex gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+              <span className="shrink-0 text-xl">{icon}</span>
+              <p className="text-sm text-gray-700">{text}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-8 text-center">
+          <Link
+            href="/check"
+            className="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-8 py-3.5 text-base font-bold text-white shadow transition hover:bg-brand-700"
+          >
+            🎯 今すぐ診断する（無料）→
+          </Link>
+        </div>
+      </div>
+
+      {/* 申請代行禁止バナー */}
       <div className="border-y border-amber-200 bg-amber-50 py-4">
-        <p className="mx-auto max-w-3xl px-6 text-center text-sm text-amber-800">
+        <p className="mx-auto max-w-2xl px-6 text-center text-sm text-amber-800">
           <strong>このサービスは申請代行ではありません。</strong>
           書類の記入・提出は必ずご自身で行っていただきます。
           最終的な制度の判断は管轄の労働局にご確認ください。
         </p>
       </div>
 
-      {/* 対象コース説明 */}
-      <div className="mx-auto max-w-3xl px-6 py-10">
-        <div className="rounded-xl border border-blue-200 bg-blue-50 p-5">
-          <p className="text-xs font-bold uppercase tracking-wide text-blue-600 mb-2">対象制度</p>
-          <p className="font-bold text-blue-900 text-base">
-            人材開発支援助成金（事業展開等リスキリング支援コース）定額制訓練
-          </p>
-          <p className="mt-2 text-sm text-blue-800 leading-relaxed">
-            令和4年12月〜令和8年度の期間限定。DX・新規事業展開に伴い従業員に新分野のIT研修を受けさせる事業主を支援する制度です。
-            ホリエモンAI学校のような定額制（サブスクリプション）型のeラーニング研修が対象です。
-          </p>
-          <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
-            <div className="rounded-lg bg-white border border-blue-200 p-3 text-center">
-              <p className="text-xs text-blue-600 font-semibold">中小企業</p>
-              <p className="text-xl font-bold text-blue-900">75%</p>
-              <p className="text-xs text-blue-600">経費助成率</p>
-            </div>
-            <div className="rounded-lg bg-white border border-blue-200 p-3 text-center">
-              <p className="text-xs text-blue-600 font-semibold">大企業</p>
-              <p className="text-xl font-bold text-blue-900">60%</p>
-              <p className="text-xs text-blue-600">経費助成率</p>
-            </div>
-            <div className="rounded-lg bg-white border border-blue-200 p-3 text-center">
-              <p className="text-xs text-blue-600 font-semibold">上限</p>
-              <p className="text-xl font-bold text-blue-900">2万円</p>
-              <p className="text-xs text-blue-600">1人・1ヶ月</p>
-            </div>
-          </div>
-          <a
-            href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/38819_00010.html#事業展開等リスキリング支援コース"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-3 inline-flex items-center gap-1 text-xs text-blue-700 underline hover:text-blue-900"
-          >
-            厚生労働省 公式ページ（様式・詳細）↗
-          </a>
-        </div>
-      </div>
-
       {/* 申請の流れ */}
-      <div className="mx-auto max-w-3xl px-6 pb-12">
-        <h2 className="mb-6 text-center text-xl font-bold text-gray-800">
-          申請の流れ（6ステップ）
-        </h2>
-        <div className="grid gap-3">
+      <div className="mx-auto max-w-2xl px-6 py-10">
+        <h2 className="mb-5 text-center text-lg font-bold text-gray-800">診断後は6ステップで完結</h2>
+        <div className="grid gap-2">
           {[
-            { step: 1, name: "事前診断", desc: "対象か・いくら出るかを確認" },
-            { step: 2, name: "計画書提出", desc: "受講開始1ヶ月前までに労働局へ（計画届）" },
+            { step: 1, name: "事前診断", desc: "対象か・いくら出るかを確認（まずここから）", highlight: true },
+            { step: 2, name: "計画書提出", desc: "受講開始1ヶ月前までに労働局へ" },
             { step: 3, name: "研修受講", desc: "対象従業員が合計10時間以上受講" },
-            { step: 4, name: "支給申請", desc: "訓練終了日翌日から2ヶ月以内に申請" },
+            { step: 4, name: "支給申請", desc: "訓練終了後2ヶ月以内に申請" },
             { step: 5, name: "問い合わせ対応", desc: "労働局からの確認に回答" },
             { step: 6, name: "着金確認", desc: "入金確認で完了" },
-          ].map(({ step, name, desc }) => (
+          ].map(({ step, name, desc, highlight }) => (
             <div
               key={step}
-              className="flex items-center gap-4 rounded-lg border border-gray-200 bg-white p-4"
+              className={`flex items-center gap-4 rounded-lg border p-3 ${highlight ? "border-brand-300 bg-brand-50" : "border-gray-200 bg-white"}`}
             >
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-600 text-sm font-bold text-white">
+              <span
+                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white ${highlight ? "bg-brand-600" : "bg-gray-400"}`}
+              >
                 {step}
               </span>
               <div>
-                <span className="font-semibold text-gray-800">{name}</span>
+                <span className={`font-semibold ${highlight ? "text-brand-700" : "text-gray-700"}`}>{name}</span>
                 <span className="ml-2 text-sm text-gray-500">{desc}</span>
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* 解説動画（下部に配置） */}
+      <div className="mx-auto max-w-2xl px-6 pb-10">
+        <h2 className="mb-1 text-center text-base font-semibold text-gray-700">制度の詳細を動画で確認</h2>
+        <p className="mb-4 text-center text-xs text-gray-500">約10分 / 人材開発支援助成金の仕組みを解説</p>
+        <div className="relative w-full overflow-hidden rounded-xl" style={{ paddingBottom: "56.25%" }}>
+          <iframe
+            className="absolute inset-0 h-full w-full"
+            src="https://www.youtube.com/embed/HisOKh8i_64"
+            title="人材開発支援助成金 解説動画"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
+        <p className="mt-3 text-center text-xs text-gray-400">
+          出典: ホリエモンAI学校FC本部【公式】
+        </p>
+      </div>
+
+      {/* 下部CTA */}
+      <div className="bg-brand-600 py-10">
+        <div className="mx-auto max-w-2xl px-6 text-center">
+          <p className="mb-2 text-sm text-brand-200">まだ診断していない方は</p>
+          <Link
+            href="/check"
+            className="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-4 text-lg font-bold text-brand-700 shadow transition hover:bg-brand-50"
+          >
+            🎯 無料で診断する →
+          </Link>
+          <p className="mt-3 text-xs text-brand-300">登録不要・約2分</p>
+          <p className="mt-4 text-xs text-brand-400">
+            すでにアカウントをお持ちの方は{" "}
+            <a href="/login" className="underline hover:text-brand-200">こちら</a>
+          </p>
         </div>
       </div>
     </main>

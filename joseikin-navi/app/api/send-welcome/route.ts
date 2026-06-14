@@ -2,17 +2,23 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { createServerSupabase } from "@/lib/supabase-server";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM = process.env.RESEND_FROM ?? "助成金ナビ <noreply@horiemon.ai>";
 const ADMIN_EMAIL = "araki@telewor.com";
 
 export async function POST(req: NextRequest) {
+  // RESEND_API_KEY未設定の場合は無視して正常終了
+  if (!process.env.RESEND_API_KEY) {
+    return NextResponse.json({ ok: true });
+  }
+
   // ログイン済みユーザーのみ呼べる
   const supabase = createServerSupabase();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const resend = new Resend(process.env.RESEND_API_KEY);
 
   const userEmail = user.email;
 

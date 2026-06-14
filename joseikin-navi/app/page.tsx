@@ -41,7 +41,7 @@ export default function LandingPage() {
             </div>
 
             {/* 右: 堀江さん写真（絶対配置） */}
-            <div className="absolute right-0 bottom-0 w-40 sm:w-56 md:w-64 lg:w-72 pointer-events-none select-none">
+            <div className="absolute right-0 top-0 w-40 sm:w-56 md:w-64 lg:w-72 pointer-events-none select-none">
               <Image
                 src="/horiemon.png"
                 alt="堀江貴文"

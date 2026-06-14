@@ -10,7 +10,8 @@ import {
   parseNotes,
   type Application,
 } from "@/lib/application";
-import { STEP2_DOCS, STEP2_DOC_DESCRIPTIONS } from "@/lib/steps";
+import { STEP2_DOCS, STEP2_DOCS_MULTI_BUREAU, STEP2_DOC_DESCRIPTIONS } from "@/lib/steps";
+import { BUREAU_PREFECTURE_KEY } from "@/lib/bureauData";
 import StepShell from "@/components/StepShell";
 import { openChatWith } from "@/components/ChatDrawer";
 
@@ -43,6 +44,7 @@ export default function Step2Page() {
   const [done, setDone] = useState(false);
   const [saving, setSaving] = useState(false);
   const [trainingStartDate, setTrainingStartDate] = useState("");
+  const [isMultiBureau, setIsMultiBureau] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
@@ -56,10 +58,18 @@ export default function Step2Page() {
         if (saved.submittedAt) setSubmittedAt(saved.submittedAt);
       }
       setDone(step2?.status === "done");
-      // STEP1で入力した受講開始日を読み込む
-      const step1Notes = parseNotes<{ answers: Record<string, string> }>(step1?.notes ?? null);
+      // STEP1で入力した受講開始日・複数労働局フラグを読み込む
+      const step1Notes = parseNotes<{ answers: Record<string, string>; bureauList?: { prefecture: string }[] }>(step1?.notes ?? null);
       if (step1Notes?.answers?.startDate) {
         setTrainingStartDate(step1Notes.answers.startDate);
+      }
+      if (step1Notes?.bureauList && step1Notes.bureauList.filter((b) => b.prefecture).length > 1) {
+        setIsMultiBureau(true);
+      } else {
+        // localStorageで複数都道府県が設定されているかチェック（フォールバック）
+        const pref = typeof window !== "undefined" ? localStorage.getItem(BUREAU_PREFECTURE_KEY) : null;
+        setIsMultiBureau(false);
+        void pref;
       }
     });
   }, []);
@@ -197,6 +207,43 @@ export default function Step2Page() {
               </li>
             ))}
           </ul>
+
+          {/* 複数労働局にまたがる場合のみ */}
+          {isMultiBureau && (
+            <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4">
+              <p className="mb-2 text-sm font-bold text-amber-800">
+                複数の労働局にまたがる場合は以下も必要です
+              </p>
+              <ul className="space-y-2">
+                {STEP2_DOCS_MULTI_BUREAU.map((doc) => (
+                  <li key={doc} className="flex items-center justify-between gap-3 rounded-lg border border-amber-200 bg-white p-3">
+                    <label className="flex flex-1 cursor-pointer items-center gap-3">
+                      <input
+                        type="checkbox"
+                        checked={checked.includes(doc)}
+                        onChange={() => toggle(doc)}
+                        className="h-5 w-5 shrink-0 rounded border-gray-300 text-brand-600"
+                      />
+                      <div>
+                        <span className={`text-sm font-medium ${checked.includes(doc) ? "text-gray-400 line-through" : ""}`}>
+                          {doc}
+                        </span>
+                        {STEP2_DOC_DESCRIPTIONS[doc] && !checked.includes(doc) && (
+                          <p className="mt-0.5 text-xs text-gray-400">→ {STEP2_DOC_DESCRIPTIONS[doc]}</p>
+                        )}
+                      </div>
+                    </label>
+                    <button
+                      onClick={() => openChatWith(`「${doc}」の書き方と注意点を教えてください。`)}
+                      className="btn-secondary shrink-0 text-xs"
+                    >
+                      AIに聞く
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         <div className="card">

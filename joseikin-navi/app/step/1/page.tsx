@@ -11,6 +11,7 @@ import {
 } from "@/lib/application";
 import StepShell from "@/components/StepShell";
 import Link from "next/link";
+import { PREFECTURE_LIST, BUREAU_PREFECTURE_KEY } from "@/lib/bureauData";
 
 type Answers = Record<string, string>;
 type Diagnosis = { level: "高" | "中" | "低"; reason: string; advice: string };
@@ -40,7 +41,7 @@ function formatJP(dateStr: string): string {
   return `${y}年${m}月${d}日`;
 }
 
-const REQUIRED_KEYS = ["insurance", "startDate", "traineeCount", "itTraining", "employees"];
+const REQUIRED_KEYS = ["insurance", "startDate", "traineeCount", "itTraining", "employees", "prefecture"];
 
 const KEY_LABELS: Record<string, string> = {
   insurance: "雇用保険の加入状況",
@@ -48,6 +49,7 @@ const KEY_LABELS: Record<string, string> = {
   traineeCount: "受講人数",
   itTraining: "研修内容",
   employees: "会社の従業員数",
+  prefecture: "会社の都道府県",
 };
 
 export default function Step1Page() {
@@ -65,14 +67,22 @@ export default function Step1Page() {
         steps.find((s) => s.step_number === 1)?.notes ?? null
       );
       if (saved) {
-        setAnswers(saved.answers ?? {});
+        const restoredAnswers = saved.answers ?? {};
+        setAnswers(restoredAnswers);
         setResult(saved.result ?? null);
+        // localStorageに都道府県を復元
+        if (restoredAnswers.prefecture && typeof window !== "undefined") {
+          localStorage.setItem(BUREAU_PREFECTURE_KEY, restoredAnswers.prefecture);
+        }
       }
     });
   }, []);
 
   function setAnswer(key: string, value: string) {
     setAnswers((a) => ({ ...a, [key]: value }));
+    if (key === "prefecture" && typeof window !== "undefined") {
+      localStorage.setItem(BUREAU_PREFECTURE_KEY, value);
+    }
   }
 
   const deadline = calcDeadline(answers.startDate ?? "");
@@ -293,6 +303,26 @@ export default function Step1Page() {
                 </label>
               ))}
             </div>
+          </fieldset>
+
+          {/* Q6: 都道府県 */}
+          <fieldset>
+            <legend className="mb-1 text-sm font-semibold">
+              Q6. 会社（事業所）の所在地の都道府県はどこですか？
+            </legend>
+            <p className="mb-2 text-xs text-gray-500">
+              管轄の労働局の連絡先を表示します（右上の「困ったら労働局に確認」ボタンに反映）
+            </p>
+            <select
+              className="input max-w-xs"
+              value={answers.prefecture ?? ""}
+              onChange={(e) => setAnswer("prefecture", e.target.value)}
+            >
+              <option value="">都道府県を選択...</option>
+              {PREFECTURE_LIST.map((pref) => (
+                <option key={pref} value={pref}>{pref}</option>
+              ))}
+            </select>
           </fieldset>
 
           {error && <p className="text-sm text-red-600">{error}</p>}

@@ -110,8 +110,25 @@ export default function Step4Page() {
           </p>
         </div>
 
+        {/* 様式ダウンロード */}
+        <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+          <p className="text-sm font-semibold text-gray-700 mb-2">様式ダウンロード（厚生労働省 公式）</p>
+          <a
+            href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/38819_00010.html#事業展開等リスキリング支援コース"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-sm text-brand-700 underline hover:text-brand-900"
+          >
+            <span>📄</span>
+            人材開発支援助成金（事業展開等リスキリング支援コース）様式一覧 ↗
+          </a>
+          <p className="mt-1 text-xs text-gray-500">
+            様式第4-2号、第6-3号、第8-5号などがダウンロードできます
+          </p>
+        </div>
+
         <div className="card">
-          <h2 className="mb-1 text-lg font-bold">支給申請書類チェックリスト</h2>
+          <h2 className="mb-1 text-lg font-bold">支給申請書類チェックリスト（定額制サービス用）</h2>
           <p className="mb-4 text-sm text-gray-500">
             全書類を揃えてから提出してください。実際の記入・提出はご自身で行ってください。
           </p>

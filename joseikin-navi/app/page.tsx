@@ -5,8 +5,11 @@ export default function LandingPage() {
     <main className="min-h-screen bg-gray-50">
       {/* ヒーローセクション */}
       <div className="mx-auto max-w-3xl px-6 py-16 text-center">
-        <p className="mb-3 inline-block rounded-full bg-brand-100 px-4 py-1 text-sm font-semibold text-brand-700">
-          人材開発支援助成金（定額制訓練）対応
+        <p className="mb-2 inline-block rounded-full bg-brand-100 px-4 py-1 text-sm font-semibold text-brand-700">
+          ホリエモンAI学校受講企業向け
+        </p>
+        <p className="mb-3 text-xs text-gray-500">
+          人材開発支援助成金（事業展開等リスキリング支援コース）定額制訓練
         </p>
         <h1 className="mb-4 text-4xl font-bold leading-tight text-gray-900">
           助成金、自分で申請できます。
@@ -53,17 +56,56 @@ export default function LandingPage() {
         </p>
       </div>
 
+      {/* 対象コース説明 */}
+      <div className="mx-auto max-w-3xl px-6 py-10">
+        <div className="rounded-xl border border-blue-200 bg-blue-50 p-5">
+          <p className="text-xs font-bold uppercase tracking-wide text-blue-600 mb-2">対象制度</p>
+          <p className="font-bold text-blue-900 text-base">
+            人材開発支援助成金（事業展開等リスキリング支援コース）定額制訓練
+          </p>
+          <p className="mt-2 text-sm text-blue-800 leading-relaxed">
+            令和4年12月〜令和8年度の期間限定。DX・新規事業展開に伴い従業員に新分野のIT研修を受けさせる事業主を支援する制度です。
+            ホリエモンAI学校のような定額制（サブスクリプション）型のeラーニング研修が対象です。
+          </p>
+          <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <div className="rounded-lg bg-white border border-blue-200 p-3 text-center">
+              <p className="text-xs text-blue-600 font-semibold">中小企業</p>
+              <p className="text-xl font-bold text-blue-900">75%</p>
+              <p className="text-xs text-blue-600">経費助成率</p>
+            </div>
+            <div className="rounded-lg bg-white border border-blue-200 p-3 text-center">
+              <p className="text-xs text-blue-600 font-semibold">大企業</p>
+              <p className="text-xl font-bold text-blue-900">60%</p>
+              <p className="text-xs text-blue-600">経費助成率</p>
+            </div>
+            <div className="rounded-lg bg-white border border-blue-200 p-3 text-center">
+              <p className="text-xs text-blue-600 font-semibold">上限</p>
+              <p className="text-xl font-bold text-blue-900">2万円</p>
+              <p className="text-xs text-blue-600">1人・1ヶ月</p>
+            </div>
+          </div>
+          <a
+            href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/38819_00010.html#事業展開等リスキリング支援コース"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-flex items-center gap-1 text-xs text-blue-700 underline hover:text-blue-900"
+          >
+            厚生労働省 公式ページ（様式・詳細）↗
+          </a>
+        </div>
+      </div>
+
       {/* 申請の流れ */}
-      <div className="mx-auto max-w-3xl px-6 py-12">
+      <div className="mx-auto max-w-3xl px-6 pb-12">
         <h2 className="mb-6 text-center text-xl font-bold text-gray-800">
           申請の流れ（6ステップ）
         </h2>
         <div className="grid gap-3">
           {[
             { step: 1, name: "事前診断", desc: "対象か・いくら出るかを確認" },
-            { step: 2, name: "計画書提出", desc: "受講開始1ヶ月前までに労働局へ（計画書）" },
-            { step: 3, name: "研修受講", desc: "対象従業員が12時間以上受講" },
-            { step: 4, name: "支給申請", desc: "受講完了後、支給申請書類を提出" },
+            { step: 2, name: "計画書提出", desc: "受講開始1ヶ月前までに労働局へ（計画届）" },
+            { step: 3, name: "研修受講", desc: "対象従業員が合計10時間以上受講" },
+            { step: 4, name: "支給申請", desc: "訓練終了日翌日から2ヶ月以内に申請" },
             { step: 5, name: "問い合わせ対応", desc: "労働局からの確認に回答" },
             { step: 6, name: "着金確認", desc: "入金確認で完了" },
           ].map(({ step, name, desc }) => (

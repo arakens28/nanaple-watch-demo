@@ -6,22 +6,22 @@ export default function LandingPage() {
     <main className="min-h-screen bg-white">
 
       {/* ===== HERO ===== */}
-      <div className="relative overflow-hidden bg-[#FFD600] min-h-[88vh] flex flex-col">
-        <div className="relative mx-auto w-full max-w-5xl px-6 pt-8 flex-1 flex flex-col">
+      <div className="relative overflow-hidden bg-[#FFD600]">
+        <div className="relative mx-auto w-full max-w-5xl px-6 pt-6">
 
           {/* ロゴ */}
-          <div className="mb-6">
-            <Image src="/logo-black.png" alt="ホリエモンAI学校" width={180} height={48} className="h-9 w-auto" />
+          <div className="mb-4">
+            <Image src="/logo-black.png" alt="ホリエモンAI学校" width={160} height={44} className="h-8 w-auto" />
           </div>
 
           {/* メインコンテンツ */}
-          <div className="flex flex-1 flex-col lg:flex-row items-center lg:items-end gap-4">
+          <div className="flex flex-col lg:flex-row items-end gap-4">
 
             {/* 左: テキスト */}
-            <div className="flex-1 pb-10 lg:pb-16">
+            <div className="flex-1 pb-6">
               {/* No.1バッジ画像 */}
-              <div className="mb-4 flex items-center gap-4">
-                <Image src="/no1.png" alt="法人向け生成AI研修サービス No.1" width={100} height={100} className="h-24 w-24 object-contain" />
+              <div className="mb-3 flex items-center gap-3">
+                <Image src="/no1.png" alt="法人向け生成AI研修サービス No.1" width={80} height={80} className="h-16 w-16 object-contain" />
                 <div>
                   <p className="text-xs font-bold text-gray-700">法人向け生成AI研修サービス</p>
                   <p className="text-xs text-gray-600">満足度No.1獲得</p>
@@ -29,35 +29,33 @@ export default function LandingPage() {
               </div>
 
               {/* メインコピー */}
-              <h1 className="mb-4 text-4xl font-black leading-tight text-gray-900 sm:text-5xl">
-                AI研修の費用、<br />
-                最大<span className="text-5xl sm:text-6xl">75%</span>が<br />
-                戻ってきます。
+              <h1 className="mb-3 text-3xl font-black leading-tight text-gray-900 sm:text-4xl">
+                AI研修の費用、最大<span className="text-4xl sm:text-5xl">75%</span>が戻ってきます。
               </h1>
-              <p className="mb-6 text-sm font-medium text-gray-700">
-                人材開発支援助成金を活用すれば、ホリエモンAI学校の<br className="hidden sm:block" />受講料の大半が助成されます。
+              <p className="mb-4 text-sm text-gray-700">
+                人材開発支援助成金を活用すれば、ホリエモンAI学校の受講料の大半が助成されます。
               </p>
 
               {/* CTA */}
               <Link
                 href="/check"
-                className="inline-flex items-center gap-3 rounded-2xl bg-gray-900 px-7 py-4 text-lg font-black text-white shadow-xl transition hover:bg-gray-700"
+                className="inline-flex items-center gap-3 rounded-2xl bg-gray-900 px-6 py-3.5 text-base font-black text-white shadow-xl transition hover:bg-gray-700"
               >
                 🎯 自社が対象か2分で診断する
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#FFD600] text-gray-900 text-sm font-black">→</span>
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#FFD600] text-gray-900 text-xs font-black">→</span>
               </Link>
-              <p className="mt-2 text-xs text-gray-600">登録不要・完全無料</p>
+              <p className="mt-1.5 text-xs text-gray-600">登録不要・完全無料</p>
 
               {/* 実績数字 */}
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className="mt-5 flex flex-wrap gap-2">
                 {[
                   { num: "400社", label: "受講企業数" },
                   { num: "4,000名", label: "受講人数" },
                   { num: "75%", label: "中小企業助成率" },
                   { num: "24万円", label: "1人あたり年間上限" },
                 ].map(({ num, label }) => (
-                  <div key={label} className="rounded-xl bg-black/10 px-4 py-2.5 text-center">
-                    <p className="text-xl font-black text-gray-900">{num}</p>
+                  <div key={label} className="rounded-xl bg-black/10 px-3 py-2 text-center">
+                    <p className="text-lg font-black text-gray-900">{num}</p>
                     <p className="text-xs text-gray-700">{label}</p>
                   </div>
                 ))}
@@ -65,13 +63,13 @@ export default function LandingPage() {
             </div>
 
             {/* 右: 堀江さん写真 */}
-            <div className="flex-shrink-0 lg:w-80 xl:w-96 flex justify-center lg:justify-end self-end">
+            <div className="flex-shrink-0 lg:w-64 xl:w-72 flex justify-center lg:justify-end self-end">
               <Image
                 src="/horiemon.png"
                 alt="堀江貴文"
-                width={400}
-                height={600}
-                className="w-56 sm:w-72 lg:w-80 xl:w-96 object-contain"
+                width={288}
+                height={432}
+                className="w-44 sm:w-56 lg:w-64 xl:w-72 object-contain"
                 priority
               />
             </div>

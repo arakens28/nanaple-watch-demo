@@ -1,32 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import { createServerSupabase } from "@/lib/supabase-server";
 
-const FROM = process.env.RESEND_FROM ?? "助成金ナビ <noreply@horiemon.ai>";
+const FROM = process.env.RESEND_FROM ?? "助成金ナビ <noreply@horiebon.com>";
 const ADMIN_EMAIL = "araki@telewor.com";
 
 export async function POST(req: NextRequest) {
-  // RESEND_API_KEY未設定の場合は無視して正常終了
   if (!process.env.RESEND_API_KEY) {
     return NextResponse.json({ ok: true });
   }
 
-  // ログイン済みユーザーのみ呼べる
-  const supabase = createServerSupabase();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user?.email) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { email } = (await req.json()) as { email?: string };
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return NextResponse.json({ error: "invalid email" }, { status: 400 });
   }
 
   const resend = new Resend(process.env.RESEND_API_KEY);
 
-  const userEmail = user.email;
-
   await Promise.allSettled([
-    // ユーザー本人へのお礼メール
     resend.emails.send({
       from: FROM,
-      to: userEmail,
+      to: email,
       subject: "【助成金ナビ】ご登録ありがとうございます",
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
@@ -48,15 +41,14 @@ export async function POST(req: NextRequest) {
       `,
     }),
 
-    // 管理者への通知メール
     resend.emails.send({
       from: FROM,
       to: ADMIN_EMAIL,
-      subject: `【助成金ナビ】新規登録: ${userEmail}`,
+      subject: `【助成金ナビ】新規登録: ${email}`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
           <h1 style="font-size: 18px;">新規アカウント登録通知</h1>
-          <p><strong>メールアドレス:</strong> ${userEmail}</p>
+          <p><strong>メールアドレス:</strong> ${email}</p>
           <p><strong>登録日時:</strong> ${new Date().toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" })}</p>
           <p style="margin-top: 16px;">
             <a href="https://jshindan.vercel.app/admin" style="color: #1d4ed8;">管理画面で確認する →</a>

@@ -24,13 +24,19 @@ export default function SignupPage() {
       setError(error.message);
       return;
     }
+    // 登録成功時は即メール送信（セッションの有無に関わらず）
+    if (data.user?.email) {
+      void fetch("/api/send-welcome", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: data.user.email }),
+      });
+    }
     // メール確認が有効な場合は session が無い
     if (!data.session) {
       setNeedsConfirm(true);
       return;
     }
-    // お礼メール＋管理者通知メールを送信（失敗しても登録自体は完了）
-    void fetch("/api/send-welcome", { method: "POST" });
     router.push("/dashboard");
     router.refresh();
   }

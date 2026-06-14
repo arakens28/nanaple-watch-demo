@@ -402,7 +402,33 @@ export default function CheckPage() {
               </Link>
             </div>
 
-            {/* CTA2: ホリエモンAI学校（サブ） */}
+            {/* CTA2: 社労士サポート */}
+            {(() => {
+              const count = parseInt(answers.traineeCount ?? "0", 10);
+              const fee = 115000 + (isNaN(count) ? 0 : count * 5000);
+              return (
+                <div className="rounded-xl border-2 border-amber-400 bg-amber-50 p-5 text-center">
+                  <p className="text-xs font-semibold text-amber-700 mb-1">申請が不安な方・確実に通したい方へ</p>
+                  <p className="text-base font-bold text-gray-900 mb-1">有償で社労士に申請をサポートしてもらう</p>
+                  <p className="text-sm text-gray-600 mb-3">
+                    {count > 0
+                      ? `11.5万円 + ${count}名 × 0.5万円 = `
+                      : "11.5万円 + 申請人数 × 0.5万円 = "}
+                    <span className="font-bold text-gray-900">{fee.toLocaleString()}円</span>
+                  </p>
+                  <a
+                    href="https://jsensei.triport.co.jp/jreskilling/entry?r=6568f0eb6d224260aad70f2f53adfa4e&p=d66254e15ba44af393494e5518182eb0"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block rounded-full bg-amber-500 px-6 py-2 text-sm font-bold text-white transition hover:bg-amber-600"
+                  >
+                    TRIPORT社労士法人への面談を予約 →
+                  </a>
+                </div>
+              );
+            })()}
+
+            {/* CTA3: ホリエモンAI学校（サブ） */}
             <div className="rounded-xl border border-gray-200 bg-gray-50 p-5 text-center">
               <p className="text-xs text-gray-500 mb-1">ホリエモンAI学校は定額制IT研修として助成金の対象になります</p>
               <p className="text-sm font-semibold text-gray-700 mb-3">受講のご相談はこちら</p>

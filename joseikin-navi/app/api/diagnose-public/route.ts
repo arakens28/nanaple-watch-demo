@@ -18,16 +18,49 @@ const QUESTION_LABELS: Record<string, string> = {
   traineeCount: "受講させたい従業員の人数（社長・役員除く）",
 };
 
+// 各回答の許容値を固定（プロンプトインジェクション対策）
+const VALID_VALUES: Record<string, Set<string>> = {
+  insurance: new Set(["はい", "いいえ", "わからない"]),
+  itTraining: new Set(["はい", "いいえ", "わからない"]),
+  employees: new Set(["1〜9名", "10〜99名", "100名以上"]),
+};
+
+function sanitizeAnswers(raw: Record<string, unknown>): Record<string, string> | null {
+  const out: Record<string, string> = {};
+
+  for (const key of ["insurance", "itTraining", "employees"]) {
+    const val = raw[key];
+    if (typeof val !== "string" || !VALID_VALUES[key].has(val)) return null;
+    out[key] = val;
+  }
+
+  // 日付: YYYY-MM-DD 形式のみ
+  if (typeof raw.startDate !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(raw.startDate)) {
+    return null;
+  }
+  out.startDate = raw.startDate;
+
+  // 人数: 1〜300 の整数のみ
+  const count = parseInt(String(raw.traineeCount ?? ""), 10);
+  if (isNaN(count) || count < 1 || count > 300) return null;
+  out.traineeCount = String(count);
+
+  return out;
+}
+
 export async function POST(req: NextRequest) {
-  const { answers } = (await req.json()) as {
-    answers: Record<string, string>;
-  };
-  if (!answers || typeof answers !== "object") {
+  const body = (await req.json()) as { answers?: Record<string, unknown> };
+
+  if (!body?.answers || typeof body.answers !== "object") {
     return NextResponse.json({ error: "answers is required" }, { status: 400 });
   }
 
+  const answers = sanitizeAnswers(body.answers);
+  if (!answers) {
+    return NextResponse.json({ error: "invalid answers" }, { status: 400 });
+  }
+
   const answerText = Object.entries(answers)
-    .filter(([key]) => key !== "prefecture")
     .map(([key, value]) => `- ${QUESTION_LABELS[key] ?? key}: ${value}`)
     .join("\n");
 

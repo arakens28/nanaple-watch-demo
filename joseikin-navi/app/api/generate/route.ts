@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase-server";
 import { anthropic, CLAUDE_MODEL, SYSTEM_PROMPT } from "@/lib/claude";
+import { STEP4_DOCS } from "@/lib/steps";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
+
+const STEP4_DOCS_SET = new Set(STEP4_DOCS);
+const MAX_INQUIRY_LENGTH = 2000;
 
 type GeneratePayload =
   | {
@@ -29,28 +33,36 @@ export async function POST(req: NextRequest) {
 
   let prompt: string;
   if (payload.purpose === "step4_check") {
+    // checked/unchecked は既知の書類名リストのみ許可（プロンプトインジェクション対策）
+    const checked = (payload.checked ?? []).filter((d) => STEP4_DOCS_SET.has(d));
+    const unchecked = (payload.unchecked ?? []).filter((d) => STEP4_DOCS_SET.has(d));
+
     prompt = `本申請（支給申請）の書類チェックリストの状況です。
 
 準備済み:
-${payload.checked.map((d) => `- ${d}`).join("\n") || "（なし）"}
+${checked.map((d) => `- ${d}`).join("\n") || "（なし）"}
 
 未準備:
-${payload.unchecked.map((d) => `- ${d}`).join("\n") || "（なし）"}
+${unchecked.map((d) => `- ${d}`).join("\n") || "（なし）"}
 
 未準備の書類について「これが足りていません」という形で指摘し、それぞれの入手方法・作成方法を簡潔に案内してください。すべて準備済みの場合は提出前の最終確認ポイントを案内してください。`;
   } else if (payload.purpose === "step5_draft") {
-    if (!payload.inquiry?.trim()) {
+    const inquiry = String(payload.inquiry ?? "").trim();
+    if (!inquiry) {
       return NextResponse.json(
         { error: "問い合わせ内容を入力してください" },
         { status: 400 }
       );
     }
+    // 文字数制限（プロンプト過大送信・インジェクション対策）
+    const truncated = inquiry.slice(0, MAX_INQUIRY_LENGTH);
+
     prompt = `労働局から以下の問い合わせを受けました。事業主として返信する回答文の下書きを作成してください。
 
 問い合わせ内容:
-"""
-${payload.inquiry}
-"""
+<inquiry>
+${truncated}
+</inquiry>
 
 要件:
 - そのままコピーして使える丁寧なビジネス文書の形式

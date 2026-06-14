@@ -8,7 +8,9 @@ import { createClient } from "@/lib/supabase";
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirect") ?? "/dashboard";
+  // オープンリダイレクト対策: 同一オリジンの相対パスのみ許可
+  const rawRedirect = searchParams.get("redirect") ?? "";
+  const redirectTo = /^\/[^/\\]/.test(rawRedirect) ? rawRedirect : "/dashboard";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
